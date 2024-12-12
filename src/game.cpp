@@ -9,18 +9,21 @@
 #include "logger.h"
 #include "game_global.h"
 
-/*
- * Name: Game
- * Purpose: Construct the game object and set up relevant components
- * Input:
- * - The title of the game window
- * - X position of the game window
- * - Y position of the game window
- * - The width of the game window
- * - The height of the game window
- * - Whether or not the game window should be fullscreen
- * - Global game variables
- * Output: None
+
+/**
+ * @function: Game
+ * 
+ * Construct the game object and set up relevant components
+ *
+ * @param windowTitle - Title of the game window
+ * @param windowXPosition - X position of the game window
+ * @param windowYPostition - Y position of the game window
+ * @param screenWidth - Width of the game window
+ * @param screenHeight - Height of the game window
+ * @param fullscreen - Whether or not the game window should be fullscreen
+ * @param gameGlobal - Global game variables
+ *
+ * @output none
 */
 Game::Game(const char* windowTitle, int windowXPosition, int windowYPosition, int screenWidth, int screenHeight, bool fullscreen, struct GameGlobal gameGlobal) {
   writeToLogFile(gameGlobal.logFile, "Constructing game...");
@@ -38,8 +41,8 @@ Game::Game(const char* windowTitle, int windowXPosition, int windowYPosition, in
   writeToLogFile(this->gameGlobal.logFile, "Game constructed");
 }
 
-/*
- * Name: setupWindow
+/**
+ * @function: setupWindow
  * Purpose: Setup the SDL game window
  * Input:
  * - The name of the window
@@ -71,8 +74,8 @@ SDL_Window* Game::setupWindow(const char* windowTitle, int windowXPosition, int 
   writeToLogFile(this->gameGlobal.logFile, "SDL game window created");
 }
 
-/*
- * Name: initializeSdl
+/**
+ * @function: initializeSdl
  * Purpose: Setup SDL, the renderer, and TTF
  * Input:
  * - The game window
@@ -123,8 +126,8 @@ void Game::initializeSdl(SDL_Window* window) {
   writeToLogFile(this->gameGlobal.logFile, "TTF initialized");
 }
 
-/*
- * Name: checkState
+/**
+ * @function: checkState
  * Purpose: Check which state the game is in. If there was a state switch and the current state
  * has not been entered before, run its enter method.
  * Input:
@@ -150,8 +153,8 @@ void Game::checkState() {
   }
 }
 
-/*
- * Name: handleEvents
+/**
+ * @function: handleEvents
  * Purpose: Check the current state, and call that state's handle events method
  * Input:
  * - None
@@ -175,8 +178,8 @@ void Game::handleEvents() {
   }
 }
 
-/*
- * Name: checkKeystates
+/**
+ * @function: checkKeystates
  * Purpose: Check the current state of the game and call that state's method to check the key states
  * Input:
  * - None
@@ -200,8 +203,8 @@ void Game::checkKeystates()
   }
 }
 
-/*
- * Name: update
+/**
+ * @function: update
  * Purpose: First check if it's time to update. If it is, reset the time since last update. Then check the current
  * state and call that state's function to update
  * Input:
@@ -235,8 +238,8 @@ void Game::update() {
 	}
 }
 
-/*
- * Name: renderState
+/**
+ * @function: renderState
  * Purpose: Check current state and call that state's function to render
  * Input: 
  * - None
@@ -260,8 +263,8 @@ void Game::renderState() {
   }
 }
 
-/*
- * Name: clean
+/**
+ * @function: clean
  * Purpose: Frees SDL resources and quits
  * Input: 
  * - None
