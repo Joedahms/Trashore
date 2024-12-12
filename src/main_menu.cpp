@@ -7,24 +7,26 @@
 #include "rectangle.h"
 #include "game_global.h"
 
-/*
- * Name: MainMenu
- * Purpose: Setup the game title and start button
- * Input:
- * - Global game variables
- * Output: None
+/**
+ * @function: MainMenu
+ * 
+ * MainMenu constructor. Setup the game title and start button. 
+ *
+ * @param gameGlobal - Global game variables
+ *
+ * @output: None
 */
 MainMenu::MainMenu(struct GameGlobal gameGlobal) {
   this->gameGlobal = gameGlobal;
   SDL_Surface* windowSurface = SDL_GetWindowSurface(this->gameGlobal.window);
 
   // Title
-  const char* fontPath = "../16020_FUTURAM.ttf";  // Path to the font
-  const char* titleContent = "TRASHORE";          // Title of the game
-  SDL_Color titleColor = {0, 255, 0, 255};        // Green
+  const char* fontPath = "../16020_FUTURAM.ttf";
+  const char* titleContent = "TRASHORE";
+    SDL_Color titleColor = {0, 255, 0, 255};        // Green
   SDL_Rect titleRectangle = {100, 100, 0, 0,};    // x,y -> 100, 100. 0 width/height
   this->title = std::make_unique<Text>(this->gameGlobal, fontPath, titleContent, 24, titleColor, titleRectangle);
-  this->title->centerHorizontal(windowSurface);   // Center the title horizontally
+  this->title->centerHorizontal(windowSurface);
 
   // Start button
   SDL_Rect startButtonRectangle = {200, 150, 200, 50};
@@ -32,23 +34,25 @@ MainMenu::MainMenu(struct GameGlobal gameGlobal) {
   this->startButton = std::make_unique<Button>(this->gameGlobal, startButtonRectangle, "click");
 }
 
-/*
- * Name: handleEvents
- * Purpose: Handle SDL events that occur in the main menu state
- * Input:
- * - Whether or not the game is running
- * Output: Current state the game is in
+/**
+ * @function handleEvents
+ *
+ * Handle SDL events that occur in the main menu state.
+ *
+ * @param gameIsRunning - Whether or not the game is running.
+ *
+ * @output - Current state the game is in.
 */
 int MainMenu::handleEvents(bool* gameIsRunning) {
   SDL_Event event;
   int returnValue = 0;
   while (SDL_PollEvent(&event) != 0) {  // While there are events in the queue
     switch(event.type) {                // Check which type of event
-      case SDL_QUIT:                    // Quit
+      case SDL_QUIT:          
       *gameIsRunning = false; 
       break; 
 
-      case SDL_MOUSEBUTTONDOWN:         // Mouse button was pressed
+      case SDL_MOUSEBUTTONDOWN:         
       if (this->startButton->checkHovered(event.motion.x, event.motion.y) == 0) { // If mouse is not over the button
         break;                          // Stay in main menu state
       }
@@ -63,12 +67,14 @@ int MainMenu::handleEvents(bool* gameIsRunning) {
   return returnValue;
 }
 
-/*
- * Name: render
- * Purpose: Render the game title and the start button
- * Input:
- * - None
- * Output: None
+/**
+ * @function render
+ *
+ * Render the game title and the start button
+ *
+ * @param none
+ *
+ * @output none
 */
 void MainMenu::render() {
   SDL_SetRenderDrawColor(this->gameGlobal.renderer, 0, 0, 0, 255);  // Black background

@@ -1,18 +1,17 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
-#include <iostream>
 #include <assert.h>
+#include <iostream>
 
-#include "game.h"
 #include "camera/camera.h"
-#include "logger.h"
+#include "game.h"
 #include "game_global.h"
-
+#include "logger.h"
 
 /**
  * @function: Game
- * 
+ *
  * Construct the game object and set up relevant components
  *
  * @param windowTitle - Title of the game window
@@ -24,20 +23,29 @@
  * @param gameGlobal - Global game variables
  *
  * @output none
-*/
-Game::Game(const char* windowTitle, int windowXPosition, int windowYPosition, int screenWidth, int screenHeight, bool fullscreen, struct GameGlobal gameGlobal) {
+ */
+Game::Game(const char* windowTitle,
+           int windowXPosition,
+           int windowYPosition,
+           int screenWidth,
+           int screenHeight,
+           bool fullscreen,
+           struct GameGlobal gameGlobal) {
   writeToLogFile(gameGlobal.logFile, "Constructing game...");
-  this->gameGlobal = gameGlobal;
-  this->gameGlobal.window = setupWindow(windowTitle, windowXPosition, windowYPosition, screenWidth, screenHeight, fullscreen); // Setup the SDL game window
 
-  initializeSdl(this->gameGlobal.window);                         // Initialize SDL and its components
+  this->gameGlobal = gameGlobal;
+  this->gameGlobal.window =
+      setupWindow(windowTitle, windowXPosition, windowYPosition, screenWidth,
+                  screenHeight, fullscreen); // Setup the SDL game window
+
+  initializeSdl(this->gameGlobal.window); // Initialize SDL and its components
 
   // Initialize states
-  this->mainMenu = std::make_unique<MainMenu>(this->gameGlobal);  // Main menu
-  this->gameplay = std::make_unique<Gameplay>(this->gameGlobal);  // Gameplay
-  
-  this->previousTicks = SDL_GetTicks();                           // First physics tick count
-  gameIsRunning = true;                                           // Game is now running
+  this->mainMenu = std::make_unique<MainMenu>(this->gameGlobal); // Main menu
+  this->gameplay = std::make_unique<Gameplay>(this->gameGlobal); // Gameplay
+
+  this->previousTicks = SDL_GetTicks(); // First physics tick count
+  gameIsRunning       = true;           // Game is now running
   writeToLogFile(this->gameGlobal.logFile, "Game constructed");
 }
 
@@ -53,21 +61,26 @@ Game::Game(const char* windowTitle, int windowXPosition, int windowYPosition, in
  * - Whether or not the game window should be fullscreen
  * Output:
  * - Pointer to the game window
-*/
-SDL_Window* Game::setupWindow(const char* windowTitle, int windowXPosition, int windowYPosition, int screenWidth, int screenHeight, bool fullscreen) {
+ */
+SDL_Window* Game::setupWindow(const char* windowTitle,
+                              int windowXPosition,
+                              int windowYPosition,
+                              int screenWidth,
+                              int screenHeight,
+                              bool fullscreen) {
   writeToLogFile(this->gameGlobal.logFile, "Creating SDL game window...");
 
   // Check for fullscreen
   int flags = 0;
-	if (fullscreen) {
-		flags = SDL_WINDOW_FULLSCREEN;
-	}
+  if (fullscreen) {
+    flags = SDL_WINDOW_FULLSCREEN;
+  }
 
   // Create the SDL window
   try {
-    return SDL_CreateWindow(windowTitle, windowXPosition, windowYPosition, screenWidth, screenHeight, flags);
-  }
-  catch(...) {
+    return SDL_CreateWindow(windowTitle, windowXPosition, windowYPosition, screenWidth,
+                            screenHeight, flags);
+  } catch (...) {
     writeToLogFile(this->gameGlobal.logFile, "Error setting up SDL game window");
     exit(1);
   }
@@ -80,7 +93,7 @@ SDL_Window* Game::setupWindow(const char* windowTitle, int windowXPosition, int 
  * Input:
  * - The game window
  * Output: None
-*/
+ */
 void Game::initializeSdl(SDL_Window* window) {
   // Initialize SDL
   writeToLogFile(this->gameGlobal.logFile, "Initializing SDL...");
@@ -89,8 +102,7 @@ void Game::initializeSdl(SDL_Window* window) {
     if (sdlInitReturn != 0) {
       throw;
     }
-  }
-  catch (...) {
+  } catch (...) {
     writeToLogFile(this->gameGlobal.logFile, "Failed to initialize SDL");
     exit(1);
   }
@@ -99,13 +111,13 @@ void Game::initializeSdl(SDL_Window* window) {
   // Create renderer
   writeToLogFile(this->gameGlobal.logFile, "Creating renderer");
   try {
-    this->gameGlobal.renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    this->gameGlobal.renderer = SDL_CreateRenderer(
+        window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if (!this->gameGlobal.renderer) {
       throw;
     }
     SDL_SetRenderDrawColor(this->gameGlobal.renderer, 255, 255, 255, 255);
-  }
-  catch (...) {
+  } catch (...) {
     writeToLogFile(this->gameGlobal.logFile, "Error creating renderer");
     exit(1);
   }
@@ -118,8 +130,7 @@ void Game::initializeSdl(SDL_Window* window) {
     if (ttfInitReturn == -1) {
       throw;
     }
-  }
-  catch (...) {
+  } catch (...) {
     writeToLogFile(this->gameGlobal.logFile, "Failed to initialize TTF");
     exit(1);
   }
@@ -128,27 +139,26 @@ void Game::initializeSdl(SDL_Window* window) {
 
 /**
  * @function: checkState
- * Purpose: Check which state the game is in. If there was a state switch and the current state
- * has not been entered before, run its enter method.
- * Input:
+ * Purpose: Check which state the game is in. If there was a state switch and the current
+ * state has not been entered before, run its enter method. Input:
  * - None
  * Output: None
-*/
+ */
 void Game::checkState() {
-  switch(this->state) {
-    case 0: // Main menu
+  switch (this->state) {
+  case 0: // Main menu
     break;
 
-    case 1: // Gameplay
+  case 1: // Gameplay
     if (!this->gameplay->getStateEntered()) {
-      this->gameplay->enterGameplay();  
+      this->gameplay->enterGameplay();
     }
     break;
 
-    case 2: // Pause menu
+  case 2: // Pause menu
     break;
 
-    default:
+  default:
     break;
   }
 }
@@ -162,103 +172,108 @@ void Game::checkState() {
  */
 void Game::handleEvents() {
   switch (this->state) {
-    case 0: // Main menu
+  case 0: // Main menu
     this->state = this->mainMenu->handleEvents(&this->gameIsRunning);
     break;
 
-    case 1: // Gameplay
+  case 1: // Gameplay
     this->state = this->gameplay->handleEvents(&this->gameIsRunning);
     break;
 
-    case 2: // Pause menu
+  case 2: // Pause menu
     break;
 
-    default:
+  default:
     break;
   }
 }
 
 /**
  * @function: checkKeystates
- * Purpose: Check the current state of the game and call that state's method to check the key states
- * Input:
+ * Purpose: Check the current state of the game and call that state's method to check the
+ * key states Input:
  * - None
  * Output: None
-*/
-void Game::checkKeystates()
-{
-  switch(this->state) {
-    case 0: // Main menu
+ */
+void Game::checkKeystates() {
+  switch (this->state) {
+  case 0: // Main menu
     break;
 
-    case 1: // Gameplay
+  case 1: // Gameplay
     this->gameplay->checkKeystates();
     break;
 
-    case 2: // Pause menu
+  case 2: // Pause menu
     break;
 
-    default:
+  default:
     break;
   }
 }
 
 /**
  * @function: update
- * Purpose: First check if it's time to update. If it is, reset the time since last update. Then check the current
- * state and call that state's function to update
- * Input:
+ * Purpose: First check if it's time to update. If it is, reset the time since last
+ * update. Then check the current state and call that state's function to update Input:
  * - None
  * Output: None
  */
 void Game::update() {
-  
   // Calculate values used to check if it's time to update
-	this->currentTicks = SDL_GetTicks();                          // Ticks at this very moment
-	this->deltaTime = this->currentTicks - this->previousTicks;   // Time since this funnction was last executed
-	this->totalDeltaTime += this->deltaTime;                      // Add the time since the function was last executed to the time the game was last updated
-	this->previousTicks = this->currentTicks;
 
-	if (this->totalDeltaTime >= 128) {                            // Check if it is time to update
-		this->totalDeltaTime = 0;                                   // Reset time since last update
-    switch(this->state) {                                       // Check current state
-      case 0:                                                   // Main menu
+  // Ticks at this very moment
+  this->currentTicks = SDL_GetTicks();
+
+  // Time since this funnction was last executed
+  this->deltaTime = this->currentTicks - this->previousTicks;
+
+  // Add the time since the function was last executed to the time the game was last
+  // updated
+  this->totalDeltaTime += this->deltaTime;
+
+  this->previousTicks = this->currentTicks;
+
+  if (this->totalDeltaTime >= 128) { // Check if it is time to update
+    this->totalDeltaTime = 0;        // Reset time since last update
+    switch (this->state) {           // Check current state
+    case 0:                          // Main menu
       break;
 
-      case 1:                                                   // Gameplay
+    case 1: // Gameplay
       this->gameplay->update();
       break;
 
-      case 2:                                                   // Pause menu
+    case 2: // Pause menu
       break;
 
-      default:
+    default:
       break;
-    } 
-	}
+    }
+  }
 }
 
 /**
  * @function: renderState
  * Purpose: Check current state and call that state's function to render
- * Input: 
+ * Input:
  * - None
  * Output: None
  */
 void Game::renderState() {
-  switch(this->state) {
-    case 0: // Main menu
+  switch (this->state) {
+  case 0: // Main menu
     this->mainMenu->render();
     break;
 
-    case 1: // Gameplay
+  case 1: // Gameplay
     this->gameplay->render();
     break;
 
-    case 2: // Pause menu
+  case 2: // Pause menu
     break;
 
-    default:
+  default:
     break;
   }
 }
@@ -266,14 +281,13 @@ void Game::renderState() {
 /**
  * @function: clean
  * Purpose: Frees SDL resources and quits
- * Input: 
+ * Input:
  * - None
  * Output: None
  */
-void Game::clean()
-{
-	SDL_DestroyWindow(this->gameGlobal.window);
-	SDL_DestroyRenderer(this->gameGlobal.renderer);
-	SDL_Quit();
+void Game::clean() {
+  SDL_DestroyWindow(this->gameGlobal.window);
+  SDL_DestroyRenderer(this->gameGlobal.renderer);
+  SDL_Quit();
   writeToLogFile(this->gameGlobal.logFile, "Game cleaned");
 }

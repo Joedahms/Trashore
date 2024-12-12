@@ -9,23 +9,27 @@
 #include "camera/camera.h"
 #include "game_global.h"
 
-/*
- * Name: Gameplay
- * Purpose: Set the global variables
- * Input:
- * - Global variables
- * Output: None
+/**
+ * @function Gameplay
+ *
+ * Constructor. Set the global variables.
+ *
+ * @param gameGlobal - Global variables.
+ *
+ * @output - None
 */
 Gameplay::Gameplay(struct GameGlobal gameGlobal) {
   this->gameGlobal = gameGlobal;
 }
 
-/*
- * Name: handleEvents
- * Purpose: Handle all events in the SDL event queue
- * Input:
- * - Whether or not the game is running
- * Output: The current state of the game after updating gameplay
+/**
+ * @function handleEvents
+ *
+ * Handle all events in the SDL event queue.
+ *
+ * @param gameIsRunning - Whether or not the game is running.
+ *
+ * @output: The current state of the game after updating gameplay.
 */
 int Gameplay::handleEvents(bool* gameIsRunning) {
   SDL_Event event;
@@ -64,12 +68,14 @@ int Gameplay::handleEvents(bool* gameIsRunning) {
   return 1;                                       // Still in gameplay state
 }
 
-/*
- * Name: checkKeystates
- * Purpose: Perform the appropriate action depending on which keyboard key has been pressed
- * Input:
- * - None
- * Output: None
+/**
+ * @function checkKeystates
+ *
+ * Perform the appropriate action depending on which keyboard key has been pressed.
+ *
+ * @param none
+ *
+ * @output none
 */
 void Gameplay::checkKeystates() {
 	const Uint8* keystates = SDL_GetKeyboardState(NULL);
@@ -95,10 +101,13 @@ void Gameplay::checkKeystates() {
 	}
 }
 
-/* Name: setSelectedTile
- * Purpose: Determines where the mouse is and sets the tile it is over to selected
- * Input: None
- * Output: None
+/** function - setSelectedTile
+ *
+ * Determines where the mouse is and sets the tile it is over to selected.
+ *
+ * @param none
+ *
+ * @output none
  */
 void Gameplay::setSelectedTile() {
 	int X; 
@@ -118,12 +127,14 @@ void Gameplay::setSelectedTile() {
 	this->tileMap->selectTile(xCoordinate, yCoordinate);
 }
 
-/*
- * Name: Update
- * Purpose: Update the camera and set the selected tile
- * Input:
- * - None
- * Output: None
+/**
+ * @function - update
+ *
+ * Update the camera and set the selected tile.
+ *
+ * @param none
+ *
+ * @output none
 */
 void Gameplay::update() {
   writeToLogFile(this->gameGlobal.logFile, "updating in gameplay");
@@ -131,12 +142,14 @@ void Gameplay::update() {
   setSelectedTile();
 }
 
-/*
- * Name: render
- * Purpose: Render all gameplay elements
- * Input:
- * - None
- * Output: None
+/**
+ * @function: render
+ *
+ * Render all gameplay elements.
+ *
+ * @param none
+ * 
+ * @output none
 */
 void Gameplay::render() {
   // Print out camera position. Temporary for debugging
@@ -149,7 +162,7 @@ void Gameplay::render() {
 		for (int y = 0; y < this->camera->getVisibleYTiles(); y++) {  // Loop through all visible y tiles
 			int currentXPosition = x + this->camera->x_pos;
 			int currentYPosition = y + this->camera->y_pos;
-			SDL_RenderCopy(this->gameGlobal.renderer, this->tileMap->getTileTexture(currentXPosition, currentYPosition), NULL, &(this->camera->destinationRect[x][y]));  // Render all visible tiles
+      SDL_RenderCopy(this->gameGlobal.renderer, this->tileMap->getTileTexture(currentXPosition, currentYPosition), NULL, &(this->camera->destinationRect[x][y]));  // Render all visible tiles
 
 			if (this->tileMap->getSelected(currentXPosition, currentYPosition)) {                       // If the current tile is selected
 				SDL_RenderCopy(this->gameGlobal.renderer, this->selectedTexture, NULL, &(camera->destinationRect[x][y]));  // Render selected texture over it
