@@ -201,7 +201,7 @@ void Game::checkKeystates() {
     break;
 
   case 1: // Gameplay
-    this->gameplay->checkKeystates();
+    this->state = this->gameplay->checkKeystates();
     break;
 
   case 2: // Pause menu
