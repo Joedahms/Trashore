@@ -1,49 +1,51 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include <SDL2/SDL.h> 
+#include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-#include <vector>
 #include <memory>
 #include <string>
+#include <vector>
 
 // Character
 #include "character/character.h"
 #include "character/character_factory.h"
-#include "character/player.h"
 #include "character/npc.h"
+#include "character/player.h"
 
 // Tile
+#include "tile/dirt_tile.h"
 #include "tile/tile.h"
 #include "tile/tile_factory.h"
 #include "tile/water_tile.h"
-#include "tile/dirt_tile.h"
 
 // Camera
 #include "camera/camera.h"
 
-#include "main_menu.h"
 #include "gameplay.h"
+#include "main_menu.h"
+#include "pause_menu.h"
 
 #include "game_global.h"
 
 class Game {
-	public:
-  Game(const char*, int, int, int, int, bool, struct GameGlobal);       // Constructor
+public:
+  Game(const char*, int, int, int, int, bool, struct GameGlobal);
 
-  SDL_Window* setupWindow(const char*, int, int, int, int, bool); // Setup the SDL game window
+  SDL_Window* setupWindow(
+      const char*, int, int, int, int, bool); // Setup the SDL game window
   void initializeSdl(SDL_Window*);
 
-  void checkState();                                              // Check which state the game is in
-  void handleEvents();                                            // Handle events depending on current state
-  void checkKeystates();                                          // Check keyboard key presses depending on state
-  void update();                                                  // Update game depending on state
+  void checkState();
+  void handleEvents();   // Handle events depending on current state
+  void checkKeystates(); // Check keyboard key presses depending on state
+  void update();         // Update game depending on state
 
-  void renderState();                                             // Render the current state
-  void clean();                                                   // Clean up upon quit
-  bool running() { return gameIsRunning; }                        // Check if the game is running
+  void renderState();
+  void clean(); // Clean up upon quit
+  bool running() { return gameIsRunning; }
 
-	private:
+private:
   struct GameGlobal gameGlobal;
 
   // State the game is currently in
@@ -53,22 +55,25 @@ class Game {
   int state = 0;
 
   // States
-  std::unique_ptr<MainMenu> mainMenu;                             // Main menu. State entered when the game starts
-  std::unique_ptr<Gameplay> gameplay;                             // Game play. State the game is in when it is running
+  std::unique_ptr<MainMenu> mainMenu; // State entered when the game starts
+  std::unique_ptr<Gameplay> gameplay;
+  std::unique_ptr<PauseMenu> pauseMenu;
 
-  bool gameIsRunning = false;                                     // If the game is running
+  bool gameIsRunning = false;
 
-  std::unique_ptr<CharacterFactory> character_factory = std::make_unique<CharacterFactory>(); // Not currently used
+  /* Not currently being used but may be useful later
+  std::unique_ptr<CharacterFactory> character_factory =
+      std::make_unique<CharacterFactory>();
 
-  std::vector<std::unique_ptr<Character>> player_vec;             // Not currently used
-  std::vector<std::unique_ptr<Character>> npc_vec;                // Not currently used
+  std::vector<std::unique_ptr<Character>> player_vec;
+  std::vector<std::unique_ptr<Character>> npc_vec;
+  */
 
-  int deltaTime = 0;                                              // Time since last checked if game should update
-  int totalDeltaTime = 0;                                         // Time since last update
+  int deltaTime      = 0; // Time since last checked if game should update
+  int totalDeltaTime = 0; // Time since last update
 
-  Uint32 currentTicks;                                            // Ticks at current update check
-  Uint32 previousTicks;                                           // Ticks at the last update check
+  Uint32 currentTicks;  // Ticks at current update check
+  Uint32 previousTicks; // Ticks at the last update check
 };
 
 #endif
-

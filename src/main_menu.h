@@ -1,25 +1,30 @@
 #ifndef MAIN_MENU_H
 #define MAIN_MENU_H
 
-#include <string>
 #include <SDL2/SDL_ttf.h>
 #include <memory>
+#include <string>
 
 #include "button.h"
-#include "text.h"
 #include "game_global.h"
+#include "text.h"
 
+/**
+ * @class MainMenu
+ *
+ * Main menu state. This is the state the game enters upon launching.
+ */
 class MainMenu {
-  public:
+public:
   MainMenu(struct GameGlobal);
-  int handleEvents(bool*);              // Handle SDL events while in the main menu state
-  void render();                        // Render the main menu
+  int handleEvents(bool*); // Handle SDL events while in the main menu state
+  void render();
 
-  private:
-  struct GameGlobal gameGlobal;         // Global variables
-  std::string logFile;                  // Path to the log file
-  std::unique_ptr<Text> title;          // Title of the game
-  std::unique_ptr<Button> startButton;  // Button to launch the game
+private:
+  struct GameGlobal gameGlobal;
+  std::string logFile;                 // Path to the log file
+  std::unique_ptr<Text> title;         // Title of the game
+  std::unique_ptr<Button> startButton; // Launch the game
 };
 
 #endif

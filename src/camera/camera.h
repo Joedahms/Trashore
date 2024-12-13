@@ -1,65 +1,65 @@
-#ifndef CAMERA_H 
+#ifndef CAMERA_H
 #define CAMERA_H
 
 #include <SDL2/SDL.h>
 #include <vector>
 
 class Camera {
-	public:
-		Camera(int, int, int);
+public:
+  Camera(int, int, int);
 
-		int getVisibleXTiles();
-		int getVisibleYTiles();
+  int getVisibleXTiles();
+  int getVisibleYTiles();
 
-		// position
-		int x_pos = 0;
-		int y_pos = 0;
+  // position
+  int x_pos = 0;
+  int y_pos = 0;
 
-		// velocity
-		int x_vel = 0;
-		int y_vel = 0;
-		
-		// get direction
-		int get_x_dir();
-		int get_y_dir();
+  // velocity
+  int x_vel = 0;
+  int y_vel = 0;
 
-		// modify x direction
-		void neg_x_dir();
-		void pos_x_dir();
+  // get direction
+  int get_x_dir();
+  int get_y_dir();
 
-		// modify y direction
-		void neg_y_dir();
-		void pos_y_dir();
+  // modify x direction
+  void neg_x_dir();
+  void pos_x_dir();
 
-		void zero_dir();
+  // modify y direction
+  void neg_y_dir();
+  void pos_y_dir();
 
-		// modify x & y positions so zoom to center of camera
-		void zoomIn(int);
-		void zoomOut(int);
+  void zero_dir();
 
-		// move camera and check boundries
-		void update(int, int); 
+  // modify x & y positions so zoom to center of camera
+  void zoomIn(int);
+  void zoomOut(int);
 
-		void zoomChange(int);
+  // move camera and check boundries
+  void update(int, int);
 
-		SDL_Rect & getDestinationRect(int, int);
+  void zoomChange(int);
 
-		std::vector<std::vector<SDL_Rect>> destinationRect;	// needs to be dependent on screen size
+  SDL_Rect& getDestinationRect(int, int);
 
-    int getScreenHeight();
-    int getScreenWidth();
-  
-	private:
-		// direction
-		int x_dir = 0;
-		int y_dir = 0;
+  std::vector<std::vector<SDL_Rect>>
+      destinationRect; // needs to be dependent on screen size
 
-		int screenHeight;
-		int screenWidth;
-		
-		// Number of tiles in view
-		int visibleXTiles;
-		int visibleYTiles;
+  int getScreenHeight();
+  int getScreenWidth();
+
+private:
+  // direction
+  int x_dir = 0;
+  int y_dir = 0;
+
+  int screenHeight;
+  int screenWidth;
+
+  int visibleXTiles;
+  int visibleYTiles;
 };
 
 #endif
