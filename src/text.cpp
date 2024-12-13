@@ -6,6 +6,16 @@
 #include "rectangle.h"
 #include "text.h"
 
+/**
+ * @constructor Text
+ *
+ * @param gameGlobal
+ * @param fontPath - Path to where the font is stored.
+ * @param content - What characters the text represents.
+ * @param fontSize
+ * @param color
+ * @param rectangle
+ */
 Text::Text(struct GameGlobal gameGlobal,
            const char* fontPath,
            const char* content,
@@ -32,6 +42,12 @@ Text::Text(struct GameGlobal gameGlobal,
   SDL_QueryTexture(this->texture, NULL, NULL, &this->rectangle.w, &this->rectangle.h);
 }
 
+/**
+ * @function render
+ *
+ * @param none
+ * @output none
+ */
 void Text::render() {
   SDL_RenderCopy(this->gameGlobal.renderer, this->texture, NULL, &this->rectangle);
 }

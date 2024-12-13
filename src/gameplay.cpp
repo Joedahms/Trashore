@@ -10,12 +10,9 @@
 #include "tile/tile_map.h"
 
 /**
- * @function Gameplay
- *
- * Constructor. Set the global variables.
+ * @constructor Gameplay
  *
  * @param gameGlobal - Global variables.
- *
  * @output - None
  */
 Gameplay::Gameplay(struct GameGlobal gameGlobal) { this->gameGlobal = gameGlobal; }
@@ -24,10 +21,8 @@ Gameplay::Gameplay(struct GameGlobal gameGlobal) { this->gameGlobal = gameGlobal
  * @function handleEvents
  *
  * Handle all events in the SDL event queue.
- *
  * @param gameIsRunning - Whether or not the game is running.
- *
- * @output: The current state of the game after updating gameplay.
+ * @output - The current state of the game after updating gameplay.
  */
 int Gameplay::handleEvents(bool* gameIsRunning) {
   SDL_Event event;
@@ -72,9 +67,7 @@ int Gameplay::handleEvents(bool* gameIsRunning) {
  * @function checkKeystates
  *
  * Perform the appropriate action depending on which keyboard key has been pressed.
- *
- * @param none
- *
+ * @param - None
  * @output - The state the game is in after checking if any keys have been pressed.
  */
 int Gameplay::checkKeystates() {
@@ -109,13 +102,12 @@ int Gameplay::checkKeystates() {
   return 1;
 }
 
-/** function - setSelectedTile
+/**
+ * @function - setSelectedTile
  *
  * Determines where the mouse is and sets the tile it is over to selected.
- *
- * @param none
- *
- * @output none
+ * @param - None
+ * @output - None
  */
 void Gameplay::setSelectedTile() {
   int X;
@@ -139,10 +131,8 @@ void Gameplay::setSelectedTile() {
  * @function - update
  *
  * Update the camera and set the selected tile.
- *
- * @param none
- *
- * @output none
+ * @param - None
+ * @output - None
  */
 void Gameplay::update() {
   writeToLogFile(this->gameGlobal.logFile, "updating in gameplay");
@@ -155,10 +145,8 @@ void Gameplay::update() {
  * @function: render
  *
  * Render all gameplay elements.
- *
- * @param none
- *
- * @output none
+ * @param - None
+ * @output - None
  */
 void Gameplay::render() {
   SDL_RenderClear(this->gameGlobal.renderer);
@@ -190,9 +178,8 @@ void Gameplay::render() {
  * @function - enterGameplay
  *
  * Perform necessary actions when the gameplay state is entered for the first.
- *
- * @param none
- * @output none
+ * @param - None
+ * @output - None
  */
 void Gameplay::enterGameplay() {
   SDL_Surface* windowSurface = SDL_GetWindowSurface(this->gameGlobal.window);
@@ -220,9 +207,8 @@ void Gameplay::enterGameplay() {
  * @function initializeTextures
  *
  * Purpose: Initialize all textures in the gameplay state.
- *
- * @param none
- * @output none
+ * @param - None
+ * @output - None
  */
 void Gameplay::initializeTextures() {
   writeToLogFile(this->gameGlobal.logFile, "Initializing textures...");
@@ -236,9 +222,7 @@ void Gameplay::initializeTextures() {
  * @function getStateEntered
  *
  * Check if the gameplay state has been entered before.
- *
- * @param none
- *
+ * @param - None
  * @output - Whether the state has been entered before
  */
 bool Gameplay::getStateEntered() { return this->stateEntered; }

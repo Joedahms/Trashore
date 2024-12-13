@@ -1,11 +1,3 @@
-// Function comment template
-/*
- * Name:
- * Purpose:
- * Input:
- * Output:
- */
-
 #include <SDL2/SDL.h>
 
 #include <iostream>

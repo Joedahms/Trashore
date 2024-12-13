@@ -11,10 +11,8 @@
  * @function: PauseMenu
  *
  * PauseMenu constructor.
- *
  * @param gameGlobal - Global game variables
- *
- * @output: None
+ * @output - None
  */
 PauseMenu::PauseMenu(struct GameGlobal gameGlobal) {
   this->gameGlobal           = gameGlobal;
@@ -47,9 +45,7 @@ PauseMenu::PauseMenu(struct GameGlobal gameGlobal) {
  * @function handleEvents
  *
  * Handle SDL events that occur in the pause menu state.
- *
  * @param gameIsRunning - Whether or not the game is running.
- *
  * @output - Current state the game is in.
  */
 int PauseMenu::handleEvents(bool* gameIsRunning) {
@@ -81,10 +77,8 @@ int PauseMenu::handleEvents(bool* gameIsRunning) {
  * @function render
  *
  * Render paused and the button
- *
- * @param none
- *
- * @output none
+ * @param - None
+ * @output - None
  */
 void PauseMenu::render() {
   SDL_SetRenderDrawColor(this->gameGlobal.renderer, 0, 0, 0, 255); // Black background

@@ -8,13 +8,11 @@
 #include "rectangle.h"
 
 /**
- * @function: MainMenu
+ * @constructor: MainMenu
  *
- * MainMenu constructor. Setup the game title and start button.
- *
+ * Setup the game title and start button.
  * @param gameGlobal - Global game variables
- *
- * @output: None
+ * @output - None
  */
 MainMenu::MainMenu(struct GameGlobal gameGlobal) {
   this->gameGlobal           = gameGlobal;
@@ -47,9 +45,7 @@ MainMenu::MainMenu(struct GameGlobal gameGlobal) {
  * @function handleEvents
  *
  * Handle SDL events that occur in the main menu state.
- *
  * @param gameIsRunning - Whether or not the game is running.
- *
  * @output - Current state the game is in.
  */
 int MainMenu::handleEvents(bool* gameIsRunning) {
@@ -81,9 +77,7 @@ int MainMenu::handleEvents(bool* gameIsRunning) {
  * @function render
  *
  * Render the game title and the start button
- *
  * @param none
- *
  * @output none
  */
 void MainMenu::render() {

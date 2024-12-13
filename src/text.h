@@ -8,6 +8,11 @@
 #include "game_global.h"
 #include "rectangle.h"
 
+/**
+ * @class Text
+ *
+ * Represents a string of characters that can be rendered.
+ */
 class Text {
 public:
   Text(struct GameGlobal, const char*, const char*, int, SDL_Color, SDL_Rect);

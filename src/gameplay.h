@@ -33,8 +33,7 @@ private:
   std::unique_ptr<Camera> camera;
   std::unique_ptr<TileMap> tileMap;
 
-  // Zoom flags
-  // Game starts zoomed out
+  // Zoom flags. Game starts zoomed out.
   bool zoom_in_flag  = false;
   bool zoom_out_flag = true;
 
