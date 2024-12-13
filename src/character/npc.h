@@ -3,12 +3,10 @@
 
 #include "character.h"
 
-class Npc : public Character
-{
-	public:
-		Npc();
-		~Npc();
-		void print();
+class Npc : public Character {
+public:
+  Npc();
+  void print();
 };
 
 #endif

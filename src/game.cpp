@@ -5,6 +5,9 @@
 #include <iostream>
 
 #include "camera/camera.h"
+#include "character/character.h"
+#include "character/character_factory.h"
+#include "character/npc.h"
 #include "game.h"
 #include "game_global.h"
 #include "logger.h"
@@ -39,6 +42,10 @@ Game::Game(const char* windowTitle,
                   screenHeight, fullscreen); // Setup the SDL game window
 
   initializeSdl(this->gameGlobal.window);
+
+  // Create NPC
+  std::unique_ptr<Character> npc = characterFactory->create(characterId::NPC);
+  npcVector.emplace_back(std::move(npc));
 
   // Initialize states
   this->mainMenu  = std::make_unique<MainMenu>(this->gameGlobal);

@@ -5,12 +5,9 @@
 
 #include "character.h"
 
-// factory for character objects
-class CharacterFactory
-{
-	public:
-		virtual std::unique_ptr<Character> create(character_id id);
-		//virtual ~CharacterFactory() = default;
+class CharacterFactory {
+public:
+  virtual std::unique_ptr<Character> create(characterId id);
 };
 
 #endif

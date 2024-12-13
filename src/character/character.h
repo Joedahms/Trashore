@@ -1,31 +1,39 @@
 #ifndef CHARACTER_H
 #define CHARACTER_H
 
-enum character_id { PLAYER, NPC };
+#include <SDL2/SDL.h>
 
-class Character 
-{
-	public:
-		virtual void print() = 0;
-		virtual ~Character() = default;
+enum characterId { PLAYER, NPC };
 
-		void update_y_pos();
-		void update_x_pos();
+/**
+ * @class Character
+ *
+ * Represent playable and non playable character entities
+ */
+class Character {
+public:
+  virtual void print() = 0;
+  virtual ~Character() = default;
 
-		int get_y_pos();
-		int get_x_pos();
+  void updateYPosition();
+  void updateXPosition();
 
-		void set_y_vel(int);
-		void set_x_vel(int);
+  int getYPosition();
+  int getXPosition();
 
-	private:
-		// position
-		int y_pos;
-		int x_pos;
-		
-		// velocity
-		int y_vel;
-		int x_vel;
+  void setYVelocity(int);
+  void setXVelocity(int);
+
+  SDL_Texture* getTexture();
+
+private:
+  SDL_Texture* texture;
+
+  int yPosition;
+  int xPosition;
+
+  int yVelocity;
+  int xVelocity;
 };
 
 #endif

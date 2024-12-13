@@ -3,17 +3,14 @@
 #include "character.h"
 #include "npc.h"
 
-Npc::Npc()
-{
+Npc::Npc(GameGlobal gameGlobal) {
+  SDL_Surface* npcSurface = IMG_LOAD("../src/sprites/NPC.png");
+  assert(npcSurface != 0);
 
+  this->texture = SDL_CreateTextureFromSurface(gameGlobal.renderer, npcSurface);
+  assert(this->texture != 0);
+
+  SDL_FreeSurface(npcSurface);
 }
 
-Npc::~Npc()
-{
-
-}
-
-void Npc::print()
-{
-	std::cout << "npc" << std::endl;
-}
+void Npc::print() { std::cout << "npc" << std::endl; }
