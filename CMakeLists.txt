@@ -49,6 +49,9 @@ src/main_menu.cpp
 src/gameplay.h
 src/gameplay.cpp
 
+src/pause_menu.h
+src/pause_menu.cpp
+
 src/text.h
 src/text.cpp
 
@@ -67,4 +70,3 @@ target_compile_features(sdlGameEngine PRIVATE cxx_std_20)
 target_link_libraries(sdlGameEngine ${SDL2_LIBRARIES} SDL2_image)
 target_link_libraries(tests PRIVATE Catch2::Catch2)
 target_link_libraries(sdlGameEngine SDL2_ttf)
-

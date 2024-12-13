@@ -75,9 +75,9 @@ int Gameplay::handleEvents(bool* gameIsRunning) {
  *
  * @param none
  *
- * @output none
+ * @output - The state the game is in after checking if any keys have been pressed.
  */
-void Gameplay::checkKeystates() {
+int Gameplay::checkKeystates() {
   const Uint8* keystates = SDL_GetKeyboardState(NULL);
 
   // Camera movement (arrow keys)
@@ -97,15 +97,16 @@ void Gameplay::checkKeystates() {
     this->camera->neg_x_dir();
     return 1;
   }
-  else {                      // No key pressed
+  else {                      // No arrow key pressed
     this->camera->zero_dir(); // Don't move the camera
-    return 1;
   }
 
   // Pause menu
   if (keystates[SDL_SCANCODE_ESCAPE]) {
     return 2;
   }
+
+  return 1;
 }
 
 /** function - setSelectedTile
@@ -160,10 +161,6 @@ void Gameplay::update() {
  * @output none
  */
 void Gameplay::render() {
-  // Print out camera position. Temporary for debugging.
-  std::cout << "cam x pos: " << this->camera->x_pos << std::endl;
-  std::cout << "cam y pos: " << this->camera->y_pos << std::endl;
-
   SDL_RenderClear(this->gameGlobal.renderer);
 
   // Loop through all visible x tiles

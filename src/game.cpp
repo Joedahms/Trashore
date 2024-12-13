@@ -38,14 +38,15 @@ Game::Game(const char* windowTitle,
       setupWindow(windowTitle, windowXPosition, windowYPosition, screenWidth,
                   screenHeight, fullscreen); // Setup the SDL game window
 
-  initializeSdl(this->gameGlobal.window); // Initialize SDL and its components
+  initializeSdl(this->gameGlobal.window);
 
   // Initialize states
-  this->mainMenu = std::make_unique<MainMenu>(this->gameGlobal); // Main menu
-  this->gameplay = std::make_unique<Gameplay>(this->gameGlobal); // Gameplay
+  this->mainMenu  = std::make_unique<MainMenu>(this->gameGlobal);
+  this->gameplay  = std::make_unique<Gameplay>(this->gameGlobal);
+  this->pauseMenu = std::make_unique<PauseMenu>(this->gameGlobal);
 
   this->previousTicks = SDL_GetTicks(); // First physics tick count
-  gameIsRunning       = true;           // Game is now running
+  gameIsRunning       = true;
   writeToLogFile(this->gameGlobal.logFile, "Game constructed");
 }
 
@@ -145,6 +146,7 @@ void Game::initializeSdl(SDL_Window* window) {
  * Output: None
  */
 void Game::checkState() {
+  std::cout << this->state << std::endl;
   switch (this->state) {
   case 0: // Main menu
     break;
@@ -181,6 +183,7 @@ void Game::handleEvents() {
     break;
 
   case 2: // Pause menu
+    this->state = this->pauseMenu->handleEvents(&this->gameIsRunning);
     break;
 
   default:
@@ -271,6 +274,7 @@ void Game::renderState() {
     break;
 
   case 2: // Pause menu
+    this->pauseMenu->render();
     break;
 
   default:

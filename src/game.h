@@ -24,6 +24,7 @@
 
 #include "gameplay.h"
 #include "main_menu.h"
+#include "pause_menu.h"
 
 #include "game_global.h"
 
@@ -56,6 +57,7 @@ private:
   // States
   std::unique_ptr<MainMenu> mainMenu; // State entered when the game starts
   std::unique_ptr<Gameplay> gameplay;
+  std::unique_ptr<PauseMenu> pauseMenu;
 
   bool gameIsRunning = false;
 

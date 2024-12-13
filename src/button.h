@@ -15,7 +15,7 @@ public:
   void render();
 
 private:
-  struct GameGlobal gameGlobal; // Global variables
+  struct GameGlobal gameGlobal;
   std::unique_ptr<Text> text;   // Text within the button
   SDL_Rect backgroundRectangle; // Rectangle defining where to render the button to
   SDL_Color backgroundColor;    // Current color

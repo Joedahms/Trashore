@@ -1,11 +1,10 @@
+#include <SDL2/SDL.h>
 #include <iostream>
 #include <memory>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL.h>
 
 #include "button.h"
-#include "logger.h"
 #include "game_global.h"
+#include "logger.h"
 
 /*
  * Name: Button
@@ -15,19 +14,24 @@
  * - Rectangle to render the button with
  * - The text to print in the middle of the button
  * Output: None
-*/
-Button::Button(struct GameGlobal gameGlobal, SDL_Rect rectangle, const std::string& text) {
+ */
+Button::Button(struct GameGlobal gameGlobal,
+               SDL_Rect rectangle,
+               const std::string& text) {
   this->gameGlobal = gameGlobal;
 
   this->backgroundRectangle = rectangle;
-  this->backgroundColor = {255, 0, 0, 255}; // Red
-  this->hoveredColor = {0, 255, 0, 255};    // Green
-  this->defaultColor = {255, 0, 0, 255};    // Red
+  this->backgroundColor     = {255, 0, 0, 255}; // Red
+  this->hoveredColor        = {0, 255, 0, 255}; // Green
+  this->defaultColor        = {255, 0, 0, 255}; // Red
 
-  SDL_Color textColor = {255, 255, 0, 255};                 // Yellow
-  this->text = std::make_unique<Text>(this->gameGlobal, "../16020_FUTURAM.ttf", "Start", 24, textColor, rectangle);
-  this->text->centerHorizontal(&this->backgroundRectangle); // Center the text horizontally within the button
-  this->text->centerVertical(&this->backgroundRectangle);   // Center the text vertically within the button
+  SDL_Color textColor = {255, 255, 0, 255}; // Yellow
+  this->text          = std::make_unique<Text>(this->gameGlobal, "../16020_FUTURAM.ttf",
+                                      text.c_str(), 24, textColor, rectangle);
+
+  // Center the text within the button
+  this->text->centerHorizontal(&this->backgroundRectangle);
+  this->text->centerVertical(&this->backgroundRectangle);
 }
 
 /*
@@ -37,18 +41,20 @@ Button::Button(struct GameGlobal gameGlobal, SDL_Rect rectangle, const std::stri
  * - X position of the mouse
  * - Y position of the mouse
  * Output: Whether or not the mouse is over the button
-*/
+ */
 bool Button::checkHovered(int mouseXPosition, int mouseYPosition) {
-  if (mouseXPosition < this->backgroundRectangle.x) {                               // Outside left edge of button
+  if (mouseXPosition < this->backgroundRectangle.x) { // Outside left edge of button
     return false;
   }
-  if (mouseXPosition > this->backgroundRectangle.x + this->backgroundRectangle.w) { // Outside right edge of button
+  if (mouseXPosition > this->backgroundRectangle.x +
+                           this->backgroundRectangle.w) { // Outside right edge of button
     return false;
   }
-  if (mouseYPosition < this->backgroundRectangle.y) {                               // Outside top edge of button
+  if (mouseYPosition < this->backgroundRectangle.y) { // Outside top edge of button
     return false;
   }
-  if (mouseYPosition > this->backgroundRectangle.y + this->backgroundRectangle.h) { // Outside bottom edge of button
+  if (mouseYPosition > this->backgroundRectangle.y +
+                           this->backgroundRectangle.h) { // Outside bottom edge of button
     return false;
   }
   return true;
@@ -60,22 +66,22 @@ bool Button::checkHovered(int mouseXPosition, int mouseYPosition) {
  * Input:
  * - None
  * Output: None
-*/
+ */
 void Button::render() {
   // Change color if hovered
   int mouseXPosition, mouseYPosition;
-  SDL_GetMouseState(&mouseXPosition, &mouseYPosition);  // Get the position of the mouse
-  if (checkHovered(mouseXPosition, mouseYPosition)) {   // Mouse is hovered over the button
-    this->backgroundColor = this->hoveredColor;         // Change to hovered color
+  SDL_GetMouseState(&mouseXPosition, &mouseYPosition); // Get the position of the mouse
+  if (checkHovered(mouseXPosition, mouseYPosition)) {  // Mouse is hovered over the button
+    this->backgroundColor = this->hoveredColor;        // Change to hovered color
   }
-  else {                                                // Mouse is not hovered over the button
-    this->backgroundColor = this->defaultColor;         // Change to default color
+  else {                                        // Mouse is not hovered over the button
+    this->backgroundColor = this->defaultColor; // Change to default color
   }
 
   // Set draw color and fill the button
-  SDL_SetRenderDrawColor(this->gameGlobal.renderer, backgroundColor.r, backgroundColor.g, backgroundColor.b, backgroundColor.a);
+  SDL_SetRenderDrawColor(this->gameGlobal.renderer, backgroundColor.r, backgroundColor.g,
+                         backgroundColor.b, backgroundColor.a);
   SDL_RenderFillRect(this->gameGlobal.renderer, &this->backgroundRectangle);
 
   this->text->render();
 }
-

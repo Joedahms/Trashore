@@ -17,12 +17,12 @@
 class Gameplay {
 public:
   Gameplay(struct GameGlobal);
-  int handleEvents(bool*); // Handle SDL events
-  void checkKeystates();   // Check which keys on the keyboard are pressed
-  void setSelectedTile();  // Set the hovered tile as selected
+  int handleEvents(bool*);
+  int checkKeystates();
+  void setSelectedTile();
   void update();
   void render();
-  void enterGameplay(); // Set up upon first entry into state
+  void enterGameplay();
   void initializeTextures();
   bool getStateEntered(); // Check if the state has already been entered
 
