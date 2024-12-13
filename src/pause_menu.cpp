@@ -39,6 +39,13 @@ PauseMenu::PauseMenu(struct GameGlobal gameGlobal) {
   resumeButtonRectangle = centerRectangleHorizontal(windowSurface, resumeButtonRectangle);
   this->resumeButton =
       std::make_unique<Button>(this->gameGlobal, resumeButtonRectangle, "Resume");
+
+  // Main menu button
+  SDL_Rect mainMenuButtonRectangle = {200, 225, 200, 50};
+  mainMenuButtonRectangle =
+      centerRectangleHorizontal(windowSurface, mainMenuButtonRectangle);
+  this->mainMenuButton =
+      std::make_unique<Button>(this->gameGlobal, mainMenuButtonRectangle, "Main Menu");
 }
 
 /**
@@ -59,11 +66,25 @@ int PauseMenu::handleEvents(bool* gameIsRunning) {
 
     case SDL_MOUSEBUTTONDOWN:
       if (this->resumeButton->checkHovered(event.motion.x, event.motion.y) == 0) {
-        break; // Stay in pause menu state
+        ;
       }
-      writeToLogFile(this->gameGlobal.logFile,
-                     "Resume was pressed, switching to gameplay state");
-      returnValue = 1; // Mouse was over button, switch to gameplay state
+      else {
+        writeToLogFile(this->gameGlobal.logFile,
+                       "Resume was pressed, switching from pause menu to gameplay");
+        returnValue = 1; // Mouse was over button, switch to gameplay state
+        break;
+      }
+
+      if (this->mainMenuButton->checkHovered(event.motion.x, event.motion.y) == 0) {
+        ;
+      }
+      else {
+        writeToLogFile(this->gameGlobal.logFile,
+                       "Main menu was pressed, switching from pause menu to main menu");
+        returnValue = 0; // Mouse was over button, switch to main menu state
+        break;
+      }
+
       break;
 
     default:
@@ -84,6 +105,7 @@ void PauseMenu::render() {
   SDL_SetRenderDrawColor(this->gameGlobal.renderer, 0, 0, 0, 255); // Black background
   SDL_RenderClear(this->gameGlobal.renderer);
   this->resumeButton->render();
+  this->mainMenuButton->render();
   this->title->render();
   SDL_RenderPresent(this->gameGlobal.renderer);
 }

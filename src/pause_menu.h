@@ -25,6 +25,7 @@ private:
   std::string logFile;
   std::unique_ptr<Text> title;
   std::unique_ptr<Button> resumeButton;
+  std::unique_ptr<Button> mainMenuButton;
 };
 
 #endif
