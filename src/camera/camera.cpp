@@ -1,64 +1,84 @@
 #include "camera.h"
 
+/**
+ * @param screenHeight - Height of the screen in pixels.
+ * @param screenWidth - Width of the screen in pixels.
+ * @param initialTileSize - Tiles are squares so side length of a tile in pixels.
+ */
 Camera::Camera(int screenHeight, int screenWidth, int initialTileSize) {
   this->screenHeight = screenHeight;
   this->screenWidth  = screenWidth;
+
+  this->xPosition = 0;
+  this->yPosition = 0;
+
+  this->xVelocity = 0;
+  this->yVelocity = 0;
+
+  this->visibleXTiles = 0;
+  this->visibleYTiles = 0;
+
   zoomChange(initialTileSize);
 }
 
-int Camera::getVisibleXTiles() { return visibleXTiles; }
-int Camera::getVisibleYTiles() { return visibleYTiles; }
+void Camera::setXVelocity(int xVelocity) { this->xVelocity = xVelocity; }
+void Camera::setYVelocity(int yVelocity) { this->yVelocity = yVelocity; }
 
-int Camera::get_x_dir() { return x_dir; }
-int Camera::get_y_dir() { return y_dir; }
+int Camera::getXPosition() { return this->xPosition; }
+int Camera::getYPosition() { return this->yPosition; }
 
-void Camera::neg_x_dir() { x_dir = -1; }
-void Camera::pos_x_dir() { x_dir = 1; }
+int Camera::getScreenHeight() { return this->screenHeight; }
+int Camera::getScreenWidth() { return this->screenWidth; }
 
-void Camera::neg_y_dir() { y_dir = -1; }
-void Camera::pos_y_dir() { y_dir = 1; }
-
-void Camera::zero_dir() {
-  x_dir = 0;
-  y_dir = 0;
-}
-
-// move camera position for zoom in
+/**
+ * Move the camera position for zoom in.
+ *
+ * @param tileSize - Size of the tiles in the tilemap.
+ * @return None
+ */
 void Camera::zoomIn(int tileSize) {
-  x_pos += visibleXTiles / 4;
-  y_pos += visibleYTiles / 4;
+  xPosition += visibleXTiles / 4;
+  yPosition += visibleYTiles / 4;
 
   zoomChange(tileSize);
 }
 
-// move camera position for zoom out
+/**
+ * Move the camera position for zoom out.
+ *
+ * @param tileSize - Size of the tiles in the tilemap.
+ * @return None
+ */
 void Camera::zoomOut(int tileSize) {
-  x_pos -= visibleXTiles / 2;
-  // x position past left side of map
-  if (x_pos < 0) {
-    x_pos = 0;
+  xPosition -= visibleXTiles / 2;
+  // Past left side of map
+  if (xPosition < 0) {
+    xPosition = 0;
   }
 
-  y_pos -= visibleYTiles / 2;
-  // y position past top of map
-  if (y_pos < 0) {
-    y_pos = 0;
+  yPosition -= visibleYTiles / 2;
+  // Past top of map
+  if (yPosition < 0) {
+    yPosition = 0;
   }
 
   zoomChange(tileSize);
 }
 
+/**
+ * Handle the changing of zoom level.
+ *
+ * @param tileSize - Size of the tiles in the tilemap.
+ * @return None
+ */
 void Camera::zoomChange(int tileSize) {
-  // add to camera
-  // set size of 2d vector of destination rectangles
   destinationRect.resize(screenWidth / tileSize,
                          std::vector<SDL_Rect>(screenHeight / tileSize));
 
-  // set amount of tiles visible in window
   this->visibleXTiles = screenWidth / tileSize;
   this->visibleYTiles = screenHeight / tileSize;
 
-  // set up rectangles for rendering
+  // Set up rectangles for rendering
   for (int x = 0; x < this->visibleXTiles; x++) {
     for (int y = 0; y < this->visibleYTiles; y++) {
       destinationRect[x][y].x = x * tileSize;
@@ -69,29 +89,29 @@ void Camera::zoomChange(int tileSize) {
   }
 }
 
-void Camera::update(int total_x_tiles, int total_y_tiles) {
-  x_vel = get_x_dir() * 1; // camera x velocity
-  x_pos += x_vel;          // camera x position
-
-  if (x_pos < 0) {
-    x_pos = 0;
+/**
+ * Update camera postion based on velocity. Ensure that the camera stays within the bounds
+ * of the tile map.
+ *
+ * @param totalXTiles - Total amount of tiles on the x axis of the tile map.
+ * @param totalYTiles - Total amount of tiles on the y axis of the tile map.
+ * @return None
+ */
+void Camera::update(int totalXTiles, int totalYTiles) {
+  xPosition += xVelocity;
+  if (xPosition < 0) {
+    xPosition = 0;
   }
-  // if camera x pos + visible x tiles is greater than total x tiles
-  // then camera x pos = total x tiles - visible x tiles
-  if (x_pos + visibleXTiles > total_x_tiles) // right side of map
-  {
-    x_pos = total_x_tiles - visibleXTiles;
+  if (xPosition + visibleXTiles > totalXTiles) {
+    xPosition = totalXTiles - visibleXTiles;
   }
 
-  y_vel = get_y_dir() * 1; // camera y velocity
-  y_pos += y_vel;          // camera y position
-
-  if (y_pos < 0) {
-    y_pos = 0;
+  yPosition += yVelocity;
+  if (yPosition < 0) {
+    yPosition = 0;
   }
-  if (y_pos + visibleYTiles > total_y_tiles) // right side of map
-  {
-    y_pos = total_y_tiles - visibleYTiles;
+  if (yPosition + visibleYTiles > totalYTiles) {
+    yPosition = totalYTiles - visibleYTiles;
   }
 }
 
@@ -99,8 +119,5 @@ SDL_Rect& Camera::getDestinationRect(int xCoordinate, int yCoordinate) {
   return destinationRect[xCoordinate][yCoordinate];
 }
 
-// Get the screen height
-int Camera::getScreenHeight() { return this->screenHeight; }
-
-// Get the screen width
-int Camera::getScreenWidth() { return this->screenWidth; }
+int Camera::getVisibleXTiles() { return visibleXTiles; }
+int Camera::getVisibleYTiles() { return visibleYTiles; }

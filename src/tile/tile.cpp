@@ -2,18 +2,10 @@
 
 #include "tile.h"
 
-void Tile::setSelected() {
-	selected = true;
-}
+void Tile::setSelected() { selected = true; }
 
-void Tile::unsetSelected() {
-	selected = false;
-}
+void Tile::unsetSelected() { selected = false; }
 
-bool Tile::getSelected() {
-	return selected;
-}
+bool Tile::getSelected() { return selected; }
 
-SDL_Texture* Tile::getTileTexture() {
-	return tileTexture;	
-}
+SDL_Texture* Tile::getTileTexture() { return tileTexture; }

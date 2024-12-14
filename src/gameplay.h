@@ -11,8 +11,6 @@
 #include "tile/tile_map.h"
 
 /**
- * @class Gameplay
- *
  * Gameplay state. State entered when user presses start button in main menu.
  */
 class Gameplay {
@@ -38,8 +36,8 @@ private:
   std::vector<std::unique_ptr<Character>> npcVector;
 
   // Zoom flags. Game starts zoomed out.
-  bool zoom_in_flag  = false;
-  bool zoom_out_flag = true;
+  bool zoomedIn  = false;
+  bool zoomedOut = true;
 
   SDL_Texture* selectedTexture;
 };

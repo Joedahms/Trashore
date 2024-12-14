@@ -10,19 +10,15 @@
 #include "tile/tile_map.h"
 
 /**
- * @constructor Gameplay
- *
  * @param gameGlobal - Global variables.
- * @output - None
  */
 Gameplay::Gameplay(struct GameGlobal gameGlobal) { this->gameGlobal = gameGlobal; }
 
 /**
- * @function handleEvents
- *
  * Handle all events in the SDL event queue.
+ *
  * @param gameIsRunning - Whether or not the game is running.
- * @output - The current state of the game after updating gameplay.
+ * @return - The current state of the game after updating gameplay.
  */
 int Gameplay::handleEvents(bool* gameIsRunning) {
   SDL_Event event;
@@ -35,8 +31,8 @@ int Gameplay::handleEvents(bool* gameIsRunning) {
     case SDL_MOUSEWHEEL:                          // Mousewheel event
       if (event.wheel.y > 0) {                    // Scroll up -> zoom in
         if (this->tileMap->getTileSize() == 16) { // If not already zoomed in
-          this->zoom_in_flag  = true;
-          this->zoom_out_flag = false;
+          this->zoomedIn  = true;
+          this->zoomedOut = false;
 
           this->tileMap->setTileSize(32);
           this->camera->zoomIn(32);
@@ -45,8 +41,8 @@ int Gameplay::handleEvents(bool* gameIsRunning) {
       }
       else if (event.wheel.y < 0) {               // Scroll down -> zoom out
         if (this->tileMap->getTileSize() == 32) { // If not already zoomed out
-          this->zoom_in_flag  = false;
-          this->zoom_out_flag = true;
+          this->zoomedIn  = false;
+          this->zoomedOut = true;
 
           this->tileMap->setTileSize(16);
           this->camera->zoomOut(16);
@@ -64,34 +60,34 @@ int Gameplay::handleEvents(bool* gameIsRunning) {
 }
 
 /**
- * @function checkKeystates
- *
  * Perform the appropriate action depending on which keyboard key has been pressed.
+ *
  * @param - None
- * @output - The state the game is in after checking if any keys have been pressed.
+ * @return - The state the game is in after checking if any keys have been pressed.
  */
 int Gameplay::checkKeystates() {
   const Uint8* keystates = SDL_GetKeyboardState(NULL);
 
   // Camera movement (arrow keys)
   if (keystates[SDL_SCANCODE_UP]) {
-    this->camera->neg_y_dir();
+    this->camera->setYVelocity(-1);
     return 1;
   }
   else if (keystates[SDL_SCANCODE_DOWN]) {
-    this->camera->pos_y_dir();
+    this->camera->setYVelocity(1);
     return 1;
   }
   else if (keystates[SDL_SCANCODE_RIGHT]) {
-    this->camera->pos_x_dir();
+    this->camera->setXVelocity(1);
     return 1;
   }
   else if (keystates[SDL_SCANCODE_LEFT]) {
-    this->camera->neg_x_dir();
+    this->camera->setXVelocity(-1);
     return 1;
   }
-  else {                      // No arrow key pressed
-    this->camera->zero_dir(); // Don't move the camera
+  else { // No arrow key pressed
+    this->camera->setXVelocity(0);
+    this->camera->setYVelocity(0);
   }
 
   // Pause menu
@@ -103,23 +99,25 @@ int Gameplay::checkKeystates() {
 }
 
 /**
- * @function - setSelectedTile
- *
  * Determines where the mouse is and sets the tile it is over to selected.
+ *
  * @param - None
- * @output - None
+ * @return - None
  */
 void Gameplay::setSelectedTile() {
   int X;
   int Y;
   Uint32 mouse = SDL_GetMouseState(&X, &Y);
 
-  int selectedXCoordinate = floor(X / this->tileMap->getTileSize()) + this->camera->x_pos;
-  int selectedYCoordinate = floor(Y / this->tileMap->getTileSize()) + this->camera->y_pos;
+  int cameraXPosition = this->camera->getXPosition();
+  int cameraYPosition = this->camera->getYPosition();
+
+  int selectedXCoordinate = floor(X / this->tileMap->getTileSize()) + cameraXPosition;
+  int selectedYCoordinate = floor(Y / this->tileMap->getTileSize()) + cameraYPosition;
 
   // Unselect all tiles
-  for (int x = 0; x < this->camera->getVisibleXTiles() + this->camera->x_pos; x++) {
-    for (int y = 0; y < this->camera->getVisibleYTiles() + this->camera->y_pos; y++) {
+  for (int x = 0; x < this->camera->getVisibleXTiles() + cameraXPosition; x++) {
+    for (int y = 0; y < this->camera->getVisibleYTiles() + cameraYPosition; y++) {
       this->tileMap->unselectTile(x, y);
     }
   }
@@ -128,11 +126,10 @@ void Gameplay::setSelectedTile() {
 }
 
 /**
- * @function - update
- *
  * Update the camera and set the selected tile.
+ *
  * @param - None
- * @output - None
+ * @return - None
  */
 void Gameplay::update() {
   writeToLogFile(this->gameGlobal.logFile, "updating in gameplay");
@@ -144,21 +141,23 @@ void Gameplay::update() {
 }
 
 /**
- * @function: render
- *
  * Render all gameplay elements.
+ *
  * @param - None
- * @output - None
+ * @return - None
  */
 void Gameplay::render() {
   SDL_RenderClear(this->gameGlobal.renderer);
+
+  int cameraXPosition = this->camera->getXPosition();
+  int cameraYPosition = this->camera->getYPosition();
 
   // Loop through all visible x tiles
   for (int x = 0; x < this->camera->getVisibleXTiles(); x++) {
     // Loop through all visible y tiles
     for (int y = 0; y < this->camera->getVisibleYTiles(); y++) {
-      int currentXPosition = x + this->camera->x_pos;
-      int currentYPosition = y + this->camera->y_pos;
+      int currentXPosition = x + cameraXPosition;
+      int currentYPosition = y + cameraYPosition;
 
       // Render all visible tiles
       SDL_RenderCopy(this->gameGlobal.renderer,
@@ -180,11 +179,10 @@ void Gameplay::render() {
 }
 
 /**
- * @function - enterGameplay
- *
  * Perform necessary actions when the gameplay state is entered for the first.
+ *
  * @param - None
- * @output - None
+ * @return - None
  */
 void Gameplay::enterGameplay() {
   SDL_Surface* windowSurface = SDL_GetWindowSurface(this->gameGlobal.window);
@@ -219,11 +217,10 @@ void Gameplay::enterGameplay() {
 }
 
 /**
- * @function initializeTextures
+ * Initialize all textures in the gameplay state.
  *
- * Purpose: Initialize all textures in the gameplay state.
  * @param - None
- * @output - None
+ * @return - None
  */
 void Gameplay::initializeTextures() {
   writeToLogFile(this->gameGlobal.logFile, "Initializing textures...");
@@ -234,10 +231,9 @@ void Gameplay::initializeTextures() {
 }
 
 /**
- * @function getStateEntered
- *
  * Check if the gameplay state has been entered before.
+ *
  * @param - None
- * @output - Whether the state has been entered before
+ * @return - Whether the state has been entered before
  */
 bool Gameplay::getStateEntered() { return this->stateEntered; }
