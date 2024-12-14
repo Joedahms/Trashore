@@ -5,6 +5,9 @@
 #include <iostream>
 
 #include "camera/camera.h"
+#include "character/character.h"
+#include "character/character_factory.h"
+#include "character/npc.h"
 #include "game.h"
 #include "game_global.h"
 #include "logger.h"

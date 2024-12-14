@@ -139,6 +139,8 @@ void Gameplay::update() {
   this->camera->update(this->tileMap->getTotalXTiles(),
                        this->tileMap->getTotalYTiles()); // update camera
   setSelectedTile();
+
+  this->npcVector[0]->updatePosition();
 }
 
 /**
@@ -171,6 +173,9 @@ void Gameplay::render() {
       }
     }
   }
+
+  this->npcVector[0]->render();
+
   SDL_RenderPresent(this->gameGlobal.renderer);
 }
 
@@ -196,6 +201,16 @@ void Gameplay::enterGameplay() {
   writeToLogFile(this->gameGlobal.logFile, "Initializing tile map...");
   this->tileMap = std::make_unique<TileMap>(16, 200, 200, this->gameGlobal.renderer);
   writeToLogFile(this->gameGlobal.logFile, "Tile map initialized");
+
+  this->characterFactory = std::make_unique<CharacterFactory>(this->gameGlobal);
+
+  // Initialize NPC
+  writeToLogFile(this->gameGlobal.logFile, "Initializing NPC...");
+  std::unique_ptr<Character> npc = this->characterFactory->create(characterId::NPC);
+  this->npcVector.emplace_back(std::move(npc));
+  this->npcVector[0]->setXVelocity(1);
+  this->npcVector[0]->setYVelocity(1);
+  writeToLogFile(this->gameGlobal.logFile, "NPC initialized");
 
   initializeTextures();
 

@@ -1,34 +1,21 @@
+#include <SDL2/SDL.h>
+
 #include "character.h"
 
-// update position
-void Character::update_y_pos()
-{
-	this->y_pos = this->y_pos += this->y_vel;
+void Character::updatePosition() {
+  this->rectangle.x = this->rectangle.x += this->xVelocity;
+  this->rectangle.y = this->rectangle.y += this->yVelocity;
 }
 
-void Character::update_x_pos()
-{
-	this->x_pos = this->x_pos += this->x_vel;
-}
+int Character::getYPosition() { return this->yPosition; }
+int Character::getXPosition() { return this->yPosition; }
 
-// get position
-int Character::get_y_pos()
-{
-	return this->y_pos;
-}
+void Character::setYVelocity(int newYVelocity) { this->yVelocity = newYVelocity; }
+void Character::setXVelocity(int newXVelocity) { this->xVelocity = newXVelocity; }
 
-int Character::get_x_pos()
-{
-	return this->x_pos;
-}
+SDL_Texture* Character::getTexture() { return this->texture; }
+SDL_Rect Character::getRectangle() { return this->rectangle; }
 
-// set velocity
-void Character::set_y_vel(int new_y_vel)
-{
-	this->y_vel = new_y_vel;
-}
-
-void Character::set_x_vel(int new_x_vel)
-{
-	this->x_vel = new_x_vel;
+void Character::render() {
+  SDL_RenderCopy(this->gameGlobal.renderer, this->texture, NULL, &this->rectangle);
 }

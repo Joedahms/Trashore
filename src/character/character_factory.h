@@ -3,14 +3,16 @@
 
 #include <memory>
 
+#include "../game_global.h"
 #include "character.h"
 
-// factory for character objects
-class CharacterFactory
-{
-	public:
-		virtual std::unique_ptr<Character> create(character_id id);
-		//virtual ~CharacterFactory() = default;
+class CharacterFactory {
+public:
+  CharacterFactory(GameGlobal);
+  virtual std::unique_ptr<Character> create(characterId id);
+
+private:
+  GameGlobal gameGlobal;
 };
 
 #endif

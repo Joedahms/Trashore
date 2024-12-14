@@ -61,14 +61,6 @@ private:
 
   bool gameIsRunning = false;
 
-  /* Not currently being used but may be useful later
-  std::unique_ptr<CharacterFactory> character_factory =
-      std::make_unique<CharacterFactory>();
-
-  std::vector<std::unique_ptr<Character>> player_vec;
-  std::vector<std::unique_ptr<Character>> npc_vec;
-  */
-
   int deltaTime      = 0; // Time since last checked if game should update
   int totalDeltaTime = 0; // Time since last update
 
