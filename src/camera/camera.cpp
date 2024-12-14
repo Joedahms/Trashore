@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "camera.h"
 
 /**
@@ -5,7 +7,13 @@
  * @param screenWidth - Width of the screen in pixels.
  * @param initialTileSize - Tiles are squares so side length of a tile in pixels.
  */
-Camera::Camera(int screenHeight, int screenWidth, int initialTileSize) {
+Camera::Camera(int screenHeight,
+               int screenWidth,
+               int totalXTiles,
+               int totalYTiles,
+               int initialTileSize) {
+  std::cout << "here" << std::endl;
+
   this->screenHeight = screenHeight;
   this->screenWidth  = screenWidth;
 
@@ -18,7 +26,7 @@ Camera::Camera(int screenHeight, int screenWidth, int initialTileSize) {
   this->visibleXTiles = 0;
   this->visibleYTiles = 0;
 
-  zoomChange(initialTileSize);
+  zoomChange(initialTileSize, totalXTiles, totalYTiles);
 }
 
 void Camera::setXVelocity(int xVelocity) { this->xVelocity = xVelocity; }
@@ -36,11 +44,10 @@ int Camera::getScreenWidth() { return this->screenWidth; }
  * @param tileSize - Size of the tiles in the tilemap.
  * @return None
  */
-void Camera::zoomIn(int tileSize) {
-  xPosition += visibleXTiles / 4;
-  yPosition += visibleYTiles / 4;
-
-  zoomChange(tileSize);
+void Camera::zoomIn(int tileSize, int totalXTiles, int totalYTiles) {
+  this->xPosition += this->visibleXTiles / 4;
+  this->yPosition += this->visibleYTiles / 4;
+  zoomChange(tileSize, totalXTiles, totalYTiles);
 }
 
 /**
@@ -49,20 +56,26 @@ void Camera::zoomIn(int tileSize) {
  * @param tileSize - Size of the tiles in the tilemap.
  * @return None
  */
-void Camera::zoomOut(int tileSize) {
-  xPosition -= visibleXTiles / 2;
-  // Past left side of map
-  if (xPosition < 0) {
-    xPosition = 0;
+void Camera::zoomOut(int tileSize, int totalXTiles, int totalYTiles) {
+  this->xPosition -= this->visibleXTiles / 2;
+  this->yPosition -= this->visibleYTiles / 2;
+  zoomChange(tileSize, totalXTiles, totalYTiles);
+}
+
+void Camera::checkBoundries(int totalXTiles, int totalYTiles) {
+  if (this->xPosition < 0) {
+    this->xPosition = 0;
+  }
+  if (this->xPosition + this->visibleXTiles > totalXTiles) {
+    this->xPosition = totalXTiles - this->visibleXTiles;
   }
 
-  yPosition -= visibleYTiles / 2;
-  // Past top of map
-  if (yPosition < 0) {
-    yPosition = 0;
+  if (this->yPosition < 0) {
+    this->yPosition = 0;
   }
-
-  zoomChange(tileSize);
+  if (this->yPosition + this->visibleYTiles > totalYTiles) {
+    this->yPosition = totalYTiles - this->visibleYTiles;
+  }
 }
 
 /**
@@ -71,20 +84,22 @@ void Camera::zoomOut(int tileSize) {
  * @param tileSize - Size of the tiles in the tilemap.
  * @return None
  */
-void Camera::zoomChange(int tileSize) {
-  destinationRect.resize(screenWidth / tileSize,
-                         std::vector<SDL_Rect>(screenHeight / tileSize));
+void Camera::zoomChange(int tileSize, int totalXTiles, int totalYTiles) {
+  this->destinationRect.resize(this->screenWidth / tileSize,
+                               std::vector<SDL_Rect>(this->screenHeight / tileSize));
 
-  this->visibleXTiles = screenWidth / tileSize;
-  this->visibleYTiles = screenHeight / tileSize;
+  this->visibleXTiles = this->screenWidth / tileSize;
+  this->visibleYTiles = this->screenHeight / tileSize;
+
+  checkBoundries(totalXTiles, totalYTiles);
 
   // Set up rectangles for rendering
   for (int x = 0; x < this->visibleXTiles; x++) {
     for (int y = 0; y < this->visibleYTiles; y++) {
-      destinationRect[x][y].x = x * tileSize;
-      destinationRect[x][y].y = y * tileSize;
-      destinationRect[x][y].w = tileSize;
-      destinationRect[x][y].h = tileSize;
+      this->destinationRect[x][y].x = x * tileSize;
+      this->destinationRect[x][y].y = y * tileSize;
+      this->destinationRect[x][y].w = tileSize;
+      this->destinationRect[x][y].h = tileSize;
     }
   }
 }
@@ -98,21 +113,9 @@ void Camera::zoomChange(int tileSize) {
  * @return None
  */
 void Camera::update(int totalXTiles, int totalYTiles) {
-  xPosition += xVelocity;
-  if (xPosition < 0) {
-    xPosition = 0;
-  }
-  if (xPosition + visibleXTiles > totalXTiles) {
-    xPosition = totalXTiles - visibleXTiles;
-  }
-
-  yPosition += yVelocity;
-  if (yPosition < 0) {
-    yPosition = 0;
-  }
-  if (yPosition + visibleYTiles > totalYTiles) {
-    yPosition = totalYTiles - visibleYTiles;
-  }
+  this->xPosition += this->xVelocity;
+  this->yPosition += this->yVelocity;
+  checkBoundries(totalXTiles, totalYTiles);
 }
 
 SDL_Rect& Camera::getDestinationRect(int xCoordinate, int yCoordinate) {

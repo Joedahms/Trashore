@@ -35,7 +35,8 @@ int Gameplay::handleEvents(bool* gameIsRunning) {
           this->zoomedOut = false;
 
           this->tileMap->setTileSize(32);
-          this->camera->zoomIn(32);
+          this->camera->zoomIn(32, this->tileMap->getTotalXTiles(),
+                               this->tileMap->getTotalYTiles());
           break;
         }
       }
@@ -45,7 +46,8 @@ int Gameplay::handleEvents(bool* gameIsRunning) {
           this->zoomedOut = true;
 
           this->tileMap->setTileSize(16);
-          this->camera->zoomOut(16);
+          this->camera->zoomOut(16, this->tileMap->getTotalXTiles(),
+                                this->tileMap->getTotalYTiles());
           break;
         }
       }
@@ -187,18 +189,19 @@ void Gameplay::render() {
 void Gameplay::enterGameplay() {
   SDL_Surface* windowSurface = SDL_GetWindowSurface(this->gameGlobal.window);
 
-  // Initialize the camera
-  writeToLogFile(this->gameGlobal.logFile, "Initializing camera");
-  this->camera = std::make_unique<Camera>(windowSurface->h, windowSurface->w, 16);
-  assert(this->camera->getScreenHeight() == windowSurface->h);
-  assert(this->camera->getScreenWidth() == windowSurface->w);
-  this->camera->zoomChange(16);
-  writeToLogFile(this->gameGlobal.logFile, "Camera initialized");
-
   // Initialize the tile map
   writeToLogFile(this->gameGlobal.logFile, "Initializing tile map...");
   this->tileMap = std::make_unique<TileMap>(16, 200, 200, this->gameGlobal.renderer);
   writeToLogFile(this->gameGlobal.logFile, "Tile map initialized");
+
+  // Initialize the camera
+  writeToLogFile(this->gameGlobal.logFile, "Initializing camera");
+  this->camera = std::make_unique<Camera>(windowSurface->h, windowSurface->w,
+                                          this->tileMap->getTotalXTiles(),
+                                          this->tileMap->getTotalYTiles(), 16);
+  assert(this->camera->getScreenHeight() == windowSurface->h);
+  assert(this->camera->getScreenWidth() == windowSurface->w);
+  writeToLogFile(this->gameGlobal.logFile, "Camera initialized");
 
   this->characterFactory = std::make_unique<CharacterFactory>(this->gameGlobal);
 

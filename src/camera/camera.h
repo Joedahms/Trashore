@@ -10,7 +10,7 @@
  */
 class Camera {
 public:
-  Camera(int, int, int);
+  Camera(int, int, int, int, int);
 
   void setXVelocity(int);
   void setYVelocity(int);
@@ -21,12 +21,14 @@ public:
   int getScreenHeight();
   int getScreenWidth();
 
-  void zoomIn(int);
-  void zoomOut(int);
+  void zoomIn(int, int, int);
+  void zoomOut(int, int, int);
+
+  void checkBoundries(int, int);
 
   void update(int, int);
 
-  void zoomChange(int);
+  void zoomChange(int, int, int);
 
   SDL_Rect& getDestinationRect(int, int);
 
