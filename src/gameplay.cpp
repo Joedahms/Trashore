@@ -139,6 +139,8 @@ void Gameplay::update() {
   this->camera->update(this->tileMap->getTotalXTiles(),
                        this->tileMap->getTotalYTiles()); // update camera
   setSelectedTile();
+
+  this->npcVector[0]->updatePosition();
 }
 
 /**
@@ -207,6 +209,7 @@ void Gameplay::enterGameplay() {
   std::unique_ptr<Character> npc = this->characterFactory->create(characterId::NPC);
   this->npcVector.emplace_back(std::move(npc));
   this->npcVector[0]->setXVelocity(1);
+  this->npcVector[0]->setYVelocity(1);
   writeToLogFile(this->gameGlobal.logFile, "NPC initialized");
 
   initializeTextures();

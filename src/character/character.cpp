@@ -3,8 +3,8 @@
 #include "character.h"
 
 void Character::updatePosition() {
-  this->yPosition = this->yPosition += this->yVelocity;
-  this->xPosition = this->xPosition += this->xVelocity;
+  this->rectangle.x = this->rectangle.x += this->xVelocity;
+  this->rectangle.y = this->rectangle.y += this->yVelocity;
 }
 
 int Character::getYPosition() { return this->yPosition; }
