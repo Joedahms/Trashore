@@ -6,6 +6,7 @@
 #include <string>
 
 #include "camera/camera.h"
+#include "character/character_factory.h"
 #include "game_global.h"
 #include "tile/tile_map.h"
 
@@ -30,8 +31,11 @@ private:
   struct GameGlobal gameGlobal;
   bool stateEntered = false; // Has the state been entered before
 
+  std::unique_ptr<CharacterFactory> characterFactory;
+
   std::unique_ptr<Camera> camera;
   std::unique_ptr<TileMap> tileMap;
+  std::vector<std::unique_ptr<Character>> npcVector;
 
   // Zoom flags. Game starts zoomed out.
   bool zoom_in_flag  = false;

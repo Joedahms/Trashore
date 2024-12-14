@@ -43,10 +43,6 @@ Game::Game(const char* windowTitle,
 
   initializeSdl(this->gameGlobal.window);
 
-  // Create NPC
-  std::unique_ptr<Character> npc = characterFactory->create(characterId::NPC);
-  npcVector.emplace_back(std::move(npc));
-
   // Initialize states
   this->mainMenu  = std::make_unique<MainMenu>(this->gameGlobal);
   this->gameplay  = std::make_unique<Gameplay>(this->gameGlobal);
