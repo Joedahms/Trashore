@@ -86,7 +86,7 @@ void Camera::checkBoundries(int totalXTiles, int totalYTiles) {
  */
 void Camera::zoomChange(int tileSize, int totalXTiles, int totalYTiles) {
   this->destinationRect.resize(this->screenWidth / tileSize + 2,
-                               std::vector<SDL_Rect>(this->screenHeight / tileSize));
+                               std::vector<SDL_Rect>(this->screenHeight / tileSize + 2));
 
   this->visibleXTiles = this->screenWidth / tileSize;
   this->visibleYTiles = this->screenHeight / tileSize;
@@ -95,7 +95,7 @@ void Camera::zoomChange(int tileSize, int totalXTiles, int totalYTiles) {
 
   // Set up rectangles for rendering
   for (int x = 0; x < this->visibleXTiles + 2; x++) {
-    for (int y = 0; y < this->visibleYTiles; y++) {
+    for (int y = 0; y < this->visibleYTiles + 2; y++) {
       this->destinationRect[x][y].x = x * tileSize;
       this->destinationRect[x][y].y = y * tileSize;
       this->destinationRect[x][y].w = tileSize;
@@ -114,12 +114,12 @@ void Camera::zoomChange(int tileSize, int totalXTiles, int totalYTiles) {
  */
 void Camera::update(int totalXTiles, int totalYTiles) {
   this->xPosition += this->xVelocity;
-  //  this->yPosition += this->yVelocity;
+  this->yPosition += this->yVelocity;
 
   if (this->xVelocity != 0) {
     if (this->xVelocity > 0) {
       if (this->xPosition % 16 == 0) {
-        for (int y = 0; y < this->visibleYTiles; y++) {
+        for (int y = 0; y < this->visibleYTiles + 1; y++) {
           for (int x = 0; x < this->visibleXTiles + 1; x++) {
             this->destinationRect[x][y].x = this->destinationRect[x + 1][y].x;
           }
@@ -129,18 +129,48 @@ void Camera::update(int totalXTiles, int totalYTiles) {
     }
 
     for (int x = 0; x < this->visibleXTiles + 2; x++) {
-      for (int y = 0; y < this->visibleYTiles; y++) {
+      for (int y = 0; y < this->visibleYTiles + 2; y++) {
         this->destinationRect[x][y].x -= this->xVelocity;
       }
     }
 
     if (this->xVelocity < 0) {
       if (this->xPosition % 16 == 15) {
-        for (int y = 0; y < this->visibleYTiles; y++) {
+        for (int y = 0; y < this->visibleYTiles + 1; y++) {
           for (int x = this->visibleXTiles + 1; x > 0; x--) {
             this->destinationRect[x][y].x = this->destinationRect[x - 1][y].x;
           }
           this->destinationRect[0][y].x -= 16;
+        }
+      }
+    }
+  }
+
+  if (this->yVelocity != 0) {
+    if (this->yVelocity > 0) {
+      if (this->yPosition % 16 == 0) {
+        for (int x = 0; x < this->visibleXTiles + 1; x++) {
+          for (int y = 0; y < this->visibleYTiles + 1; y++) {
+            this->destinationRect[x][y].y = this->destinationRect[x][y + 1].y;
+          }
+          this->destinationRect[x][this->visibleYTiles + 1].y += 16;
+        }
+      }
+    }
+
+    for (int y = 0; y < this->visibleYTiles + 2; y++) {
+      for (int x = 0; x < this->visibleXTiles + 2; x++) {
+        this->destinationRect[x][y].y -= this->yVelocity;
+      }
+    }
+
+    if (this->yVelocity < 0) {
+      if (this->yPosition % 16 == 15) {
+        for (int x = 0; x < this->visibleXTiles + 1; x++) {
+          for (int y = this->visibleYTiles + 1; y > 0; y--) {
+            this->destinationRect[x][y].y = this->destinationRect[x][y - 1].y;
+          }
+          this->destinationRect[x][0].y -= 16;
         }
       }
     }

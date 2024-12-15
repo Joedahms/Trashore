@@ -153,14 +153,14 @@ void Gameplay::render() {
 
   int cameraXPosition = this->camera->getXPosition();
   int cameraYPosition = this->camera->getYPosition();
-  std::cout << cameraXPosition << std::endl;
+  std::cout << cameraYPosition << std::endl;
 
   // Loop through all visible x tiles
   for (int x = 0; x < this->camera->getVisibleXTiles() + 1; x++) {
     // Loop through all visible y tiles
-    for (int y = 0; y < this->camera->getVisibleYTiles(); y++) {
+    for (int y = 0; y < this->camera->getVisibleYTiles() + 1; y++) {
       int currentXPosition = x + floor(cameraXPosition / 16);
-      int currentYPosition = y + cameraYPosition;
+      int currentYPosition = y + floor(cameraYPosition / 16);
 
       // Render all visible tiles
       SDL_RenderCopy(this->gameGlobal.renderer,
