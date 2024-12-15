@@ -13,10 +13,6 @@
 #include "logger.h"
 
 /**
- * @function: Game
- *
- * Construct the game object and set up relevant components
- *
  * @param windowTitle - Title of the game window
  * @param windowXPosition - X position of the game window
  * @param windowYPostition - Y position of the game window
@@ -24,8 +20,7 @@
  * @param screenHeight - Height of the game window
  * @param fullscreen - Whether or not the game window should be fullscreen
  * @param gameGlobal - Global game variables
- *
- * @output none
+ * @return - None
  */
 Game::Game(const char* windowTitle,
            int windowXPosition,
@@ -54,17 +49,16 @@ Game::Game(const char* windowTitle,
 }
 
 /**
- * @function: setupWindow
- * Purpose: Setup the SDL game window
- * Input:
- * - The name of the window
- * - The X position of the window on the user's screen
- * - The Y position of the window on the user's screen
- * - The width of the screen in pixels
- * - The height of the screen in pixels
- * - Whether or not the game window should be fullscreen
- * Output:
- * - Pointer to the game window
+ * Setup the SDL game window
+ *
+ * @param windowTitle - The name of the window. Is what is displayed on the top bezel of
+ * the window when the game is running.
+ * @param windowXPosition - The X position of the window on the user's screen.
+ * @param windowYPosition - The Y position of the window on the user's screen.
+ * @param screenWidth - The width of the screen in pixels.
+ * @param screenHeight - The height of the screen in pixels.
+ * @param fullscreen - Whether or not the game window should be fullscreen.
+ * @return - Pointer to the SDL game window.
  */
 SDL_Window* Game::setupWindow(const char* windowTitle,
                               int windowXPosition,
@@ -74,13 +68,11 @@ SDL_Window* Game::setupWindow(const char* windowTitle,
                               bool fullscreen) {
   writeToLogFile(this->gameGlobal.logFile, "Creating SDL game window...");
 
-  // Check for fullscreen
   int flags = 0;
   if (fullscreen) {
     flags = SDL_WINDOW_FULLSCREEN;
   }
 
-  // Create the SDL window
   try {
     return SDL_CreateWindow(windowTitle, windowXPosition, windowYPosition, screenWidth,
                             screenHeight, flags);
@@ -88,15 +80,15 @@ SDL_Window* Game::setupWindow(const char* windowTitle,
     writeToLogFile(this->gameGlobal.logFile, "Error setting up SDL game window");
     exit(1);
   }
+
   writeToLogFile(this->gameGlobal.logFile, "SDL game window created");
 }
 
 /**
- * @function: initializeSdl
- * Purpose: Setup SDL, the renderer, and TTF
- * Input:
- * - The game window
- * Output: None
+ * Setup SDL, the renderer, and TTF. Renderer is part of the global game objects.
+ *
+ * @param window - The SDL game window.
+ * @return - None
  */
 void Game::initializeSdl(SDL_Window* window) {
   // Initialize SDL
@@ -142,11 +134,11 @@ void Game::initializeSdl(SDL_Window* window) {
 }
 
 /**
- * @function: checkState
- * Purpose: Check which state the game is in. If there was a state switch and the current
- * state has not been entered before, run its enter method. Input:
- * - None
- * Output: None
+ * Check which state the game is in. If there was a state switch and the current
+ * state has not been entered before, run its enter method.
+ *
+ * @param - None
+ * @return - None
  */
 void Game::checkState() {
   std::cout << this->state << std::endl;
@@ -169,11 +161,9 @@ void Game::checkState() {
 }
 
 /**
- * @function: handleEvents
- * Purpose: Check the current state, and call that state's handle events method
- * Input:
- * - None
- * Output: None
+ * Check the current state, and call that state's handle events method.
+ * @param - None
+ * @return - None
  */
 void Game::handleEvents() {
   switch (this->state) {
@@ -195,11 +185,11 @@ void Game::handleEvents() {
 }
 
 /**
- * @function: checkKeystates
  * Purpose: Check the current state of the game and call that state's method to check the
- * key states Input:
- * - None
- * Output: None
+ * key states
+ *
+ * @param - None
+ * @return - None
  */
 void Game::checkKeystates() {
   switch (this->state) {
@@ -219,11 +209,11 @@ void Game::checkKeystates() {
 }
 
 /**
- * @function: update
- * Purpose: First check if it's time to update. If it is, reset the time since last
- * update. Then check the current state and call that state's function to update Input:
- * - None
- * Output: None
+ * First check if it's time to update. If it is, reset the time since last
+ * update. Then check the current state and call that state's function to update.
+ *
+ * @param - None
+ * @return - None
  */
 void Game::update() {
   // Calculate values used to check if it's time to update
@@ -260,11 +250,9 @@ void Game::update() {
 }
 
 /**
- * @function: renderState
- * Purpose: Check current state and call that state's function to render
- * Input:
- * - None
- * Output: None
+ * Check current state and call that state's function to render.
+ * @param - None
+ * @return - None
  */
 void Game::renderState() {
   switch (this->state) {
@@ -286,11 +274,9 @@ void Game::renderState() {
 }
 
 /**
- * @function: clean
- * Purpose: Frees SDL resources and quits
- * Input:
- * - None
- * Output: None
+ * Free SDL resources and quit.
+ * @param - None
+ * @return - None
  */
 void Game::clean() {
   SDL_DestroyWindow(this->gameGlobal.window);
