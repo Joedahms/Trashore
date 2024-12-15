@@ -116,41 +116,32 @@ void Camera::update(int totalXTiles, int totalYTiles) {
   this->xPosition += this->xVelocity;
   //  this->yPosition += this->yVelocity;
 
-  // Position greater than 16 -> shift all backwards, add next to
   if (this->xVelocity != 0) {
-    if (this->xPosition == 16) {
-      for (int y = 0; y < this->visibleYTiles; y++) {
-        for (int x = 0; x < this->visibleXTiles + 1; x++) {
-          this->destinationRect[x][y].x = this->destinationRect[x + 1][y].x;
+    if (this->xVelocity > 0) {
+      if (this->xPosition % 16 == 0) {
+        for (int y = 0; y < this->visibleYTiles; y++) {
+          for (int x = 0; x < this->visibleXTiles + 1; x++) {
+            this->destinationRect[x][y].x = this->destinationRect[x + 1][y].x;
+          }
+          this->destinationRect[this->visibleXTiles + 1][y].x += 16;
         }
-        this->destinationRect[this->visibleXTiles + 1][y].x += 16;
       }
     }
-    if (this->xPosition == 32) {
-      for (int y = 0; y < this->visibleYTiles; y++) {
-        //        for (int x = 0; x < this->visibleXTiles + 1; x++) {
-        for (int x = 0; x < this->visibleXTiles + 1; x++) {
-          //          std::cout << "base: " << this->destinationRect[x][y].x << std::endl;
-          this->destinationRect[x][y].x = this->destinationRect[x + 1][y].x;
-          //          this->destinationRect[x][y].x - 16;
-          //         std::cout << "next: " << this->destinationRect[x][y].x << std::endl;
-        }
-        this->destinationRect[this->visibleXTiles + 1][y].x += 16;
-      }
-    }
-    /*
-     if (this->xPosition == 49) {
-       for (int y = 0; y < this->visibleYTiles; y++) {
-         for (int x = 0; x < this->visibleXTiles + 1; x++) {
-           this->destinationRect[x][y].x = this->destinationRect[x + 1][y].x;
-         }
-       }
-     }
-   */
 
     for (int x = 0; x < this->visibleXTiles + 2; x++) {
       for (int y = 0; y < this->visibleYTiles; y++) {
         this->destinationRect[x][y].x -= this->xVelocity;
+      }
+    }
+
+    if (this->xVelocity < 0) {
+      if (this->xPosition % 16 == 15) {
+        for (int y = 0; y < this->visibleYTiles; y++) {
+          for (int x = this->visibleXTiles + 1; x > 0; x--) {
+            this->destinationRect[x][y].x = this->destinationRect[x - 1][y].x;
+          }
+          this->destinationRect[0][y].x -= 16;
+        }
       }
     }
   }
