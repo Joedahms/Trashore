@@ -144,66 +144,74 @@ void Camera::update(int totalXTiles, int totalYTiles) {
   this->yPosition += this->yVelocity;
 
   if (this->xVelocity != 0) {
-    if (this->xVelocity > 0) {
-      if (this->xPosition % 16 == 0) {
-        for (int y = 0; y < this->visibleYTiles + 1; y++) {
-          for (int x = 0; x < this->visibleXTiles + 1; x++) {
-            this->destinationRect[x][y].x = this->destinationRect[x + 1][y].x;
-          }
-          this->destinationRect[this->visibleXTiles + 1][y].x += 16;
-        }
-      }
-    }
-
-    for (int x = 0; x < this->visibleXTiles + 2; x++) {
-      for (int y = 0; y < this->visibleYTiles + 2; y++) {
-        this->destinationRect[x][y].x -= this->xVelocity;
-      }
-    }
-
-    if (this->xVelocity < 0) {
-      if (this->xPosition % 16 == 15) {
-        for (int y = 0; y < this->visibleYTiles + 1; y++) {
-          for (int x = this->visibleXTiles + 1; x > 0; x--) {
-            this->destinationRect[x][y].x = this->destinationRect[x - 1][y].x;
-          }
-          this->destinationRect[0][y].x -= 16;
-        }
-      }
-    }
+    shiftDestinationRectHorizontal();
   }
 
   if (this->yVelocity != 0) {
-    if (this->yVelocity > 0) {
-      if (this->yPosition % 16 == 0) {
-        for (int x = 0; x < this->visibleXTiles + 1; x++) {
-          for (int y = 0; y < this->visibleYTiles + 1; y++) {
-            this->destinationRect[x][y].y = this->destinationRect[x][y + 1].y;
-          }
-          this->destinationRect[x][this->visibleYTiles + 1].y += 16;
-        }
-      }
-    }
+    shiftDestinationRectVertical();
+  }
 
-    for (int y = 0; y < this->visibleYTiles + 2; y++) {
-      for (int x = 0; x < this->visibleXTiles + 2; x++) {
-        this->destinationRect[x][y].y -= this->yVelocity;
-      }
-    }
+  checkBoundries(totalXTiles, totalYTiles);
+}
 
-    if (this->yVelocity < 0) {
-      if (this->yPosition % 16 == 15) {
-        for (int x = 0; x < this->visibleXTiles + 1; x++) {
-          for (int y = this->visibleYTiles + 1; y > 0; y--) {
-            this->destinationRect[x][y].y = this->destinationRect[x][y - 1].y;
-          }
-          this->destinationRect[x][0].y -= 16;
+void Camera::shiftDestinationRectVertical() {
+  if (this->yVelocity > 0) {
+    if (this->yPosition % 16 == 0) {
+      for (int x = 0; x < this->visibleXTiles + 1; x++) {
+        for (int y = 0; y < this->visibleYTiles + 1; y++) {
+          this->destinationRect[x][y].y = this->destinationRect[x][y + 1].y;
         }
+        this->destinationRect[x][this->visibleYTiles + 1].y += 16;
       }
     }
   }
 
-  checkBoundries(totalXTiles, totalYTiles);
+  for (int y = 0; y < this->visibleYTiles + 2; y++) {
+    for (int x = 0; x < this->visibleXTiles + 2; x++) {
+      this->destinationRect[x][y].y -= this->yVelocity;
+    }
+  }
+
+  if (this->yVelocity < 0) {
+    if (this->yPosition % 16 == 15) {
+      for (int x = 0; x < this->visibleXTiles + 1; x++) {
+        for (int y = this->visibleYTiles + 1; y > 0; y--) {
+          this->destinationRect[x][y].y = this->destinationRect[x][y - 1].y;
+        }
+        this->destinationRect[x][0].y -= 16;
+      }
+    }
+  }
+}
+
+void Camera::shiftDestinationRectHorizontal() {
+  if (this->xVelocity > 0) {
+    if (this->xPosition % 16 == 0) {
+      for (int y = 0; y < this->visibleYTiles + 1; y++) {
+        for (int x = 0; x < this->visibleXTiles + 1; x++) {
+          this->destinationRect[x][y].x = this->destinationRect[x + 1][y].x;
+        }
+        this->destinationRect[this->visibleXTiles + 1][y].x += 16;
+      }
+    }
+  }
+
+  for (int x = 0; x < this->visibleXTiles + 2; x++) {
+    for (int y = 0; y < this->visibleYTiles + 2; y++) {
+      this->destinationRect[x][y].x -= this->xVelocity;
+    }
+  }
+
+  if (this->xVelocity < 0) {
+    if (this->xPosition % 16 == 15) {
+      for (int y = 0; y < this->visibleYTiles + 1; y++) {
+        for (int x = this->visibleXTiles + 1; x > 0; x--) {
+          this->destinationRect[x][y].x = this->destinationRect[x - 1][y].x;
+        }
+        this->destinationRect[0][y].x -= 16;
+      }
+    }
+  }
 }
 
 SDL_Rect& Camera::getDestinationRect(int xCoordinate, int yCoordinate) {
