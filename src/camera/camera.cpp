@@ -65,16 +65,43 @@ void Camera::zoomOut(int tileSize, int totalXTiles, int totalYTiles) {
 void Camera::checkBoundries(int totalXTiles, int totalYTiles) {
   if (this->xPosition < 0) {
     this->xPosition = 0;
+
+    for (int y = 0; y < this->visibleYTiles + 1; y++) {
+      for (int x = 0; x < this->visibleXTiles + 1; x++) {
+        this->destinationRect[x][y].x--;
+      }
+      this->destinationRect[this->visibleXTiles + 1][y].x--;
+    }
   }
   if (this->xPosition + this->visibleXTiles > totalXTiles) {
+    for (int y = 0; y < this->visibleYTiles + 1; y++) {
+      for (int x = 0; x < this->visibleXTiles + 1; x++) {
+        this->destinationRect[x][y].x++;
+      }
+      this->destinationRect[this->visibleXTiles + 1][y].x++;
+    }
     this->xPosition = totalXTiles - this->visibleXTiles;
   }
 
   if (this->yPosition < 0) {
     this->yPosition = 0;
+
+    for (int x = 0; x < this->visibleXTiles + 1; x++) {
+      for (int y = 0; y < this->visibleYTiles + 1; y++) {
+        this->destinationRect[x][y].y--;
+      }
+      this->destinationRect[x][this->visibleYTiles + 1].y--;
+    }
   }
   if (this->yPosition + this->visibleYTiles > totalYTiles) {
     this->yPosition = totalYTiles - this->visibleYTiles;
+
+    for (int x = 0; x < this->visibleXTiles + 1; x++) {
+      for (int y = 0; y < this->visibleYTiles + 1; y++) {
+        this->destinationRect[x][y].y++;
+      }
+      this->destinationRect[x][this->visibleYTiles + 1].y++;
+    }
   }
 }
 
