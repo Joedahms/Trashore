@@ -14,6 +14,7 @@ public:
   SDL_Texture* getTileTexture();
 
 protected:
+  SDL_Rect rectangle;
   SDL_Texture* tileTexture;
   bool selected = false;
 };

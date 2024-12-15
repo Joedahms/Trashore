@@ -85,7 +85,7 @@ void Camera::checkBoundries(int totalXTiles, int totalYTiles) {
  * @return None
  */
 void Camera::zoomChange(int tileSize, int totalXTiles, int totalYTiles) {
-  this->destinationRect.resize(this->screenWidth / tileSize,
+  this->destinationRect.resize(this->screenWidth / tileSize + 2,
                                std::vector<SDL_Rect>(this->screenHeight / tileSize));
 
   this->visibleXTiles = this->screenWidth / tileSize;
@@ -94,7 +94,7 @@ void Camera::zoomChange(int tileSize, int totalXTiles, int totalYTiles) {
   checkBoundries(totalXTiles, totalYTiles);
 
   // Set up rectangles for rendering
-  for (int x = 0; x < this->visibleXTiles; x++) {
+  for (int x = 0; x < this->visibleXTiles + 2; x++) {
     for (int y = 0; y < this->visibleYTiles; y++) {
       this->destinationRect[x][y].x = x * tileSize;
       this->destinationRect[x][y].y = y * tileSize;
@@ -114,7 +114,47 @@ void Camera::zoomChange(int tileSize, int totalXTiles, int totalYTiles) {
  */
 void Camera::update(int totalXTiles, int totalYTiles) {
   this->xPosition += this->xVelocity;
-  this->yPosition += this->yVelocity;
+  //  this->yPosition += this->yVelocity;
+
+  // Position greater than 16 -> shift all backwards, add next to
+  if (this->xVelocity != 0) {
+    if (this->xPosition == 16) {
+      for (int y = 0; y < this->visibleYTiles; y++) {
+        for (int x = 0; x < this->visibleXTiles + 1; x++) {
+          this->destinationRect[x][y].x = this->destinationRect[x + 1][y].x;
+        }
+        this->destinationRect[this->visibleXTiles + 1][y].x += 16;
+      }
+    }
+    if (this->xPosition == 32) {
+      for (int y = 0; y < this->visibleYTiles; y++) {
+        //        for (int x = 0; x < this->visibleXTiles + 1; x++) {
+        for (int x = 0; x < this->visibleXTiles + 1; x++) {
+          //          std::cout << "base: " << this->destinationRect[x][y].x << std::endl;
+          this->destinationRect[x][y].x = this->destinationRect[x + 1][y].x;
+          //          this->destinationRect[x][y].x - 16;
+          //         std::cout << "next: " << this->destinationRect[x][y].x << std::endl;
+        }
+        this->destinationRect[this->visibleXTiles + 1][y].x += 16;
+      }
+    }
+    /*
+     if (this->xPosition == 49) {
+       for (int y = 0; y < this->visibleYTiles; y++) {
+         for (int x = 0; x < this->visibleXTiles + 1; x++) {
+           this->destinationRect[x][y].x = this->destinationRect[x + 1][y].x;
+         }
+       }
+     }
+   */
+
+    for (int x = 0; x < this->visibleXTiles + 2; x++) {
+      for (int y = 0; y < this->visibleYTiles; y++) {
+        this->destinationRect[x][y].x -= this->xVelocity;
+      }
+    }
+  }
+
   checkBoundries(totalXTiles, totalYTiles);
 }
 

@@ -141,7 +141,6 @@ void Game::initializeSdl(SDL_Window* window) {
  * @return - None
  */
 void Game::checkState() {
-  std::cout << this->state << std::endl;
   switch (this->state) {
   case 0: // Main menu
     break;
