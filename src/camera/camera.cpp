@@ -62,7 +62,17 @@ void Camera::zoomOut(int tileSize, int totalXTiles, int totalYTiles) {
   zoomChange(tileSize, totalXTiles, totalYTiles);
 }
 
+/**
+ * Ensure that the camera is within the boundries of the tilemap. Checks at the left,
+ * right, top, and bottom. Corrects the camera's position and the destination rectangles.
+ *
+ * @param totalXTiles - The total tiles on the x axis of the tile map.
+ * @param totalYTiles - The total tiles on the y axis of the tile map.
+ *
+ * @return None
+ */
 void Camera::checkBoundries(int totalXTiles, int totalYTiles) {
+  // Left
   if (this->xPosition < 0) {
     this->xPosition = 0;
 
@@ -73,6 +83,8 @@ void Camera::checkBoundries(int totalXTiles, int totalYTiles) {
       this->destinationRect[this->visibleXTiles + 1][y].x--;
     }
   }
+
+  // Right
   if (this->xPosition + this->visibleXTiles > totalXTiles) {
     for (int y = 0; y < this->visibleYTiles + 1; y++) {
       for (int x = 0; x < this->visibleXTiles + 1; x++) {
@@ -83,6 +95,7 @@ void Camera::checkBoundries(int totalXTiles, int totalYTiles) {
     this->xPosition = totalXTiles - this->visibleXTiles;
   }
 
+  // Top
   if (this->yPosition < 0) {
     this->yPosition = 0;
 
@@ -93,6 +106,8 @@ void Camera::checkBoundries(int totalXTiles, int totalYTiles) {
       this->destinationRect[x][this->visibleYTiles + 1].y--;
     }
   }
+
+  // Bottom
   if (this->yPosition + this->visibleYTiles > totalYTiles) {
     this->yPosition = totalYTiles - this->visibleYTiles;
 
@@ -154,6 +169,14 @@ void Camera::update(int totalXTiles, int totalYTiles) {
   checkBoundries(totalXTiles, totalYTiles);
 }
 
+/**
+ * When the camera moves up or down, move the destination rectangles accordingly. Handle
+ * the case where a rectangle goes off the screen on one side and a new one appears on the
+ * other.
+ *
+ * @param None
+ * @return None
+ */
 void Camera::shiftDestinationRectVertical() {
   if (this->yVelocity > 0) {
     if (this->yPosition % 16 == 0) {
@@ -184,8 +207,17 @@ void Camera::shiftDestinationRectVertical() {
   }
 }
 
+/**
+ * When the camera moves left or right, move the destination rectangles accordingly.
+ * Handle the case where a rectangle goes off the screen on one side and a new one appears
+ * on the other.
+ *
+ * @param None
+ * @return None
+ */
 void Camera::shiftDestinationRectHorizontal() {
   if (this->xVelocity > 0) {
+    // Shift all rectangles to the right
     if (this->xPosition % 16 == 0) {
       for (int y = 0; y < this->visibleYTiles + 1; y++) {
         for (int x = 0; x < this->visibleXTiles + 1; x++) {
@@ -196,6 +228,7 @@ void Camera::shiftDestinationRectHorizontal() {
     }
   }
 
+  // Modify position by velocity
   for (int x = 0; x < this->visibleXTiles + 2; x++) {
     for (int y = 0; y < this->visibleYTiles + 2; y++) {
       this->destinationRect[x][y].x -= this->xVelocity;
@@ -203,6 +236,7 @@ void Camera::shiftDestinationRectHorizontal() {
   }
 
   if (this->xVelocity < 0) {
+    // Shift all rectangles to the left
     if (this->xPosition % 16 == 15) {
       for (int y = 0; y < this->visibleYTiles + 1; y++) {
         for (int x = this->visibleXTiles + 1; x > 0; x--) {
