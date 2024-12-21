@@ -161,6 +161,7 @@ void Game::checkState() {
 
 /**
  * Check the current state, and call that state's handle events method.
+ *
  * @param - None
  * @return - None
  */
@@ -184,7 +185,7 @@ void Game::handleEvents() {
 }
 
 /**
- * Purpose: Check the current state of the game and call that state's method to check the
+ * Check the current state of the game and call that state's method to check the
  * key states
  *
  * @param - None
@@ -250,6 +251,7 @@ void Game::update() {
 
 /**
  * Check current state and call that state's function to render.
+ *
  * @param - None
  * @return - None
  */
@@ -274,6 +276,7 @@ void Game::renderState() {
 
 /**
  * Free SDL resources and quit.
+ *
  * @param - None
  * @return - None
  */

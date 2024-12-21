@@ -137,7 +137,7 @@ void Gameplay::update() {
   writeToLogFile(this->gameGlobal.logFile, "updating in gameplay");
   this->camera->update(this->tileMap->getTotalXTiles(),
                        this->tileMap->getTotalYTiles()); // update camera
-  setSelectedTile();
+  // setSelectedTile();
 
   this->npcVector[0]->updatePosition();
 }
@@ -153,7 +153,7 @@ void Gameplay::render() {
 
   int cameraXPosition = this->camera->getXPosition();
   int cameraYPosition = this->camera->getYPosition();
-  std::cout << cameraYPosition << std::endl;
+  std::cout << cameraXPosition << std::endl;
 
   // Loop through all visible x tiles
   for (int x = 0; x < this->camera->getVisibleXTiles() + 1; x++) {

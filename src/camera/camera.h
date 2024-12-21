@@ -52,6 +52,9 @@ private:
 
   int visibleXTiles;
   int visibleYTiles;
+
+  int totalXPixels;
+  int totalYPixels;
 };
 
 #endif

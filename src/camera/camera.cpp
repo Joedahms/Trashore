@@ -12,8 +12,6 @@ Camera::Camera(int screenHeight,
                int totalXTiles,
                int totalYTiles,
                int initialTileSize) {
-  std::cout << "here" << std::endl;
-
   this->screenHeight = screenHeight;
   this->screenWidth  = screenWidth;
 
@@ -25,6 +23,11 @@ Camera::Camera(int screenHeight,
 
   this->visibleXTiles = 0;
   this->visibleYTiles = 0;
+
+  this->totalXPixels = totalXTiles * initialTileSize;
+  this->totalYPixels = totalYTiles * initialTileSize;
+
+  std::cout << totalXPixels << std::endl;
 
   zoomChange(initialTileSize, totalXTiles, totalYTiles);
 }
@@ -85,7 +88,8 @@ void Camera::checkBoundries(int totalXTiles, int totalYTiles) {
   }
 
   // Right
-  if (this->xPosition + this->visibleXTiles > totalXTiles) {
+  // if (this->xPosition + this->visibleXTiles > totalXTiles) {
+  if (this->xPosition + this->screenWidth > this->totalXPixels) {
     for (int y = 0; y < this->visibleYTiles + 1; y++) {
       for (int x = 0; x < this->visibleXTiles + 1; x++) {
         this->destinationRect[x][y].x++;
