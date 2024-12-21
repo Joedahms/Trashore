@@ -27,7 +27,10 @@ Camera::Camera(int screenHeight,
   this->totalXPixels = totalXTiles * initialTileSize;
   this->totalYPixels = totalYTiles * initialTileSize;
 
-  std::cout << totalXPixels << std::endl;
+  this->deltaTime      = 0;
+  this->totalDeltaTime = 0;
+  this->currentTicks   = 0;
+  this->previousTicks  = 0;
 
   zoomChange(initialTileSize, totalXTiles, totalYTiles);
 }
@@ -159,15 +162,29 @@ void Camera::zoomChange(int tileSize, int totalXTiles, int totalYTiles) {
  * @return None
  */
 void Camera::update(int totalXTiles, int totalYTiles) {
-  this->xPosition += this->xVelocity;
-  this->yPosition += this->yVelocity;
+  // Make time stuff into function
+  this->currentTicks = SDL_GetTicks64();
+  this->deltaTime    = this->currentTicks - this->previousTicks;
+  this->totalDeltaTime += this->deltaTime;
+  this->previousTicks = this->currentTicks;
+
+  // Delta time is in milliseconds
+
+  // std::cout << this->xVelocity << std::endl;
+  std::cout << this->totalDeltaTime << std::endl;
 
   if (this->xVelocity != 0) {
-    shiftDestinationRectHorizontal();
+    if (totalDeltaTime >= 1 / this->xVelocity) {
+      this->xPosition += this->xVelocity;
+      shiftDestinationRectHorizontal();
+    }
   }
 
   if (this->yVelocity != 0) {
-    shiftDestinationRectVertical();
+    if (totalDeltaTime >= 1 / this->yVelocity) {
+      this->yPosition += this->yVelocity;
+      shiftDestinationRectVertical();
+    }
   }
 
   checkBoundries(totalXTiles, totalYTiles);

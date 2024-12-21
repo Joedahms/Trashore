@@ -80,7 +80,7 @@ int Gameplay::checkKeystates() {
     return 1;
   }
   else if (keystates[SDL_SCANCODE_RIGHT]) {
-    this->camera->setXVelocity(1);
+    this->camera->setXVelocity(3);
     return 1;
   }
   else if (keystates[SDL_SCANCODE_LEFT]) {
@@ -153,7 +153,6 @@ void Gameplay::render() {
 
   int cameraXPosition = this->camera->getXPosition();
   int cameraYPosition = this->camera->getYPosition();
-  std::cout << cameraXPosition << std::endl;
 
   // Loop through all visible x tiles
   for (int x = 0; x < this->camera->getVisibleXTiles() + 1; x++) {

@@ -217,11 +217,12 @@ void Game::checkKeystates() {
  */
 void Game::update() {
   // Calculate values used to check if it's time to update
+  // Make into a function
 
-  // Ticks at this very moment
-  this->currentTicks = SDL_GetTicks();
+  // Milliseconds since SDL initialized
+  this->currentTicks = SDL_GetTicks64();
 
-  // Time since this funnction was last executed
+  // Time since this function was last executed
   this->deltaTime = this->currentTicks - this->previousTicks;
 
   // Add the time since the function was last executed to the time the game was last
