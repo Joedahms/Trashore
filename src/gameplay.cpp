@@ -72,11 +72,11 @@ int Gameplay::checkKeystates() {
 
   // Camera movement (arrow keys)
   if (keystates[SDL_SCANCODE_UP]) {
-    this->camera->setYVelocity(-1);
+    this->camera->setYVelocity(-16);
     return 1;
   }
   else if (keystates[SDL_SCANCODE_DOWN]) {
-    this->camera->setYVelocity(1);
+    this->camera->setYVelocity(16);
     return 1;
   }
   else if (keystates[SDL_SCANCODE_RIGHT]) {
@@ -84,7 +84,7 @@ int Gameplay::checkKeystates() {
     return 1;
   }
   else if (keystates[SDL_SCANCODE_LEFT]) {
-    this->camera->setXVelocity(-1);
+    this->camera->setXVelocity(-128);
     return 1;
   }
   else { // No arrow key pressed

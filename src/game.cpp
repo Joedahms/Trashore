@@ -43,8 +43,7 @@ Game::Game(const char* windowTitle,
   this->gameplay  = std::make_unique<Gameplay>(this->gameGlobal);
   this->pauseMenu = std::make_unique<PauseMenu>(this->gameGlobal);
 
-  this->previousTicks = SDL_GetTicks(); // First physics tick count
-  gameIsRunning       = true;
+  gameIsRunning = true;
   writeToLogFile(this->gameGlobal.logFile, "Game constructed");
 }
 
@@ -216,25 +215,8 @@ void Game::checkKeystates() {
  * @return - None
  */
 void Game::update() {
-  // Calculate values used to check if it's time to update
-  // Make into a function
-
-  // Milliseconds since SDL initialized
-  this->currentTicks = SDL_GetTicks64();
-
-  // Time since this function was last executed
-  this->deltaTime = this->currentTicks - this->previousTicks;
-
-  // Add the time since the function was last executed to the time the game was last
-  // updated
-  this->totalDeltaTime += this->deltaTime;
-
-  this->previousTicks = this->currentTicks;
-
-  // if (this->totalDeltaTime >= 128) { // Check if it is time to update
-  this->totalDeltaTime = 0; // Reset time since last update
-  switch (this->state) {    // Check current state
-  case 0:                   // Main menu
+  switch (this->state) { // Check current state
+  case 0:                // Main menu
     break;
 
   case 1: // Gameplay
@@ -247,7 +229,6 @@ void Game::update() {
   default:
     break;
   }
-  //}
 }
 
 /**

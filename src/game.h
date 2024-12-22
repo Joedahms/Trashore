@@ -60,12 +60,6 @@ private:
   std::unique_ptr<PauseMenu> pauseMenu;
 
   bool gameIsRunning = false;
-
-  int deltaTime      = 0; // Time since last checked if game should update
-  int totalDeltaTime = 0; // Time since last update
-
-  Uint32 currentTicks;  // Ticks at current update check
-  Uint32 previousTicks; // Ticks at the last update check
 };
 
 #endif

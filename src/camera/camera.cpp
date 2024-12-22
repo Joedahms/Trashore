@@ -171,27 +171,32 @@ void Camera::update(int totalXTiles, int totalYTiles) {
 
   // Delta time is in milliseconds
 
-  // std::cout << this->xVelocity << std::endl;
-  // std::cout << this->totalDeltaTime << std::endl;
-
   if (this->xVelocity != 0) {
     float inverseVelocity  = 1.0 / this->xVelocity;
     float deltaTimeSeconds = totalDeltaTime / 1000.0;
-    std::cout << "vel: " << std::fixed << std::setprecision(3) << inverseVelocity
-              << std::endl;
-    std::cout << "dt: " << std::fixed << std::setprecision(3) << deltaTimeSeconds
-              << std::endl;
-    if (deltaTimeSeconds >= inverseVelocity) {
+
+    std::cout << this->xVelocity << std::endl;
+    std::cout << this->xPosition << std::endl;
+
+    if (deltaTimeSeconds >= fabsf(inverseVelocity)) {
       this->totalDeltaTime = 0;
-      // this->xPosition += this->xVelocity;
-      this->xPosition++;
+      if (inverseVelocity > 0) {
+        this->xPosition++;
+      }
+      else {
+        this->xPosition--;
+      }
       shiftDestinationRectHorizontal();
     }
   }
 
   if (this->yVelocity != 0) {
-    if (totalDeltaTime >= 1 / this->yVelocity) {
-      this->yPosition += this->yVelocity;
+    float inverseVelocity  = 1.0 / this->yVelocity;
+    float deltaTimeSeconds = totalDeltaTime / 1000.0;
+
+    if (deltaTimeSeconds >= inverseVelocity) {
+      this->totalDeltaTime = 0;
+      this->yPosition++;
       shiftDestinationRectVertical();
     }
   }
@@ -261,8 +266,12 @@ void Camera::shiftDestinationRectHorizontal() {
   // Modify position by velocity
   for (int x = 0; x < this->visibleXTiles + 2; x++) {
     for (int y = 0; y < this->visibleYTiles + 2; y++) {
-      // this->destinationRect[x][y].x -= this->xVelocity;
-      this->destinationRect[x][y].x--;
+      if (this->xVelocity > 0) {
+        this->destinationRect[x][y].x--;
+      }
+      else {
+        this->destinationRect[x][y].x++;
+      }
     }
   }
 
