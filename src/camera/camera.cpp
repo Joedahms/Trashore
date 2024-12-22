@@ -175,9 +175,6 @@ void Camera::update(int totalXTiles, int totalYTiles) {
     float inverseVelocity  = 1.0 / this->xVelocity;
     float deltaTimeSeconds = totalDeltaTime / 1000.0;
 
-    std::cout << this->xVelocity << std::endl;
-    std::cout << this->xPosition << std::endl;
-
     if (deltaTimeSeconds >= fabsf(inverseVelocity)) {
       this->totalDeltaTime = 0;
       if (inverseVelocity > 0) {
@@ -194,9 +191,14 @@ void Camera::update(int totalXTiles, int totalYTiles) {
     float inverseVelocity  = 1.0 / this->yVelocity;
     float deltaTimeSeconds = totalDeltaTime / 1000.0;
 
-    if (deltaTimeSeconds >= inverseVelocity) {
+    if (deltaTimeSeconds >= fabsf(inverseVelocity)) {
       this->totalDeltaTime = 0;
-      this->yPosition++;
+      if (inverseVelocity > 0) {
+        this->yPosition++;
+      }
+      else {
+        this->yPosition--;
+      }
       shiftDestinationRectVertical();
     }
   }
@@ -226,7 +228,12 @@ void Camera::shiftDestinationRectVertical() {
 
   for (int y = 0; y < this->visibleYTiles + 2; y++) {
     for (int x = 0; x < this->visibleXTiles + 2; x++) {
-      this->destinationRect[x][y].y -= this->yVelocity;
+      if (this->yVelocity > 0) {
+        this->destinationRect[x][y].y--;
+      }
+      else {
+        this->destinationRect[x][y].y++;
+      }
     }
   }
 
