@@ -116,7 +116,9 @@ void Camera::checkBoundries(int totalXTiles, int totalYTiles) {
   }
 
   // Bottom
-  if (this->yPosition + this->visibleYTiles > totalYTiles) {
+  // if (this->yPosition + this->visibleYTiles > totalYTiles) {
+  if (this->yPosition + this->screenHeight > this->totalYPixels) {
+    std::cout << "bottom" << std::endl;
     this->yPosition = totalYTiles - this->visibleYTiles;
 
     for (int x = 0; x < this->visibleXTiles + 1; x++) {
