@@ -231,23 +231,23 @@ void Game::update() {
 
   this->previousTicks = this->currentTicks;
 
-  if (this->totalDeltaTime >= 128) { // Check if it is time to update
-    this->totalDeltaTime = 0;        // Reset time since last update
-    switch (this->state) {           // Check current state
-    case 0:                          // Main menu
-      break;
+  // if (this->totalDeltaTime >= 128) { // Check if it is time to update
+  this->totalDeltaTime = 0; // Reset time since last update
+  switch (this->state) {    // Check current state
+  case 0:                   // Main menu
+    break;
 
-    case 1: // Gameplay
-      this->gameplay->update();
-      break;
+  case 1: // Gameplay
+    this->gameplay->update();
+    break;
 
-    case 2: // Pause menu
-      break;
+  case 2: // Pause menu
+    break;
 
-    default:
-      break;
-    }
+  default:
+    break;
   }
+  //}
 }
 
 /**
