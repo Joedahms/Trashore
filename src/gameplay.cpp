@@ -135,7 +135,7 @@ void Gameplay::setSelectedTile() {
  */
 void Gameplay::update() {
   writeToLogFile(this->gameGlobal.logFile, "updating in gameplay");
-  this->camera->update(this->tileMap->getTotalXTiles(),
+  this->camera->update(this->tileMap->getTileSize(), this->tileMap->getTotalXTiles(),
                        this->tileMap->getTotalYTiles()); // update camera
   // setSelectedTile();
 
