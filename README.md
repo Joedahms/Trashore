@@ -9,12 +9,12 @@ The primary language I am writing this in is CPP. I am using the SDL2 library to
 
 ## Comment Format
 To make functions easier to understand, a common comment format is used for each one.  
-/**
- \* Function Description
- \*
- \* @param paramName - Parameter Description
- \*
- \* @return Return Description
+/**  
+ \* Function Description  
+ \*  
+ \* @param paramName - Parameter Description  
+ \*  
+ \* @return Return Description  
  */
 
 
