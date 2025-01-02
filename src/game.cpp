@@ -43,8 +43,7 @@ Game::Game(const char* windowTitle,
   this->gameplay  = std::make_unique<Gameplay>(this->gameGlobal);
   this->pauseMenu = std::make_unique<PauseMenu>(this->gameGlobal);
 
-  this->previousTicks = SDL_GetTicks(); // First physics tick count
-  gameIsRunning       = true;
+  gameIsRunning = true;
   writeToLogFile(this->gameGlobal.logFile, "Game constructed");
 }
 
@@ -161,6 +160,7 @@ void Game::checkState() {
 
 /**
  * Check the current state, and call that state's handle events method.
+ *
  * @param - None
  * @return - None
  */
@@ -184,7 +184,7 @@ void Game::handleEvents() {
 }
 
 /**
- * Purpose: Check the current state of the game and call that state's method to check the
+ * Check the current state of the game and call that state's method to check the
  * key states
  *
  * @param - None
@@ -215,41 +215,25 @@ void Game::checkKeystates() {
  * @return - None
  */
 void Game::update() {
-  // Calculate values used to check if it's time to update
+  switch (this->state) { // Check current state
+  case 0:                // Main menu
+    break;
 
-  // Ticks at this very moment
-  this->currentTicks = SDL_GetTicks();
+  case 1: // Gameplay
+    this->gameplay->update();
+    break;
 
-  // Time since this funnction was last executed
-  this->deltaTime = this->currentTicks - this->previousTicks;
+  case 2: // Pause menu
+    break;
 
-  // Add the time since the function was last executed to the time the game was last
-  // updated
-  this->totalDeltaTime += this->deltaTime;
-
-  this->previousTicks = this->currentTicks;
-
-  if (this->totalDeltaTime >= 128) { // Check if it is time to update
-    this->totalDeltaTime = 0;        // Reset time since last update
-    switch (this->state) {           // Check current state
-    case 0:                          // Main menu
-      break;
-
-    case 1: // Gameplay
-      this->gameplay->update();
-      break;
-
-    case 2: // Pause menu
-      break;
-
-    default:
-      break;
-    }
+  default:
+    break;
   }
 }
 
 /**
  * Check current state and call that state's function to render.
+ *
  * @param - None
  * @return - None
  */
@@ -274,6 +258,7 @@ void Game::renderState() {
 
 /**
  * Free SDL resources and quit.
+ *
  * @param - None
  * @return - None
  */

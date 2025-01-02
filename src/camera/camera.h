@@ -52,6 +52,14 @@ private:
 
   int visibleXTiles;
   int visibleYTiles;
+
+  int totalXPixels;
+  int totalYPixels;
+
+  int deltaTime;
+  int totalDeltaTime;
+  Uint64 currentTicks;
+  Uint64 previousTicks;
 };
 
 #endif

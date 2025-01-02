@@ -1,3 +1,4 @@
+#include <iomanip>
 #include <iostream>
 
 #include "camera.h"
@@ -12,8 +13,6 @@ Camera::Camera(int screenHeight,
                int totalXTiles,
                int totalYTiles,
                int initialTileSize) {
-  std::cout << "here" << std::endl;
-
   this->screenHeight = screenHeight;
   this->screenWidth  = screenWidth;
 
@@ -25,6 +24,14 @@ Camera::Camera(int screenHeight,
 
   this->visibleXTiles = 0;
   this->visibleYTiles = 0;
+
+  this->totalXPixels = totalXTiles * initialTileSize;
+  this->totalYPixels = totalYTiles * initialTileSize;
+
+  this->deltaTime      = 0;
+  this->totalDeltaTime = 0;
+  this->currentTicks   = 0;
+  this->previousTicks  = 0;
 
   zoomChange(initialTileSize, totalXTiles, totalYTiles);
 }
@@ -85,7 +92,8 @@ void Camera::checkBoundries(int totalXTiles, int totalYTiles) {
   }
 
   // Right
-  if (this->xPosition + this->visibleXTiles > totalXTiles) {
+  // if (this->xPosition + this->visibleXTiles > totalXTiles) {
+  if (this->xPosition + this->screenWidth > this->totalXPixels) {
     for (int y = 0; y < this->visibleYTiles + 1; y++) {
       for (int x = 0; x < this->visibleXTiles + 1; x++) {
         this->destinationRect[x][y].x++;
@@ -108,7 +116,9 @@ void Camera::checkBoundries(int totalXTiles, int totalYTiles) {
   }
 
   // Bottom
-  if (this->yPosition + this->visibleYTiles > totalYTiles) {
+  // if (this->yPosition + this->visibleYTiles > totalYTiles) {
+  if (this->yPosition + this->screenHeight > this->totalYPixels) {
+    std::cout << "bottom" << std::endl;
     this->yPosition = totalYTiles - this->visibleYTiles;
 
     for (int x = 0; x < this->visibleXTiles + 1; x++) {
@@ -155,15 +165,44 @@ void Camera::zoomChange(int tileSize, int totalXTiles, int totalYTiles) {
  * @return None
  */
 void Camera::update(int totalXTiles, int totalYTiles) {
-  this->xPosition += this->xVelocity;
-  this->yPosition += this->yVelocity;
+  // Make time stuff into function
+  this->currentTicks = SDL_GetTicks64();
+  this->deltaTime    = this->currentTicks - this->previousTicks;
+  this->totalDeltaTime += this->deltaTime;
+  this->previousTicks = this->currentTicks;
+
+  // Delta time is in milliseconds
 
   if (this->xVelocity != 0) {
-    shiftDestinationRectHorizontal();
+    float inverseVelocity  = 1.0 / this->xVelocity;
+    float deltaTimeSeconds = totalDeltaTime / 1000.0;
+
+    if (deltaTimeSeconds >= fabsf(inverseVelocity)) {
+      this->totalDeltaTime = 0;
+      if (inverseVelocity > 0) {
+        this->xPosition++;
+      }
+      else {
+        this->xPosition--;
+      }
+      shiftDestinationRectHorizontal();
+    }
   }
 
   if (this->yVelocity != 0) {
-    shiftDestinationRectVertical();
+    float inverseVelocity  = 1.0 / this->yVelocity;
+    float deltaTimeSeconds = totalDeltaTime / 1000.0;
+
+    if (deltaTimeSeconds >= fabsf(inverseVelocity)) {
+      this->totalDeltaTime = 0;
+      if (inverseVelocity > 0) {
+        this->yPosition++;
+      }
+      else {
+        this->yPosition--;
+      }
+      shiftDestinationRectVertical();
+    }
   }
 
   checkBoundries(totalXTiles, totalYTiles);
@@ -191,7 +230,12 @@ void Camera::shiftDestinationRectVertical() {
 
   for (int y = 0; y < this->visibleYTiles + 2; y++) {
     for (int x = 0; x < this->visibleXTiles + 2; x++) {
-      this->destinationRect[x][y].y -= this->yVelocity;
+      if (this->yVelocity > 0) {
+        this->destinationRect[x][y].y--;
+      }
+      else {
+        this->destinationRect[x][y].y++;
+      }
     }
   }
 
@@ -231,7 +275,12 @@ void Camera::shiftDestinationRectHorizontal() {
   // Modify position by velocity
   for (int x = 0; x < this->visibleXTiles + 2; x++) {
     for (int y = 0; y < this->visibleYTiles + 2; y++) {
-      this->destinationRect[x][y].x -= this->xVelocity;
+      if (this->xVelocity > 0) {
+        this->destinationRect[x][y].x--;
+      }
+      else {
+        this->destinationRect[x][y].x++;
+      }
     }
   }
 
