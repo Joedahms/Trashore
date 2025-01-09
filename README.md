@@ -7,6 +7,9 @@ a game with it at some point. At the moment it is a 2d top down game.
 ## Language
 The primary language I am writing this in is CPP. I am using the SDL2 library to assist with I/O.
 
+## Dependencies
+libsdl2-image-dev
+libsdl2-ttf-dev
 
 
 
