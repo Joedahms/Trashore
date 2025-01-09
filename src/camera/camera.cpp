@@ -3,6 +3,8 @@
 
 #include "camera.h"
 
+// test
+
 /**
  * @param screenHeight - Height of the screen in pixels.
  * @param screenWidth - Width of the screen in pixels.
@@ -92,7 +94,6 @@ void Camera::checkBoundries(int totalXTiles, int totalYTiles) {
   }
 
   // Right
-  // if (this->xPosition + this->visibleXTiles > totalXTiles) {
   if (this->xPosition + this->screenWidth > this->totalXPixels) {
     for (int y = 0; y < this->visibleYTiles + 1; y++) {
       for (int x = 0; x < this->visibleXTiles + 1; x++) {
@@ -116,9 +117,7 @@ void Camera::checkBoundries(int totalXTiles, int totalYTiles) {
   }
 
   // Bottom
-  // if (this->yPosition + this->visibleYTiles > totalYTiles) {
   if (this->yPosition + this->screenHeight > this->totalYPixels) {
-    std::cout << "bottom" << std::endl;
     this->yPosition = totalYTiles - this->visibleYTiles;
 
     for (int x = 0; x < this->visibleXTiles + 1; x++) {
@@ -164,7 +163,7 @@ void Camera::zoomChange(int tileSize, int totalXTiles, int totalYTiles) {
  * @param totalYTiles - Total amount of tiles on the y axis of the tile map.
  * @return None
  */
-void Camera::update(int totalXTiles, int totalYTiles) {
+void Camera::update(int tileSize, int totalXTiles, int totalYTiles) {
   // Make time stuff into function
   this->currentTicks = SDL_GetTicks64();
   this->deltaTime    = this->currentTicks - this->previousTicks;
@@ -185,7 +184,7 @@ void Camera::update(int totalXTiles, int totalYTiles) {
       else {
         this->xPosition--;
       }
-      shiftDestinationRectHorizontal();
+      shiftDestinationRectHorizontal(tileSize);
     }
   }
 
@@ -201,7 +200,7 @@ void Camera::update(int totalXTiles, int totalYTiles) {
       else {
         this->yPosition--;
       }
-      shiftDestinationRectVertical();
+      shiftDestinationRectVertical(tileSize);
     }
   }
 
@@ -216,14 +215,14 @@ void Camera::update(int totalXTiles, int totalYTiles) {
  * @param None
  * @return None
  */
-void Camera::shiftDestinationRectVertical() {
+void Camera::shiftDestinationRectVertical(int tileSize) {
   if (this->yVelocity > 0) {
-    if (this->yPosition % 16 == 0) {
+    if (this->yPosition % tileSize == 0) {
       for (int x = 0; x < this->visibleXTiles + 1; x++) {
         for (int y = 0; y < this->visibleYTiles + 1; y++) {
           this->destinationRect[x][y].y = this->destinationRect[x][y + 1].y;
         }
-        this->destinationRect[x][this->visibleYTiles + 1].y += 16;
+        this->destinationRect[x][this->visibleYTiles + 1].y += tileSize;
       }
     }
   }
@@ -240,12 +239,12 @@ void Camera::shiftDestinationRectVertical() {
   }
 
   if (this->yVelocity < 0) {
-    if (this->yPosition % 16 == 15) {
+    if (this->yPosition % tileSize == tileSize - 1) {
       for (int x = 0; x < this->visibleXTiles + 1; x++) {
         for (int y = this->visibleYTiles + 1; y > 0; y--) {
           this->destinationRect[x][y].y = this->destinationRect[x][y - 1].y;
         }
-        this->destinationRect[x][0].y -= 16;
+        this->destinationRect[x][0].y -= tileSize;
       }
     }
   }
@@ -259,15 +258,15 @@ void Camera::shiftDestinationRectVertical() {
  * @param None
  * @return None
  */
-void Camera::shiftDestinationRectHorizontal() {
+void Camera::shiftDestinationRectHorizontal(int tileSize) {
   if (this->xVelocity > 0) {
     // Shift all rectangles to the right
-    if (this->xPosition % 16 == 0) {
+    if (this->xPosition % tileSize == 0) {
       for (int y = 0; y < this->visibleYTiles + 1; y++) {
         for (int x = 0; x < this->visibleXTiles + 1; x++) {
           this->destinationRect[x][y].x = this->destinationRect[x + 1][y].x;
         }
-        this->destinationRect[this->visibleXTiles + 1][y].x += 16;
+        this->destinationRect[this->visibleXTiles + 1][y].x += tileSize;
       }
     }
   }
@@ -286,12 +285,12 @@ void Camera::shiftDestinationRectHorizontal() {
 
   if (this->xVelocity < 0) {
     // Shift all rectangles to the left
-    if (this->xPosition % 16 == 15) {
+    if (this->xPosition % tileSize == tileSize - 1) {
       for (int y = 0; y < this->visibleYTiles + 1; y++) {
         for (int x = this->visibleXTiles + 1; x > 0; x--) {
           this->destinationRect[x][y].x = this->destinationRect[x - 1][y].x;
         }
-        this->destinationRect[0][y].x -= 16;
+        this->destinationRect[0][y].x -= tileSize;
       }
     }
   }
