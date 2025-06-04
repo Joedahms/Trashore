@@ -1,10 +1,10 @@
-#ifndef DISPLAY_GLOBAL_H
-#define DISPLAY_GLOBAL_H
+#ifndef GAME_GLOBAL_H
+#define GAME_GLOBAL_H
 
 #include <SDL2/SDL.h>
 #include <string>
 
-struct DisplayGlobal {
+struct GameGlobal {
   SDL_Renderer* renderer;
   SDL_Window* window;
   static const std::string futuramFontPath;

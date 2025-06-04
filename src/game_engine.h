@@ -8,7 +8,7 @@
 #include <vector>
 #include <zmqpp/zmqpp.hpp>
 
-#include "../../logger.h"
+#include "logger.h"
 
 #include "states/cancel_scan_confirmation.h"
 #include "states/item_list.h"

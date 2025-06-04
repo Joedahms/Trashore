@@ -6,57 +6,56 @@
 
 #include "../../endpoints.h"
 
-#include "display_engine.h"
-#include "display_global.h"
+#include "game_engine.h"
+#include "game_global.h"
 #include "states/state.h"
 
 /**
- * @param windowTitle Title of the display window
- * @param windowXPosition X position of the display window
- * @param windowYPostition Y position of the display window
- * @param screenWidth Width of the display window in pixels
- * @param screenHeight Height of the display window in pixels
- * @param fullscreen Whether or not the display window should be fullscreen
+ * @param windowTitle Title of the game window
+ * @param windowXPosition X position of the game window
+ * @param windowYPostition Y position of the game window
+ * @param screenWidth Width of the game window in pixels
+ * @param screenHeight Height of the game window in pixels
+ * @param fullscreen Whether or not the game window should be fullscreen
  * @param context The zeroMQ context with which to create sockets with
  */
-DisplayEngine::DisplayEngine(const char* windowTitle,
-                             int windowXPosition,
-                             int windowYPosition,
-                             int screenWidth,
-                             int screenHeight,
-                             bool fullscreen,
-                             const zmqpp::context& context)
-    : logger("display_engine.txt") {
-  this->logger.log("Constructing display engine");
+GameEngine::GameEngine(const char* windowTitle,
+                       int windowXPosition,
+                       int windowYPosition,
+                       int screenWidth,
+                       int screenHeight,
+                       bool fullscreen,
+                       const zmqpp::context& context)
+    : logger("game_engine.txt") {
+  this->logger.log("Constructing game engine");
 
-  DisplayMessenger::init(context);
+  GameMessenger::init(context);
 
-  this->displayGlobal.window = setupWindow(windowTitle, windowXPosition, windowYPosition,
-                                           screenWidth, screenHeight, fullscreen);
+  this->gameGlobal.window = setupWindow(windowTitle, windowXPosition, windowYPosition,
+                                        screenWidth, screenHeight, fullscreen);
 
-  initializeEngine(this->displayGlobal.window);
+  initializeEngine(this->gameGlobal.window);
 
   // States
-  this->scanning = std::make_unique<Scanning>(this->displayGlobal, EngineState::SCANNING);
-  this->itemList =
-      std::make_unique<ItemList>(this->displayGlobal, EngineState::ITEM_LIST);
+  this->scanning = std::make_unique<Scanning>(this->gameGlobal, EngineState::SCANNING);
+  this->itemList = std::make_unique<ItemList>(this->gameGlobal, EngineState::ITEM_LIST);
   this->cancelScanConfirmation = std::make_unique<CancelScanConfirmation>(
-      this->displayGlobal, EngineState::CANCEL_SCAN_CONFIRMATION);
+      this->gameGlobal, EngineState::CANCEL_SCAN_CONFIRMATION);
   this->scanSuccess =
-      std::make_unique<ScanSuccess>(this->displayGlobal, EngineState::SCAN_SUCCESS);
+      std::make_unique<ScanSuccess>(this->gameGlobal, EngineState::SCAN_SUCCESS);
   this->scanFailure =
-      std::make_unique<ScanFailure>(this->displayGlobal, EngineState::SCAN_FAILURE);
+      std::make_unique<ScanFailure>(this->gameGlobal, EngineState::SCAN_FAILURE);
 
   this->engineState = this->itemList.get();
 
-  displayIsRunning = true;
+  gameIsRunning = true;
   this->logger.log("Engine is constructed and now running");
 }
 
-void DisplayEngine::start() {
+void GameEngine::start() {
   std::chrono::milliseconds msPerFrame = std::chrono::milliseconds(16);
 
-  while (this->displayIsRunning) {
+  while (this->gameIsRunning) {
     std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
 
     handleEvents();
@@ -74,24 +73,24 @@ void DisplayEngine::start() {
 }
 
 /**
- * Setup the SDL display window.
+ * Setup the SDL game window.
  *
- * @param windowTitle The name of the window. Is what is displayed on the top bezel of
- * the window when the display is running.
+ * @param windowTitle The name of the window. Is what is gameed on the top bezel of
+ * the window when the game is running.
  * @param windowXPosition The X position of the window on the user's screen.
  * @param windowYPosition The Y position of the window on the user's screen.
  * @param screenWidth The width of the screen in pixels.
  * @param screenHeight The height of the screen in pixels.
- * @param fullscreen Whether or not the display window should be fullscreen.
- * @return Pointer to the SDL display window.
+ * @param fullscreen Whether or not the game window should be fullscreen.
+ * @return Pointer to the SDL game window.
  */
-SDL_Window* DisplayEngine::setupWindow(const char* windowTitle,
-                                       int windowXPosition,
-                                       int windowYPosition,
-                                       int screenWidth,
-                                       int screenHeight,
-                                       bool fullscreen) {
-  this->logger.log("Creating SDL display window");
+SDL_Window* GameEngine::setupWindow(const char* windowTitle,
+                                    int windowXPosition,
+                                    int windowYPosition,
+                                    int screenWidth,
+                                    int screenHeight,
+                                    bool fullscreen) {
+  this->logger.log("Creating SDL game window");
 
   int flags = 0;
   if (fullscreen) {
@@ -102,20 +101,20 @@ SDL_Window* DisplayEngine::setupWindow(const char* windowTitle,
     return SDL_CreateWindow(windowTitle, windowXPosition, windowYPosition, screenWidth,
                             screenHeight, flags);
   } catch (...) {
-    std::cerr << "Error setting up SDL display window";
+    std::cerr << "Error setting up SDL game window";
     exit(1);
   }
 
-  this->logger.log("SDL display window created");
+  this->logger.log("SDL game window created");
 }
 
 /**
- * Setup SDL, the renderer, and TTF. Renderer is part of the global display objects.
+ * Setup SDL, the renderer, and TTF. Renderer is part of the global game objects.
  *
- * @param window The SDL display window
+ * @param window The SDL game window
  * @return None
  */
-void DisplayEngine::initializeEngine(SDL_Window* window) {
+void GameEngine::initializeEngine(SDL_Window* window) {
   this->logger.log("Initializing engine");
   int sdlInitReturn = SDL_Init(SDL_INIT_EVERYTHING);
   if (sdlInitReturn != 0) {
@@ -124,14 +123,14 @@ void DisplayEngine::initializeEngine(SDL_Window* window) {
   }
 
   // Create renderer
-  this->displayGlobal.renderer = SDL_CreateRenderer(
+  this->gameGlobal.renderer = SDL_CreateRenderer(
       window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-  if (!this->displayGlobal.renderer) {
+  if (!this->gameGlobal.renderer) {
     std::cerr << "Error creating renderer";
     exit(1);
   }
 
-  SDL_SetRenderDrawColor(this->displayGlobal.renderer, 255, 255, 255, 255);
+  SDL_SetRenderDrawColor(this->gameGlobal.renderer, 255, 255, 255, 255);
 
   // Initialize TTF
   int ttfInitReturn = TTF_Init();
@@ -143,7 +142,7 @@ void DisplayEngine::initializeEngine(SDL_Window* window) {
   this->logger.log("Engine initialized");
 }
 
-void DisplayEngine::handleStateChange() {
+void GameEngine::handleStateChange() {
   if (this->engineState->checkStateChange()) {
     this->engineState->exit();
     EngineState currentState = this->engineState->getCurrentState();
@@ -179,13 +178,11 @@ void DisplayEngine::handleStateChange() {
 /**
  * Check the current state, and call that state's handle events method.
  *
- * @param engineToDisplay Pipe from the display engine to the display
+ * @param engineToDisplay Pipe from the game engine to the game
  * @param displayToEngine Pipe from the display to the displayEngine
  * @return None
  */
-void DisplayEngine::handleEvents() {
-  this->engineState->handleEvents(&this->displayIsRunning);
-}
+void GameEngine::handleEvents() { this->engineState->handleEvents(&this->gameIsRunning); }
 
 /**
  * Not implemented but may want to add:
@@ -195,7 +192,7 @@ void DisplayEngine::handleEvents() {
  * @param None
  * @return None
  */
-void DisplayEngine::update() { this->engineState->update(); }
+void GameEngine::update() { this->engineState->update(); }
 
 /**
  * Check current state and call that state's function to render.
@@ -203,7 +200,7 @@ void DisplayEngine::update() { this->engineState->update(); }
  * @param None
  * @return None
  */
-void DisplayEngine::renderState() { this->engineState->render(); }
+void GameEngine::renderState() { this->engineState->render(); }
 
 /**
  * Free SDL resources and quit.
@@ -211,9 +208,9 @@ void DisplayEngine::renderState() { this->engineState->render(); }
  * @param None
  * @return None
  */
-void DisplayEngine::clean() {
-  SDL_DestroyWindow(this->displayGlobal.window);
-  SDL_DestroyRenderer(this->displayGlobal.renderer);
+void GameEngine::clean() {
+  SDL_DestroyWindow(this->gameGlobal.window);
+  SDL_DestroyRenderer(this->gameGlobal.renderer);
   SDL_Quit();
-  this->logger.log("DisplayEngine cleaned");
+  this->logger.log("GameEngine cleaned");
 }
