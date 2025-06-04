@@ -13,7 +13,7 @@
  */
 class Text : public Element {
 public:
-  Text(const struct GameGlobal& gameGlobal,
+  Text(const GameGlobal& gameGlobal,
        const std::string& logFile,
        const SDL_Rect boundaryRectangle,
        const std::string& fontPath,
