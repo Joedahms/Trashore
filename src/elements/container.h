@@ -9,7 +9,7 @@
  */
 class Container : public CompositeElement {
 public:
-  Container(const struct DisplayGlobal& displayGlobal,
+  Container(const GameGlobal& gameGlobal,
             const std::string& logFile,
             const SDL_Rect boundaryRectangle);
   void update() override;

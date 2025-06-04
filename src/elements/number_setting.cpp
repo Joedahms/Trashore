@@ -1,44 +1,42 @@
-#include <glog/logging.h>
 #include <iostream>
-#include <sqlite3.h>
 
-#include "../../../food_item.h"
 #include "../sdl_debug.h"
-#include "../sql_food.h"
 #include "number_setting.h"
 
 /**
  * Get the current value of the setting from the database and set the content to it.
  *
- * @param displayGlobal
+ * @param gameGlobal
  * @param boundaryRectangle Rectangle defining offset within parent (if any) and width +
  * height
  * @param settingId The primary key of the food item corresponding to this object
  */
-NumberSetting::NumberSetting(const struct DisplayGlobal& displayGlobal,
+NumberSetting::NumberSetting(const struct GameGlobal& gameGlobal,
                              const std::string& logFile,
                              const SDL_Rect boundaryRectangle,
                              const int settingId)
-    : CompositeElement(displayGlobal, logFile, boundaryRectangle), settingId(settingId) {
+    : CompositeElement(gameGlobal, logFile, boundaryRectangle), settingId(settingId) {
   std::shared_ptr<Button> decreaseButton =
-      std::make_shared<Button>(this->displayGlobal, this->logFile, SDL_Rect{0, 0, 0, 0},
-                               "-", SDL_Point{0, 0}, [this]() { this->settingValue--; });
+      std::make_shared<Button>(this->gameGlobal, this->logFile, SDL_Rect{0, 0, 0, 0}, "-",
+                               SDL_Point{0, 0}, [this]() { this->settingValue--; });
   addElement(std::move(decreaseButton));
 
   std::shared_ptr<Text> text = std::make_shared<Text>(
-      this->displayGlobal, this->logFile, SDL_Rect{0, 0, 0, 0},
-      DisplayGlobal::futuramFontPath, "0", 24, SDL_Color{0, 255, 0, 255});
+      this->gameGlobal, this->logFile, SDL_Rect{0, 0, 0, 0}, GameGlobal::futuramFontPath,
+      "0", 24, SDL_Color{0, 255, 0, 255});
   addElement(std::move(text));
 
   std::shared_ptr<Button> increaseButton =
-      std::make_shared<Button>(this->displayGlobal, this->logFile, SDL_Rect{0, 0, 0, 0},
-                               "+", SDL_Point{0, 0}, [this]() { this->settingValue++; });
+      std::make_shared<Button>(this->gameGlobal, this->logFile, SDL_Rect{0, 0, 0, 0}, "+",
+                               SDL_Point{0, 0}, [this]() { this->settingValue++; });
   addElement(std::move(increaseButton));
 
   if (settingId != -1) {
+    /*
     FoodItem foodItem  = readFoodItemById(this->settingId);
     this->settingValue = foodItem.getQuantity();
     this->children[1]->setContent(std::to_string(this->settingValue));
+    */
   }
   else {
     this->settingValue = 0;
@@ -77,6 +75,7 @@ void NumberSetting::updateSelf() {
   }
 
   if (this->settingId != -1) {
+    /*
     FoodItem foodItem    = readFoodItemById(this->settingId);
     int foodItemQuantity = foodItem.getQuantity();
     if (foodItemQuantity == 0) {
@@ -85,6 +84,7 @@ void NumberSetting::updateSelf() {
     else if (foodItemQuantity != this->settingValue) {
       updateFoodItemQuantity(this->settingId, this->settingValue);
     }
+    */
     /*
     else {
       this->children[1]->setContent(std::to_string(this->settingValue));

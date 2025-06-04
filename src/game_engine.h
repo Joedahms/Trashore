@@ -10,40 +10,30 @@
 
 #include "logger.h"
 
-#include "states/cancel_scan_confirmation.h"
-#include "states/item_list.h"
-#include "states/scan_failure.h"
-#include "states/scan_success.h"
-#include "states/scanning.h"
+#include "states/main_menu.h"
 
-#include "display_global.h"
-#include "display_messenger.h"
 #include "engine_state.h"
+#include "game_global.h"
 
-class DisplayEngine {
+class GameEngine {
 public:
-  DisplayEngine(const char* windowTitle,
-                int windowXPosition,
-                int windowYPosition,
-                int screenWidth,
-                int screenHeight,
-                bool fullscreen,
-                const zmqpp::context& context);
+  GameEngine(const char* windowTitle,
+             const int windowXPosition,
+             const int windowYPosition,
+             const int screenWidth,
+             const int screenHeight,
+             const bool fullscreen);
   void start();
 
 private:
   Logger logger;
-  struct DisplayGlobal displayGlobal;
+  GameGlobal gameGlobal;
   State* engineState       = nullptr;
-  EngineState currentState = EngineState::ITEM_LIST;
-  bool displayIsRunning    = false;
+  EngineState currentState = EngineState::MAIN_MENU;
+  bool gameIsRunning       = false;
 
   // States
-  std::unique_ptr<Scanning> scanning;
-  std::unique_ptr<ItemList> itemList;
-  std::unique_ptr<CancelScanConfirmation> cancelScanConfirmation;
-  std::unique_ptr<ScanSuccess> scanSuccess;
-  std::unique_ptr<ScanFailure> scanFailure;
+  std::unique_ptr<MainMenu> mainMenu;
 
   SDL_Window* setupWindow(const char* windowTitle,
                           int windowXPosition,

@@ -5,7 +5,7 @@
 #include <SDL2/SDL_ttf.h>
 #include <string>
 
-#include "../display_global.h"
+#include "../game_global.h"
 #include "element.h"
 
 /**
@@ -13,7 +13,7 @@
  */
 class Text : public Element {
 public:
-  Text(const struct DisplayGlobal& displayGlobal,
+  Text(const struct GameGlobal& gameGlobal,
        const std::string& logFile,
        const SDL_Rect boundaryRectangle,
        const std::string& fontPath,

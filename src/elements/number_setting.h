@@ -13,7 +13,7 @@
  */
 class NumberSetting : public CompositeElement {
 public:
-  NumberSetting(const struct DisplayGlobal& displayGlobal,
+  NumberSetting(const struct GameGlobal& gameGlobal,
                 const std::string& logFile,
                 const SDL_Rect boundaryRectangle,
                 const int settingId = -1);

@@ -2,10 +2,10 @@
 
 #include "bird.h"
 
-Bird::Bird(const struct DisplayGlobal& displayGlobal,
+Bird::Bird(const struct GameGlobal& gameGlobal,
            const std::string& logFile,
            const SDL_Rect boundaryRectangle)
-    : Element(displayGlobal, logFile, boundaryRectangle) {
+    : Element(gameGlobal, logFile, boundaryRectangle) {
   this->debugName = "bird";
 
   SDL_Surface* birdSurface = IMG_Load("../display/sprites/bird.png");
@@ -14,7 +14,7 @@ Bird::Bird(const struct DisplayGlobal& displayGlobal,
     exit(1);
   }
 
-  this->texture = SDL_CreateTextureFromSurface(this->displayGlobal.renderer, birdSurface);
+  this->texture = SDL_CreateTextureFromSurface(this->gameGlobal.renderer, birdSurface);
   if (this->texture == 0) {
     std::cerr << "error creating texture from surface";
     exit(1);
@@ -40,6 +40,6 @@ void Bird::handleEvent(const SDL_Event& event) {
 }
 
 void Bird::render() const {
-  SDL_RenderCopy(this->displayGlobal.renderer, this->texture, NULL,
+  SDL_RenderCopy(this->gameGlobal.renderer, this->texture, NULL,
                  &this->boundaryRectangle);
 }

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.28)
 project(sdlGameEngine DESCRIPTION "Game engine in SDL2" LANGUAGES CXX)
 
 # Set build type and C++ standard
@@ -29,21 +29,21 @@ add_executable(sdlGameEngine
   # GUI 
   src/log_files.cpp
   src/engine_state.cpp
-  src/display_engine.cpp
+  src/game_engine.cpp
   src/sdl_debug.cpp
   src/game_global.cpp
 
   # GUI Elements
-  src/elements/element_mediator.cpp
+  #src/elements/element_mediator.cpp
   src/elements/container.cpp
   src/elements/element.cpp
   src/elements/composite_element.cpp
   src/elements/button.cpp
   src/elements/text.cpp
-  src/elements/panel.cpp
-  src/elements/scroll_box.cpp
-  src/elements/number_setting.cpp
-  src/elements/dropdown.cpp
+  #src/elements/panel.cpp
+  #src/elements/scroll_box.cpp
+  #src/elements/number_setting.cpp
+  #src/elements/dropdown.cpp
   src/elements/loading_bar.cpp
 
   # Game elements
@@ -54,11 +54,7 @@ add_executable(sdlGameEngine
 
   # GUI States
   src/states/state.cpp
-  src/states/scanning.cpp
-  src/states/item_list.cpp
-  src/states/cancel_scan_confirmation.cpp
-  src/states/scan_success.cpp
-  src/states/scan_failure.cpp
+  src/states/main_menu.cpp
 )
 
 # Link all libraries

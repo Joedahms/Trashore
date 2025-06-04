@@ -4,15 +4,14 @@
 #include <memory>
 #include <vector>
 
-#include "../display_global.h"
-#include "../display_messenger.h"
 #include "../elements/container.h"
 #include "../engine_state.h"
+#include "../game_global.h"
 #include "../log_files.h"
 
 class State {
 public:
-  State(const struct DisplayGlobal& displayGlobal,
+  State(const GameGlobal& gameGlobal,
         const std::string& logFile,
         const EngineState& state);
   virtual void handleEvents(bool* displayIsRunning);
@@ -27,7 +26,7 @@ public:
   bool checkStateChange();
 
 protected:
-  struct DisplayGlobal displayGlobal;
+  struct GameGlobal gameGlobal;
   const std::string logFile;
   std::unique_ptr<Logger> logger;
 
@@ -36,8 +35,6 @@ protected:
 
   std::shared_ptr<Container> rootElement;
   SDL_Surface* windowSurface = nullptr;
-
-  DisplayMessenger& displayMessenger;
 };
 
 #endif

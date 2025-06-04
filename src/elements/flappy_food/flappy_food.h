@@ -1,7 +1,7 @@
 #ifndef FLAPPY_FOOD_H
 #define FLAPPY_FOOD_H
 
-#include "../../display_global.h"
+#include "../../game_global.h"
 #include "../composite_element.h"
 #include "../text.h"
 #include "bird.h"
@@ -10,7 +10,7 @@
 
 class FlappyFood : public CompositeElement {
 public:
-  FlappyFood(const struct DisplayGlobal& displayGlobal,
+  FlappyFood(const GameGlobal& gameGlobal,
              const std::string& logFile,
              const SDL_Rect boundaryRectangle);
 

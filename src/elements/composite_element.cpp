@@ -1,10 +1,10 @@
 #include "composite_element.h"
 #include "element.h"
 
-CompositeElement::CompositeElement(const struct DisplayGlobal& displayGlobal,
+CompositeElement::CompositeElement(const GameGlobal& gameGlobal,
                                    const std::string& logFile,
                                    const SDL_Rect boundaryRectangle)
-    : Element(displayGlobal, logFile, boundaryRectangle) {}
+    : Element(gameGlobal, logFile, boundaryRectangle) {}
 
 /**
  * Update this element then update all of its children.

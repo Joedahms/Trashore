@@ -6,7 +6,6 @@
 #include <memory>
 #include <vector>
 
-#include "../../../food_item.h"
 #include "../display_global.h"
 #include "panel.h"
 #include "sort_method.h"

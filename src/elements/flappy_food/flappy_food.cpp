@@ -2,20 +2,20 @@
 
 #include "flappy_food.h"
 
-FlappyFood::FlappyFood(const struct DisplayGlobal& displayGlobal,
+FlappyFood::FlappyFood(const GameGlobal& gameGlobal,
                        const std::string& logFile,
                        const SDL_Rect boundaryRectangle)
-    : CompositeElement(displayGlobal, logFile, boundaryRectangle) {
+    : CompositeElement(gameGlobal, logFile, boundaryRectangle) {
   this->logger->log("Constructing flappy food");
 
-  SDL_Surface* windowSurface = SDL_GetWindowSurface(this->displayGlobal.window);
+  SDL_Surface* windowSurface = SDL_GetWindowSurface(this->gameGlobal.window);
   assert(windowSurface != NULL);
 
   this->logger->log("Constructing bird");
   SDL_Rect birdRect = {20, 0, 32, 32};
   birdRect.y        = windowSurface->h - birdRect.h;
   std::unique_ptr<Bird> bird =
-      std::make_unique<Bird>(this->displayGlobal, this->logFile, birdRect);
+      std::make_unique<Bird>(this->gameGlobal, this->logFile, birdRect);
   this->birdPtr = bird.get();
   addElement(std::move(bird));
   this->logger->log("Bird constructed");
@@ -26,9 +26,9 @@ FlappyFood::FlappyFood(const struct DisplayGlobal& displayGlobal,
   const std::string scoreTextContent = "0";
   const SDL_Color scoreTextColor     = {0, 255, 0, 255}; // Green
   const SDL_Rect scoreTextRect       = {0, 150, 0, 0};
-  this->scoreText = std::make_shared<Text>(this->displayGlobal, this->logFile,
-                                           scoreTextRect, DisplayGlobal::futuramFontPath,
-                                           scoreTextContent, 24, scoreTextColor);
+  this->scoreText = std::make_shared<Text>(this->gameGlobal, this->logFile, scoreTextRect,
+                                           GameGlobal::futuramFontPath, scoreTextContent,
+                                           24, scoreTextColor);
   this->scoreText->setCenteredHorizontal();
   addElement(scoreText);
   this->logger->log("Score text constructed");
@@ -79,7 +79,7 @@ void FlappyFood::initializeObstacles() {
   const int minHeight         = 20;
   const int verticalGap       = 150;
 
-  SDL_Surface* windowSurface = SDL_GetWindowSurface(this->displayGlobal.window);
+  SDL_Surface* windowSurface = SDL_GetWindowSurface(this->gameGlobal.window);
   assert(windowSurface != NULL);
 
   const int windowWidth  = windowSurface->w;
@@ -94,7 +94,7 @@ void FlappyFood::initializeObstacles() {
     SDL_Rect boundaryRectangle = {xPosition, yPosition, pairWidth, pairHeight};
 
     std::shared_ptr<ObstaclePair> obstaclePair = std::make_shared<ObstaclePair>(
-        this->displayGlobal, this->logFile, boundaryRectangle, windowWidth, respawnOffset,
+        this->gameGlobal, this->logFile, boundaryRectangle, windowWidth, respawnOffset,
         minHeight, verticalGap);
 
     this->obstaclePairs.push_back(obstaclePair);
@@ -130,7 +130,7 @@ void FlappyFood::updateSelf() {
   checkCollision(boundaryRectangles);
   handleBirdCollision();
 
-  SDL_Surface* windowSurface = SDL_GetWindowSurface(this->displayGlobal.window);
+  SDL_Surface* windowSurface = SDL_GetWindowSurface(this->gameGlobal.window);
   assert(windowSurface != NULL);
 
   SDL_Point birdRelative = this->birdPtr->getPositionRelativeToParent();

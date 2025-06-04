@@ -1,13 +1,13 @@
 #include "loading_bar.h"
 
-LoadingBar::LoadingBar(const struct DisplayGlobal& displayGlobal,
+LoadingBar::LoadingBar(const GameGlobal& gameGlobal,
                        const std::string& logFile,
                        const SDL_Rect boundaryRectangle,
                        const int& borderThickness,
                        const float& totalTimeSeconds,
                        const float& updatePeriodMs)
-    : Element(displayGlobal, logFile, boundaryRectangle),
-      totalTimeSeconds(totalTimeSeconds), updatePeriodMs(updatePeriodMs) {
+    : Element(gameGlobal, logFile, boundaryRectangle), totalTimeSeconds(totalTimeSeconds),
+      updatePeriodMs(updatePeriodMs) {
   this->borderThickness = borderThickness;
 
   this->barRectangle = {this->boundaryRectangle.x + 1, this->boundaryRectangle.y, 0,
@@ -123,7 +123,7 @@ void LoadingBar::render() const {
   }
 
   // Bar
-  SDL_SetRenderDrawColor(this->displayGlobal.renderer, barColor.r, barColor.g, barColor.b,
+  SDL_SetRenderDrawColor(this->gameGlobal.renderer, barColor.r, barColor.g, barColor.b,
                          barColor.a);
-  SDL_RenderFillRect(this->displayGlobal.renderer, &this->barRectangle);
+  SDL_RenderFillRect(this->gameGlobal.renderer, &this->barRectangle);
 }

@@ -3,10 +3,10 @@
 
 #include "element.h"
 
-Element::Element(const struct DisplayGlobal& displayGlobal,
+Element::Element(const struct GameGlobal& gameGlobal,
                  const std::string& logFile,
                  const SDL_Rect boundaryRectangle)
-    : displayGlobal(displayGlobal), logFile(logFile) {
+    : gameGlobal(gameGlobal), logFile(logFile) {
   this->logger         = std::make_unique<Logger>(this->logFile);
   this->previousUpdate = std::chrono::steady_clock::now();
   setupPosition(boundaryRectangle);
@@ -95,9 +95,6 @@ void Element::updatePosition() {
 
 std::string Element::getContent() const { return "no content"; }
 
-void Element::setMediator(std::shared_ptr<Mediator> mediator) {
-  this->mediator = mediator;
-}
 void Element::setParent(Element* parent) { this->parent = parent; }
 
 void Element::setPositionRelativeToParent(const SDL_Point& relativePostion) {
@@ -183,10 +180,10 @@ void Element::addBorder(const int& borderThickness) {
  * @return None
  */
 void Element::renderBorder() const {
-  SDL_SetRenderDrawColor(this->displayGlobal.renderer, 255, 255, 255, 255);
+  SDL_SetRenderDrawColor(this->gameGlobal.renderer, 255, 255, 255, 255);
   // Draw the top border
   for (int i = 0; i < borderThickness; i++) {
-    SDL_RenderDrawLine(this->displayGlobal.renderer,
+    SDL_RenderDrawLine(this->gameGlobal.renderer,
                        this->positionRelativeToParent.x - i, // Start X
                        this->positionRelativeToParent.y - i, // Start Y
                        this->positionRelativeToParent.x + this->boundaryRectangle.w +
@@ -197,7 +194,7 @@ void Element::renderBorder() const {
   // Draw the bottom border
   for (int i = 0; i < borderThickness; i++) {
     SDL_RenderDrawLine(
-        this->displayGlobal.renderer,
+        this->gameGlobal.renderer,
         this->positionRelativeToParent.x - i,                              // Start X
         this->positionRelativeToParent.y + this->boundaryRectangle.h + i,  // Start Y
         this->positionRelativeToParent.x + this->boundaryRectangle.w + i,  // End X
@@ -206,7 +203,7 @@ void Element::renderBorder() const {
 
   // Draw the left border
   for (int i = 0; i < borderThickness; i++) {
-    SDL_RenderDrawLine(this->displayGlobal.renderer,
+    SDL_RenderDrawLine(this->gameGlobal.renderer,
                        this->positionRelativeToParent.x - i, // Start X
                        this->positionRelativeToParent.y - i, // Start Y
                        this->positionRelativeToParent.x - i, // End X
@@ -217,7 +214,7 @@ void Element::renderBorder() const {
   // Draw the right border
   for (int i = 0; i < borderThickness; i++) {
     SDL_RenderDrawLine(
-        this->displayGlobal.renderer,
+        this->gameGlobal.renderer,
         this->positionRelativeToParent.x + this->boundaryRectangle.w + i,  // Start X
         this->positionRelativeToParent.y - i,                              // Start Y
         this->positionRelativeToParent.x + this->boundaryRectangle.w + i,  // End X

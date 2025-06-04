@@ -7,7 +7,7 @@
 #include <memory>
 #include <string>
 
-#include "../display_global.h"
+#include "../game_global.h"
 #include "composite_element.h"
 #include "element.h"
 #include "text.h"
@@ -17,21 +17,21 @@
  */
 class Button : public CompositeElement {
 public:
-  Button(const struct DisplayGlobal& displayGlobal,
+  Button(const struct GameGlobal& gameGlobal,
          const std::string& logFile,
          const SDL_Rect boundaryRectangle,
          const std::string& textContent,
          const SDL_Point textPadding,
          std::function<void()> onClick);
 
-  Button(const struct DisplayGlobal& displayGlobal,
+  Button(const struct GameGlobal& gameGlobal,
          const std::string& logFile,
          const SDL_Rect boundaryRectangle,
          const std::string& textContent,
          const SDL_Point textPadding,
          const std::string& notifyMessage);
 
-  void initialize();
+  //  void initialize();
   void updateSelf() override;
   void renderSelf() const override;
   void handleEventSelf(const SDL_Event& event) override;

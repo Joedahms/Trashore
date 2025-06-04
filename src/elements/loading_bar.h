@@ -7,7 +7,7 @@
 
 class LoadingBar : public Element {
 public:
-  LoadingBar(const struct DisplayGlobal& displayGlobal,
+  LoadingBar(const GameGlobal& gameGlobal,
              const std::string& logFile,
              const SDL_Rect boundaryRectangle,
              const int& borderThickness,

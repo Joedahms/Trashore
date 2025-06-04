@@ -1,19 +1,19 @@
+#include <cassert>
 #include <iostream>
 
-#include "../display_global.h"
+#include "../game_global.h"
 #include "state.h"
 
-State::State(const struct DisplayGlobal& displayGlobal,
+State::State(const GameGlobal& gameGlobal,
              const std::string& logFile,
              const EngineState& state)
-    : displayGlobal(displayGlobal), logFile(logFile), defaultState(state),
-      currentState(state), displayMessenger(DisplayMessenger::getInstance()) {
+    : gameGlobal(gameGlobal), logFile(logFile), defaultState(state), currentState(state) {
   this->logger        = std::make_unique<Logger>(this->logFile);
-  this->windowSurface = SDL_GetWindowSurface(this->displayGlobal.window);
+  this->windowSurface = SDL_GetWindowSurface(this->gameGlobal.window);
   assert(windowSurface != NULL);
   SDL_Rect rootRectangle = {0, 0, windowSurface->w, windowSurface->h};
   this->rootElement =
-      std::make_shared<Container>(this->displayGlobal, this->logFile, rootRectangle);
+      std::make_shared<Container>(this->gameGlobal, this->logFile, rootRectangle);
 }
 
 void State::handleEvents(bool* displayIsRunning) {

@@ -5,7 +5,7 @@
 
 class Obstacle : public Element {
 public:
-  Obstacle(const struct DisplayGlobal& displayGlobal,
+  Obstacle(const GameGlobal& gameGlobal,
            const std::string& logFile,
            const SDL_Rect boundaryRectangle);
   void handleEvent(const SDL_Event& event) override;

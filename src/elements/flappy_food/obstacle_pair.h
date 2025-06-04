@@ -7,7 +7,7 @@ class ObstaclePair : public CompositeElement {
 public:
   bool scored = false;
 
-  ObstaclePair(const struct DisplayGlobal& displayGlobal,
+  ObstaclePair(const GameGlobal& gameGlobal,
                const std::string& logFile,
                const SDL_Rect boundaryRectangle,
                const int windowWidth,

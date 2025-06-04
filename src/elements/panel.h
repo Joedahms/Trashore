@@ -5,8 +5,7 @@
 #include <memory>
 #include <vector>
 
-#include "../../../food_item.h"
-#include "../display_global.h"
+#include "../game_global.h"
 #include "button.h"
 #include "element.h"
 #include "number_setting.h"
@@ -20,7 +19,7 @@
  */
 class Panel : public CompositeElement {
 public:
-  Panel(const struct DisplayGlobal& displayGlobal,
+  Panel(const GameGlobal& gameGlobal,
         const std::string& logFile,
         const SDL_Rect boundaryRectangle,
         const int id);

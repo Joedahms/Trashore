@@ -1,9 +1,9 @@
 #include "container.h"
 
-Container::Container(const struct DisplayGlobal& displayGlobal,
+Container::Container(const GameGlobal& gameGlobal,
                      const std::string& logFile,
                      const SDL_Rect boundaryRectangle)
-    : CompositeElement(displayGlobal, logFile, boundaryRectangle) {}
+    : CompositeElement(gameGlobal, logFile, boundaryRectangle) {}
 
 void Container::update() {
   updateSelf();

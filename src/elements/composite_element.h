@@ -10,7 +10,7 @@
  */
 class CompositeElement : public Element {
 public:
-  CompositeElement(const struct DisplayGlobal& displayGlobal,
+  CompositeElement(const GameGlobal& gameGlobal,
                    const std::string& logFile,
                    const SDL_Rect boundaryRectangle);
   void addElement(std::shared_ptr<Element> element) override;

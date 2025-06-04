@@ -1,10 +1,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <assert.h>
-#include <glog/logging.h>
 #include <iostream>
-
-#include "../../endpoints.h"
 
 #include "game_engine.h"
 #include "game_global.h"
@@ -20,35 +17,24 @@
  * @param context The zeroMQ context with which to create sockets with
  */
 GameEngine::GameEngine(const char* windowTitle,
-                       int windowXPosition,
-                       int windowYPosition,
-                       int screenWidth,
-                       int screenHeight,
-                       bool fullscreen,
-                       const zmqpp::context& context)
+                       const int windowXPosition,
+                       const int windowYPosition,
+                       const int screenWidth,
+                       const int screenHeight,
+                       const bool fullscreen)
     : logger("game_engine.txt") {
   this->logger.log("Constructing game engine");
-
-  GameMessenger::init(context);
 
   this->gameGlobal.window = setupWindow(windowTitle, windowXPosition, windowYPosition,
                                         screenWidth, screenHeight, fullscreen);
 
   initializeEngine(this->gameGlobal.window);
 
-  // States
-  this->scanning = std::make_unique<Scanning>(this->gameGlobal, EngineState::SCANNING);
-  this->itemList = std::make_unique<ItemList>(this->gameGlobal, EngineState::ITEM_LIST);
-  this->cancelScanConfirmation = std::make_unique<CancelScanConfirmation>(
-      this->gameGlobal, EngineState::CANCEL_SCAN_CONFIRMATION);
-  this->scanSuccess =
-      std::make_unique<ScanSuccess>(this->gameGlobal, EngineState::SCAN_SUCCESS);
-  this->scanFailure =
-      std::make_unique<ScanFailure>(this->gameGlobal, EngineState::SCAN_FAILURE);
+  this->mainMenu = std::make_unique<MainMenu>(this->gameGlobal, EngineState::MAIN_MENU);
 
-  this->engineState = this->itemList.get();
+  this->engineState = this->mainMenu.get();
 
-  gameIsRunning = true;
+  this->gameIsRunning = true;
   this->logger.log("Engine is constructed and now running");
 }
 
@@ -148,24 +134,8 @@ void GameEngine::handleStateChange() {
     EngineState currentState = this->engineState->getCurrentState();
 
     switch (currentState) {
-    case EngineState::SCANNING:
-      this->engineState = this->scanning.get();
-      break;
-
-    case EngineState::ITEM_LIST:
-      this->engineState = this->itemList.get();
-      break;
-
-    case EngineState::CANCEL_SCAN_CONFIRMATION:
-      this->engineState = this->cancelScanConfirmation.get();
-      break;
-
-    case EngineState::SCAN_SUCCESS:
-      this->engineState = this->scanSuccess.get();
-      break;
-
-    case EngineState::SCAN_FAILURE:
-      this->engineState = this->scanFailure.get();
+    case EngineState::MAIN_MENU:
+      this->engineState = this->mainMenu.get();
       break;
 
     default:

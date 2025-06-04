@@ -3,26 +3,25 @@
 #include <memory>
 #include <vector>
 
-#include "../display_global.h"
+#include "../game_global.h"
 #include "../sdl_debug.h"
-#include "../sql_food.h"
 #include "button.h"
 #include "element.h"
 #include "panel.h"
 #include "text.h"
 
 /**
- * @param displayGlobal
+ * @param gameGlobal
  * @param boundaryRectangle Rectangle defining offset within parent (if any) and width +
  * height
  * @param id The primary key of the food item corresponding to this panel
  * @param logFile Logfile to write logs to
  */
-Panel::Panel(const struct DisplayGlobal& displayGlobal,
+Panel::Panel(const DisplayGlobal& gameGlobal,
              const std::string& logFile,
              const SDL_Rect boundaryRectangle,
              const int id)
-    : CompositeElement(displayGlobal, logFile, boundaryRectangle), id(id) {}
+    : CompositeElement(gameGlobal, logFile, boundaryRectangle), id(id) {}
 
 /**
  * Set a new id. Updates information within the panel according to the new id.
@@ -53,10 +52,9 @@ void Panel::addText(const std::string& fontPath,
                     const int& fontSize,
                     const SDL_Color& color,
                     const SDL_Point& relativePosition) {
-  SDL_Rect textRectangle = {relativePosition.x, relativePosition.y, 0, 0};
-  std::shared_ptr<Text> text =
-      std::make_shared<Text>(this->displayGlobal, this->logFile, textRectangle, fontPath,
-                             content, fontSize, color);
+  SDL_Rect textRectangle     = {relativePosition.x, relativePosition.y, 0, 0};
+  std::shared_ptr<Text> text = std::make_shared<Text>(
+      this->gameGlobal, this->logFile, textRectangle, fontPath, content, fontSize, color);
   addElement(std::move(text));
 }
 
@@ -72,7 +70,7 @@ void Panel::addFoodItem(const FoodItem& foodItem, const SDL_Point& relativePosit
   addFoodItemExpirationDate(foodItem, relativePosition);
 
   std::shared_ptr<NumberSetting> itemQuantity = std::make_shared<NumberSetting>(
-      this->displayGlobal, this->logFile, SDL_Rect{0, 0, 0, 0}, this->id);
+      this->gameGlobal, this->logFile, SDL_Rect{0, 0, 0, 0}, this->id);
   addElement(std::move(itemQuantity));
 }
 
@@ -113,7 +111,7 @@ void Panel::handleEventSelf(const SDL_Event& event) {}
  * @return None
  */
 void Panel::addFoodItemName(const FoodItem& foodItem, const SDL_Point& relativePosition) {
-  std::string fontPath = this->displayGlobal.futuramFontPath;
+  std::string fontPath = this->gameGlobal.futuramFontPath;
   int fontSize         = 24;
   SDL_Color textColor  = {0, 255, 0, 255}; // Green
 
@@ -129,7 +127,7 @@ void Panel::addFoodItemName(const FoodItem& foodItem, const SDL_Point& relativeP
  */
 void Panel::addFoodItemExpirationDate(const FoodItem& foodItem,
                                       const SDL_Point& relativePosition) {
-  std::string fontPath                       = this->displayGlobal.futuramFontPath;
+  std::string fontPath                       = this->gameGlobal.futuramFontPath;
   int fontSize                               = 24;
   SDL_Color textColor                        = {0, 255, 0, 255}; // Green
   std::chrono::year_month_day expirationDate = foodItem.getExpirationDate();

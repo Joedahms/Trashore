@@ -5,7 +5,7 @@
 
 class Bird : public Element {
 public:
-  Bird(const struct DisplayGlobal& displayGlobal,
+  Bird(const struct GameGlobal& gameGlobal,
        const std::string& logFile,
        const SDL_Rect boundaryRectangle);
   void handleEvent(const SDL_Event& event) override;

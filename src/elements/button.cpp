@@ -2,12 +2,12 @@
 #include <iostream>
 #include <memory>
 
-#include "../display_global.h"
+#include "../game_global.h"
 #include "button.h"
 #include "element.h"
 
 /**
- * @param displayGlobal Global display variables
+ * @param gameGlobal Global display variables
  * @param boundaryRectangle Rectangle to describe the position relative to parent element
  * as well as the width and height. The x and y parameters of the rectangle are used as
  * the position relative to the parent.
@@ -15,14 +15,14 @@
  * @param textPadding How offset the text should be from parent
  * @param callback The callback function to execute when the button is clicked
  */
-Button::Button(const struct DisplayGlobal& displayGlobal,
+Button::Button(const struct GameGlobal& gameGlobal,
                const std::string& logFile,
                const SDL_Rect boundaryRectangle,
                const std::string& textContent,
                const SDL_Point textPadding,
                std::function<void()> onClick)
-    : CompositeElement(displayGlobal, logFile, boundaryRectangle),
-      textContent(textContent), textPadding(textPadding), onClick(onClick) {
+    : CompositeElement(gameGlobal, logFile, boundaryRectangle), textContent(textContent),
+      textPadding(textPadding), onClick(onClick) {
   this->logger->log("Constructing " + this->textContent + " button");
 
   // Colors
@@ -34,7 +34,7 @@ Button::Button(const struct DisplayGlobal& displayGlobal,
   SDL_Color textColor        = {255, 255, 0, 255}; // Yellow
   SDL_Rect textRect          = {textPadding.x, textPadding.y, 0, 0};
   std::shared_ptr<Text> text = std::make_shared<Text>(
-      this->displayGlobal, this->logFile, textRect, DisplayGlobal::futuramFontPath,
+      this->gameGlobal, this->logFile, textRect, GameGlobal::futuramFontPath,
       this->textContent.c_str(), 24, textColor);
   text->setCentered();
 
@@ -49,14 +49,14 @@ Button::Button(const struct DisplayGlobal& displayGlobal,
   this->logger->log(this->textContent + " button constructed");
 }
 
-Button::Button(const struct DisplayGlobal& displayGlobal,
+Button::Button(const struct GameGlobal& gameGlobal,
                const std::string& logFile,
                const SDL_Rect boundaryRectangle,
                const std::string& textContent,
                const SDL_Point textPadding,
                const std::string& notifyMessage)
-    : CompositeElement(displayGlobal, logFile, boundaryRectangle),
-      textContent(textContent), textPadding(textPadding), notifyMessage(notifyMessage) {
+    : CompositeElement(gameGlobal, logFile, boundaryRectangle), textContent(textContent),
+      textPadding(textPadding), notifyMessage(notifyMessage) {
   this->logger->log("Constructing " + this->textContent + " button");
 
   // Colors
@@ -68,7 +68,7 @@ Button::Button(const struct DisplayGlobal& displayGlobal,
   SDL_Color textColor        = {255, 255, 0, 255}; // Yellow
   SDL_Rect textRect          = {textPadding.x, textPadding.y, 0, 0};
   std::shared_ptr<Text> text = std::make_shared<Text>(
-      this->displayGlobal, this->logFile, textRect, DisplayGlobal::futuramFontPath,
+      this->gameGlobal, this->logFile, textRect, GameGlobal::futuramFontPath,
       this->textContent.c_str(), 24, textColor);
   text->setCentered();
 
@@ -83,6 +83,7 @@ Button::Button(const struct DisplayGlobal& displayGlobal,
   this->logger->log(this->textContent + " button constructed");
 }
 
+/*
 void Button::initialize() {
   this->logger->log("Initializing " + this->textContent + " button");
 
@@ -103,6 +104,7 @@ void Button::initialize() {
 
   this->logger->log("Successfully initialized " + this->textContent + " button");
 }
+*/
 
 /**
  * Change color if the cursor is hovered over the button.
@@ -126,9 +128,9 @@ void Button::updateSelf() {
  */
 void Button::renderSelf() const {
   // Set draw color and fill the button
-  SDL_SetRenderDrawColor(this->displayGlobal.renderer, backgroundColor.r,
-                         backgroundColor.g, backgroundColor.b, backgroundColor.a);
-  SDL_RenderFillRect(this->displayGlobal.renderer, &this->boundaryRectangle);
+  SDL_SetRenderDrawColor(this->gameGlobal.renderer, backgroundColor.r, backgroundColor.g,
+                         backgroundColor.b, backgroundColor.a);
+  SDL_RenderFillRect(this->gameGlobal.renderer, &this->boundaryRectangle);
 }
 
 /**

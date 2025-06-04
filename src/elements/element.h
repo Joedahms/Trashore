@@ -4,8 +4,8 @@
 #include <SDL2/SDL.h>
 #include <memory>
 
-#include "../../../logger.h"
-#include "../display_global.h"
+#include "../game_global.h"
+#include "../logger.h"
 #include "element_mediator.h"
 
 struct Velocity {
@@ -24,7 +24,7 @@ struct Acceleration {
  */
 class Element : public std::enable_shared_from_this<Element> {
 public:
-  Element(const struct DisplayGlobal& displayGlobal,
+  Element(const struct GameGlobal& gameGlobal,
           const std::string& logFile,
           const SDL_Rect boundaryRectangle);
   virtual ~Element() = default;
@@ -38,7 +38,6 @@ public:
   virtual std::string getContent() const;
   virtual void setContent(const std::string& content) {}
 
-  void setMediator(std::shared_ptr<Mediator> mediator);
   void setParent(Element* parent);
 
   SDL_Point getPositionRelativeToParent();
@@ -81,7 +80,7 @@ private:
   void centerHorizontal();
 
 protected:
-  struct DisplayGlobal displayGlobal;
+  struct GameGlobal gameGlobal;
   const std::string logFile;
   std::unique_ptr<Logger> logger;
   std::string debugName = "no debug name";
@@ -111,8 +110,6 @@ protected:
 
   Velocity velocity         = {0, 0};
   Acceleration acceleration = {0, 0};
-
-  std::weak_ptr<Mediator> mediator;
 
   void setupPosition(const SDL_Rect& boundaryRectangle);
   void hasParentUpdate();
