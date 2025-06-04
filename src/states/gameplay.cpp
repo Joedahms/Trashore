@@ -73,6 +73,7 @@ void Gameplay::handleEvents(bool& gameIsRunning) {
       break;
     }
   }
+  checkKeystates();
 }
 
 void Gameplay::checkKeystates() {
