@@ -2,6 +2,11 @@ cmake_minimum_required(VERSION 3.7)
 project(sdlGameEngine VERSION 0.01 DESCRIPTION "Game engine in SDL" LANGUAGES CXX)
 
 set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+set(CXXFLAGS "-Wall")
+set(CMAKE_CXX_FLAGS "${CXXFLAGS}")
 
 find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
