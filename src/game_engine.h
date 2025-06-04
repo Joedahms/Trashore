@@ -10,6 +10,7 @@
 
 #include "logger.h"
 
+#include "states/gameplay.h"
 #include "states/main_menu.h"
 
 #include "engine_state.h"
@@ -34,6 +35,7 @@ private:
 
   // States
   std::unique_ptr<MainMenu> mainMenu;
+  std::unique_ptr<Gameplay> gameplay;
 
   SDL_Window* setupWindow(const char* windowTitle,
                           int windowXPosition,

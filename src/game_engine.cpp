@@ -31,6 +31,7 @@ GameEngine::GameEngine(const char* windowTitle,
   initializeEngine(this->gameGlobal.window);
 
   this->mainMenu = std::make_unique<MainMenu>(this->gameGlobal, EngineState::MAIN_MENU);
+  this->gameplay = std::make_unique<Gameplay>(this->gameGlobal, EngineState::GAMEPLAY);
 
   this->engineState = this->mainMenu.get();
 
@@ -138,6 +139,10 @@ void GameEngine::handleStateChange() {
       this->engineState = this->mainMenu.get();
       break;
 
+    case EngineState::GAMEPLAY:
+      this->engineState = this->gameplay.get();
+      break;
+
     default:
       break;
     }
@@ -152,7 +157,7 @@ void GameEngine::handleStateChange() {
  * @param displayToEngine Pipe from the display to the displayEngine
  * @return None
  */
-void GameEngine::handleEvents() { this->engineState->handleEvents(&this->gameIsRunning); }
+void GameEngine::handleEvents() { this->engineState->handleEvents(this->gameIsRunning); }
 
 /**
  * Not implemented but may want to add:

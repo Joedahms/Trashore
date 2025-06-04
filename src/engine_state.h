@@ -3,6 +3,6 @@
 
 #include <string>
 
-enum class EngineState { MAIN_MENU };
+enum class EngineState { MAIN_MENU, GAMEPLAY };
 
 #endif

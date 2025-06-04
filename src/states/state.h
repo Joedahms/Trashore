@@ -14,7 +14,7 @@ public:
   State(const GameGlobal& gameGlobal,
         const std::string& logFile,
         const EngineState& state);
-  virtual void handleEvents(bool* displayIsRunning);
+  virtual void handleEvents(bool& gameIsRunning);
   virtual void update();
   virtual void render() const = 0;
   virtual void enter();

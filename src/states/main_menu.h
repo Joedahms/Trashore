@@ -9,7 +9,6 @@
 class MainMenu : public State {
 public:
   MainMenu(const GameGlobal& gameGlobal, const EngineState& state);
-  void handleEvents(bool* displayIsRunning) override;
   void render() const override;
   void exit() override;
 };

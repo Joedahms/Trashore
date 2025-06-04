@@ -16,11 +16,11 @@ State::State(const GameGlobal& gameGlobal,
       std::make_shared<Container>(this->gameGlobal, this->logFile, rootRectangle);
 }
 
-void State::handleEvents(bool* displayIsRunning) {
+void State::handleEvents(bool& displayIsRunning) {
   SDL_Event event;
   while (SDL_PollEvent(&event) != 0) { // While there are events in the queue
     if (event.type == SDL_QUIT) {
-      *displayIsRunning = false;
+      displayIsRunning = false;
       break;
     }
     else {

@@ -5,6 +5,7 @@
 
 struct LogFiles {
   static const std::string MAIN_MENU;
+  static const std::string GAMEPLAY;
 };
 
 #endif

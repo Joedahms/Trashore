@@ -19,25 +19,11 @@ MainMenu::MainMenu(const GameGlobal& gameGlobal, const EngineState& state)
   SDL_Rect newScanButtonRectangle       = {200, 150, 200, 50};
   std::shared_ptr<Button> newScanButton = std::make_shared<Button>(
       this->gameGlobal, this->logFile, newScanButtonRectangle, "Scan New Item",
-      SDL_Point{10, 10}, [this]() { /*this->currentState =*/});
+      SDL_Point{10, 10}, [this]() { this->currentState = EngineState::GAMEPLAY; });
   newScanButton->setCenteredHorizontal();
   rootElement->addElement(std::move(newScanButton));
 
   this->logger->log("Main menu state constructed");
-}
-
-void MainMenu::handleEvents(bool* displayIsRunning) {
-  SDL_Event event;
-  while (SDL_PollEvent(&event) != 0) { // While there are events in the queue
-    if (event.type == SDL_QUIT) {
-      *displayIsRunning = false;
-      break;
-    }
-    else {
-      this->rootElement->handleEvent(event);
-    }
-  }
-  // this->displayMessenger.ignoreVision();
 }
 
 void MainMenu::render() const {

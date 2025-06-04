@@ -26,35 +26,40 @@ add_executable(sdlGameEngine
   src/main.cpp
   src/logger.cpp
 
-  # GUI 
   src/log_files.cpp
   src/engine_state.cpp
   src/game_engine.cpp
   src/sdl_debug.cpp
   src/game_global.cpp
 
-  # GUI Elements
-  #src/elements/element_mediator.cpp
   src/elements/container.cpp
   src/elements/element.cpp
   src/elements/composite_element.cpp
   src/elements/button.cpp
   src/elements/text.cpp
-  #src/elements/panel.cpp
-  #src/elements/scroll_box.cpp
-  #src/elements/number_setting.cpp
-  #src/elements/dropdown.cpp
   src/elements/loading_bar.cpp
 
-  # Game elements
   src/elements/flappy_food/flappy_food.cpp
   src/elements/flappy_food/bird.cpp
   src/elements/flappy_food/obstacle.cpp
   src/elements/flappy_food/obstacle_pair.cpp
 
-  # GUI States
   src/states/state.cpp
   src/states/main_menu.cpp
+  src/states/gameplay.cpp
+
+  src/camera/camera.cpp
+
+  src/character/character.cpp 
+  src/character/character_factory.cpp 
+  src/character/npc.cpp 
+  src/character/player.cpp 
+
+  src/tile/dirt_tile.cpp
+  src/tile/tile.cpp
+  src/tile/tile_factory.cpp
+  src/tile/tile_map.cpp
+  src/tile/water_tile.cpp
 )
 
 # Link all libraries
