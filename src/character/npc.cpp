@@ -10,7 +10,7 @@
 Npc::Npc(GameGlobal gameGlobal) {
   this->gameGlobal = gameGlobal;
 
-  SDL_Surface* npcSurface = IMG_Load("../src/sprites/NPC.png");
+  SDL_Surface* npcSurface = IMG_Load("../sprites/NPC.png");
   assert(npcSurface != 0);
 
   this->texture = SDL_CreateTextureFromSurface(this->gameGlobal.renderer, npcSurface);

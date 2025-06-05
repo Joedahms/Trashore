@@ -26,12 +26,12 @@ public:
 
   void checkBoundries(int, int);
 
-  void update(int, int);
+  void update(int tileSize, int totalXTiles, int totalYTiles);
 
   void zoomChange(int, int, int);
 
-  void shiftDestinationRectVertical();
-  void shiftDestinationRectHorizontal();
+  void shiftDestinationRectVertical(int tileSize);
+  void shiftDestinationRectHorizontal(int tileSize);
   SDL_Rect& getDestinationRect(int, int);
 
   // Needs to be dependent on screen size

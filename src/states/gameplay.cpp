@@ -1,31 +1,48 @@
-#include <SDL2/SDL.h>
-#include <assert.h>
-#include <iostream>
-#include <string>
+#include <cassert>
 
-#include "camera/camera.h"
-#include "game_global.h"
 #include "gameplay.h"
-#include "logger.h"
-#include "tile/tile_map.h"
 
-/**
- * @param gameGlobal - Global variables.
- */
-Gameplay::Gameplay(struct GameGlobal gameGlobal) { this->gameGlobal = gameGlobal; }
+Gameplay::Gameplay(const GameGlobal& gameGlobal, const EngineState& state)
+    : State(gameGlobal, LogFiles::GAMEPLAY, state) {
+  SDL_Surface* windowSurface = SDL_GetWindowSurface(this->gameGlobal.window);
 
-/**
- * Handle all events in the SDL event queue.
- *
- * @param gameIsRunning - Whether or not the game is running.
- * @return - The current state of the game after updating gameplay.
- */
-int Gameplay::handleEvents(bool* gameIsRunning) {
+  // Initialize the tile map
+  this->logger->log("Initializing tile map...");
+  this->tileMap = std::make_unique<TileMap>(16, 200, 200, this->gameGlobal.renderer);
+  this->logger->log("Tile map initialized");
+
+  // Initialize the camera
+  this->logger->log("Initializing camera");
+  this->camera = std::make_unique<Camera>(windowSurface->h, windowSurface->w,
+                                          this->tileMap->getTotalXTiles(),
+                                          this->tileMap->getTotalYTiles(), 16);
+  assert(this->camera->getScreenHeight() == windowSurface->h);
+  assert(this->camera->getScreenWidth() == windowSurface->w);
+  this->logger->log("Camera initialized");
+
+  this->characterFactory = std::make_unique<CharacterFactory>(this->gameGlobal);
+
+  // Initialize NPC
+  this->logger->log("Initializing NPC...");
+  std::unique_ptr<Character> npc = this->characterFactory->create(characterId::NPC);
+  this->npcVector.emplace_back(std::move(npc));
+  this->npcVector[0]->setXVelocity(1);
+  this->npcVector[0]->setYVelocity(1);
+  this->logger->log("NPC initialized");
+
+  this->logger->log("Initializing textures...");
+  SDL_Surface* tmp_surface = IMG_Load("sprites/selected.png");
+  selectedTexture = SDL_CreateTextureFromSurface(this->gameGlobal.renderer, tmp_surface);
+  SDL_FreeSurface(tmp_surface);
+  this->logger->log("Textures initialized");
+}
+
+void Gameplay::handleEvents(bool& gameIsRunning) {
   SDL_Event event;
   while (SDL_PollEvent(&event) != 0) { // While events in the queue
     switch (event.type) {
     case SDL_QUIT: // Quit event
-      *gameIsRunning = false;
+      gameIsRunning = false;
       break;
 
     case SDL_MOUSEWHEEL:                          // Mousewheel event
@@ -56,36 +73,24 @@ int Gameplay::handleEvents(bool* gameIsRunning) {
       break;
     }
   }
-
-  // Still in gameplay state
-  return 1;
+  checkKeystates();
 }
 
-/**
- * Perform the appropriate action depending on which keyboard key has been pressed.
- *
- * @param - None
- * @return - The state the game is in after checking if any keys have been pressed.
- */
-int Gameplay::checkKeystates() {
+void Gameplay::checkKeystates() {
   const Uint8* keystates = SDL_GetKeyboardState(NULL);
 
   // Camera movement (arrow keys)
   if (keystates[SDL_SCANCODE_UP]) {
     this->camera->setYVelocity(-128);
-    return 1;
   }
   else if (keystates[SDL_SCANCODE_DOWN]) {
     this->camera->setYVelocity(128);
-    return 1;
   }
   else if (keystates[SDL_SCANCODE_RIGHT]) {
     this->camera->setXVelocity(128);
-    return 1;
   }
   else if (keystates[SDL_SCANCODE_LEFT]) {
     this->camera->setXVelocity(-128);
-    return 1;
   }
   else { // No arrow key pressed
     this->camera->setXVelocity(0);
@@ -94,18 +99,10 @@ int Gameplay::checkKeystates() {
 
   // Pause menu
   if (keystates[SDL_SCANCODE_ESCAPE]) {
-    return 2;
+    // pause
   }
-
-  return 1;
 }
 
-/**
- * Determines where the mouse is and sets the tile it is over to selected.
- *
- * @param - None
- * @return - None
- */
 void Gameplay::setSelectedTile() {
   int X;
   int Y;
@@ -127,28 +124,18 @@ void Gameplay::setSelectedTile() {
   this->tileMap->selectTile(selectedXCoordinate, selectedYCoordinate);
 }
 
-/**
- * Update the camera and set the selected tile.
- *
- * @param - None
- * @return - None
- */
 void Gameplay::update() {
-  writeToLogFile(this->gameGlobal.logFile, "updating in gameplay");
-  this->camera->update(this->tileMap->getTotalXTiles(),
+  this->rootElement->update();
+
+  this->logger->log("updating in gameplay");
+  this->camera->update(this->tileMap->getTileSize(), this->tileMap->getTotalXTiles(),
                        this->tileMap->getTotalYTiles()); // update camera
   // setSelectedTile();
 
   this->npcVector[0]->updatePosition();
 }
 
-/**
- * Render all gameplay elements.
- *
- * @param - None
- * @return - None
- */
-void Gameplay::render() {
+void Gameplay::render() const {
   SDL_RenderClear(this->gameGlobal.renderer);
 
   int cameraXPosition = this->camera->getXPosition();
@@ -181,63 +168,4 @@ void Gameplay::render() {
   SDL_RenderPresent(this->gameGlobal.renderer);
 }
 
-/**
- * Perform necessary actions when the gameplay state is entered for the first.
- *
- * @param - None
- * @return - None
- */
-void Gameplay::enterGameplay() {
-  SDL_Surface* windowSurface = SDL_GetWindowSurface(this->gameGlobal.window);
-
-  // Initialize the tile map
-  writeToLogFile(this->gameGlobal.logFile, "Initializing tile map...");
-  this->tileMap = std::make_unique<TileMap>(16, 200, 200, this->gameGlobal.renderer);
-  writeToLogFile(this->gameGlobal.logFile, "Tile map initialized");
-
-  // Initialize the camera
-  writeToLogFile(this->gameGlobal.logFile, "Initializing camera");
-  this->camera = std::make_unique<Camera>(windowSurface->h, windowSurface->w,
-                                          this->tileMap->getTotalXTiles(),
-                                          this->tileMap->getTotalYTiles(), 16);
-  assert(this->camera->getScreenHeight() == windowSurface->h);
-  assert(this->camera->getScreenWidth() == windowSurface->w);
-  writeToLogFile(this->gameGlobal.logFile, "Camera initialized");
-
-  this->characterFactory = std::make_unique<CharacterFactory>(this->gameGlobal);
-
-  // Initialize NPC
-  writeToLogFile(this->gameGlobal.logFile, "Initializing NPC...");
-  std::unique_ptr<Character> npc = this->characterFactory->create(characterId::NPC);
-  this->npcVector.emplace_back(std::move(npc));
-  this->npcVector[0]->setXVelocity(1);
-  this->npcVector[0]->setYVelocity(1);
-  writeToLogFile(this->gameGlobal.logFile, "NPC initialized");
-
-  initializeTextures();
-
-  // State has been entered once
-  this->stateEntered = true;
-}
-
-/**
- * Initialize all textures in the gameplay state.
- *
- * @param - None
- * @return - None
- */
-void Gameplay::initializeTextures() {
-  writeToLogFile(this->gameGlobal.logFile, "Initializing textures...");
-  SDL_Surface* tmp_surface = IMG_Load("sprites/selected.png");
-  selectedTexture = SDL_CreateTextureFromSurface(this->gameGlobal.renderer, tmp_surface);
-  SDL_FreeSurface(tmp_surface);
-  writeToLogFile(this->gameGlobal.logFile, "Textures initialized");
-}
-
-/**
- * Check if the gameplay state has been entered before.
- *
- * @param - None
- * @return - Whether the state has been entered before
- */
-bool Gameplay::getStateEntered() { return this->stateEntered; }
+void Gameplay::exit() {}

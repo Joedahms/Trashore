@@ -1,69 +1,70 @@
-cmake_minimum_required(VERSION 3.7)
-project(sdlGameEngine VERSION 0.01 DESCRIPTION "Game engine in SDL" LANGUAGES CXX)
+cmake_minimum_required(VERSION 3.28)
+project(sdlGameEngine DESCRIPTION "Game engine in SDL2" LANGUAGES CXX)
 
+# Set build type and C++ standard
 set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Compiler flags (only compiler flags, not linker flags)
+set(CXXFLAGS "-Wall")
+set(CMAKE_CXX_FLAGS "${CXXFLAGS}")
+
+# Find required packages
 find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
-find_package(SDL2_ttf)
+find_package(SDL2_ttf REQUIRED)
 
-include_directories(${SDL2_INCLUDE_DIRS} ${SDL2_IMAGE_INCLUDE_DIRS})
-
-add_executable(sdlGameEngine
-src/camera/camera.cpp
-src/camera/camera.h
-
-src/character/character.cpp
-src/character/character_factory.cpp
-src/character/character_factory.h
-src/character/character.h
-src/character/npc.cpp
-src/character/npc.h
-src/character/player.cpp
-src/character/player.h
-
-src/game.cpp
-src/game.h
-
-src/logger.cpp
-src/logger.h
-
-src/main.cpp
-
-src/tile/dirt_tile.cpp
-src/tile/dirt_tile.h
-src/tile/tile.cpp
-src/tile/tile_factory.cpp
-src/tile/tile_factory.h
-src/tile/tile.h
-src/tile/water_tile.cpp
-src/tile/water_tile.h
-src/tile/tile_map.cpp
-src/tile/tile_map.h
-
-src/button.h
-src/button.cpp
-
-src/main_menu.h
-src/main_menu.cpp
-
-src/gameplay.h
-src/gameplay.cpp
-
-src/pause_menu.h
-src/pause_menu.cpp
-
-src/text.h
-src/text.cpp
-
-src/rectangle.h
-src/rectangle.cpp
-
-src/game_global.h
+# Include directories for all libraries
+include_directories(
+  ${SDL2_INCLUDE_DIRS} 
+  ${SDL2_IMAGE_INCLUDE_DIRS}
 )
 
+# Add executable with all source files
+add_executable(sdlGameEngine
+  src/main.cpp
+  src/logger.cpp
 
-target_compile_features(sdlGameEngine PRIVATE cxx_std_20)
+  src/log_files.cpp
+  src/engine_state.cpp
+  src/game_engine.cpp
+  src/sdl_debug.cpp
+  src/game_global.cpp
 
-target_link_libraries(sdlGameEngine ${SDL2_LIBRARIES} SDL2_image)
-target_link_libraries(sdlGameEngine SDL2_ttf)
+  src/elements/container.cpp
+  src/elements/element.cpp
+  src/elements/composite_element.cpp
+  src/elements/button.cpp
+  src/elements/text.cpp
+  src/elements/loading_bar.cpp
+
+  src/elements/flappy_food/flappy_food.cpp
+  src/elements/flappy_food/bird.cpp
+  src/elements/flappy_food/obstacle.cpp
+  src/elements/flappy_food/obstacle_pair.cpp
+
+  src/states/state.cpp
+  src/states/main_menu.cpp
+  src/states/gameplay.cpp
+
+  src/camera/camera.cpp
+
+  src/character/character.cpp 
+  src/character/character_factory.cpp 
+  src/character/npc.cpp 
+  src/character/player.cpp 
+
+  src/tile/dirt_tile.cpp
+  src/tile/tile.cpp
+  src/tile/tile_factory.cpp
+  src/tile/tile_map.cpp
+  src/tile/water_tile.cpp
+)
+
+# Link all libraries
+target_link_libraries(sdlGameEngine
+  ${SDL2_LIBRARIES}
+  SDL2_image
+  SDL2_ttf
+)
