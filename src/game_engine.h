@@ -6,7 +6,6 @@
 #include <memory>
 #include <string>
 #include <vector>
-#include <zmqpp/zmqpp.hpp>
 
 #include "logger.h"
 

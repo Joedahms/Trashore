@@ -2,6 +2,7 @@
 #include <SDL2/SDL_ttf.h>
 #include <assert.h>
 #include <iostream>
+#include <thread>
 
 #include "game_engine.h"
 #include "game_global.h"
