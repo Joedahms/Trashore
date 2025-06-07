@@ -17,9 +17,9 @@ To make functions easier to understand, a common comment format is used for each
  \* @return Return Description  
  */
 
-tet
-
-
+## Dependencies
+libsdl2-image-dev
+libsdl2-ttf-dev
 
 
 

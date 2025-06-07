@@ -5,9 +5,10 @@
 #include <string>
 
 struct GameGlobal {
-  std::string logFile;    // Path to the log file
   SDL_Renderer* renderer;
   SDL_Window* window;
+  static const std::string futuramFontPath;
+  static const std::string logger;
 };
 
 #endif
