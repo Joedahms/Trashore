@@ -4,12 +4,14 @@
 #include "dirt_tile.h"
 #include "tile.h"
 
-DirtTile::DirtTile(SDL_Renderer* renderer) {
-  SDL_Surface* temporarySurface = IMG_Load("../sprites/dirt_tile.png");
+DirtTile::DirtTile(const GameGlobal& gameGlobal)
+    : Tile(gameGlobal, "../sprites/dirt_tile.png") {
+  SDL_Surface* temporarySurface = IMG_Load(this->spritePath.c_str());
   assert(temporarySurface != 0);
 
-  tileTexture = SDL_CreateTextureFromSurface(renderer, temporarySurface);
-  assert(tileTexture != 0);
+  this->texture =
+      SDL_CreateTextureFromSurface(this->gameGlobal.renderer, temporarySurface);
+  assert(this->texture != 0);
 
   SDL_FreeSurface(temporarySurface);
 }

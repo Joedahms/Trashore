@@ -8,7 +8,7 @@
 class TileFactory {
 public:
   TileFactory(const GameGlobal& gameGlobal);
-  std::unique_ptr<Tile> create(tileId id);
+  std::unique_ptr<Tile> create(tile_id id, SDL_Renderer*);
 
 private:
   GameGlobal gameGlobal;

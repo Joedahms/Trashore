@@ -4,35 +4,29 @@
 #include <SDL2/SDL.h>
 #include <vector>
 
+#include "../game_global.h"
+
 /**
  * The camera defines how the game is displayed to the user. It dictates what is
  * visible at any one given time.
  */
 class Camera {
 public:
-  Camera(int, int, int, int, int);
+  Camera(const GameGlobal& gameGlobal,
+         const SDL_Point mapSizeTiles,
+         const int initialTileSize);
 
-  void setXVelocity(int);
-  void setYVelocity(int);
+  void zoomIn(const int tileSize);
+  void zoomOut(const int tileSize);
+  void zoomChange(int tileSize);
 
-  int getXPosition();
-  int getYPosition();
+  void checkBoundries();
 
-  int getScreenHeight();
-  int getScreenWidth();
-
-  void zoomIn(int, int, int);
-  void zoomOut(int, int, int);
-
-  void checkBoundries(int, int);
-
-  void update(int tileSize, int totalXTiles, int totalYTiles);
-
-  void zoomChange(int, int, int);
+  void update(int tileSize);
 
   void shiftDestinationRectVertical(int tileSize);
   void shiftDestinationRectHorizontal(int tileSize);
-  SDL_Rect& getDestinationRect(int, int);
+  SDL_Rect& getDestinationRect(int xCoordinate, int yCoordinate);
 
   // Needs to be dependent on screen size
   std::vector<std::vector<SDL_Rect>> destinationRect;
@@ -40,26 +34,28 @@ public:
   int getVisibleXTiles();
   int getVisibleYTiles();
 
+  void setYVelocity(int yVelocity);
+  void setXVelocity(int xVelocity);
+
+  SDL_Point getPosition();
+
 private:
-  int screenHeight;
-  int screenWidth;
+  GameGlobal gameGlobal;
 
-  int xPosition;
-  int yPosition;
+  SDL_Point screenSizePixels = {0, 0};
 
-  int xVelocity;
-  int yVelocity;
+  const SDL_Point MAP_SIZE_TILES;
+  SDL_Point mapSizePixels = {0, 0};
 
-  int visibleXTiles;
-  int visibleYTiles;
+  SDL_Point position = {0, 0};
+  SDL_Point velocity = {0, 0};
 
-  int totalXPixels;
-  int totalYPixels;
+  SDL_Point visibleTiles = {0, 0};
 
-  int deltaTime;
-  int totalDeltaTime;
-  Uint64 currentTicks;
-  Uint64 previousTicks;
+  int deltaTime        = 0;
+  int totalDeltaTime   = 0;
+  Uint64 currentTicks  = 0;
+  Uint64 previousTicks = 0;
 };
 
 #endif

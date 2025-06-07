@@ -4,10 +4,14 @@
 #include "tile.h"
 #include "water_tile.h"
 
-WaterTile::WaterTile(SDL_Renderer* renderer) {
-  SDL_Surface* temporarySurface = IMG_Load("../sprites/water_tile.png");
+WaterTile::WaterTile(const GameGlobal& gameGlobal)
+    : Tile(gameGlobal, "../sprites/water_tile.png") {
+  SDL_Surface* temporarySurface = IMG_Load(this->spritePath.c_str());
+  assert(temporarySurface != 0);
 
-  tileTexture = SDL_CreateTextureFromSurface(renderer, temporarySurface);
+  this->texture =
+      SDL_CreateTextureFromSurface(this->gameGlobal.renderer, temporarySurface);
+  assert(this->texture != 0);
 
   SDL_FreeSurface(temporarySurface);
 }

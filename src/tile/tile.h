@@ -3,10 +3,14 @@
 
 #include <SDL2/SDL_image.h>
 
-enum tile_id { WATER_TILE, DIRT_TILE };
+#include "../game_global.h"
+
+enum tileId { WATER_TILE, DIRT_TILE };
 
 class Tile {
 public:
+  Tile(const GameGlobal& gameGlobal, const std::string& spritePath);
+
   virtual void print() = 0;
   void setSelected();
   void unsetSelected();
@@ -14,9 +18,13 @@ public:
   SDL_Texture* getTileTexture();
 
 protected:
-  SDL_Rect rectangle;
-  SDL_Texture* tileTexture;
-  bool selected = false;
+  GameGlobal gameGlobal;
+
+  const std::string spritePath;
+
+  SDL_Rect rectangle   = {0, 0, 0, 0};
+  SDL_Texture* texture = nullptr;
+  bool selected        = false;
 };
 
 #endif

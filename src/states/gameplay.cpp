@@ -4,30 +4,23 @@
 
 Gameplay::Gameplay(const GameGlobal& gameGlobal, const EngineState& state)
     : State(gameGlobal, LogFiles::GAMEPLAY, state) {
-  SDL_Surface* windowSurface = SDL_GetWindowSurface(this->gameGlobal.window);
-
-  // Initialize the tile map
   this->logger->log("Initializing tile map...");
-  this->tileMap = std::make_unique<TileMap>(16, 200, 200, this->gameGlobal.renderer);
+  this->tileMap = std::make_unique<TileMap>(gameGlobal, this->MAP_SIZE_TILES,
+                                            this->INITIAL_TILE_SIZE);
   this->logger->log("Tile map initialized");
 
-  // Initialize the camera
   this->logger->log("Initializing camera");
-  this->camera = std::make_unique<Camera>(windowSurface->h, windowSurface->w,
-                                          this->tileMap->getTotalXTiles(),
-                                          this->tileMap->getTotalYTiles(), 16);
-  assert(this->camera->getScreenHeight() == windowSurface->h);
-  assert(this->camera->getScreenWidth() == windowSurface->w);
+  this->camera =
+      std::make_unique<Camera>(gameGlobal, this->MAP_SIZE_TILES, this->INITIAL_TILE_SIZE);
   this->logger->log("Camera initialized");
 
   this->characterFactory = std::make_unique<CharacterFactory>(this->gameGlobal);
 
-  // Initialize NPC
   this->logger->log("Initializing NPC...");
   std::unique_ptr<Character> npc = this->characterFactory->create(characterId::NPC);
   this->npcVector.emplace_back(std::move(npc));
-  this->npcVector[0]->setXVelocity(1);
-  this->npcVector[0]->setYVelocity(1);
+  this->npcVector[0]->setXVelocity(0);
+  this->npcVector[0]->setYVelocity(0);
   this->logger->log("NPC initialized");
 
   this->logger->log("Initializing textures...");
@@ -52,8 +45,7 @@ void Gameplay::handleEvents(bool& gameIsRunning) {
           this->zoomedOut = false;
 
           this->tileMap->setTileSize(32);
-          this->camera->zoomIn(32, this->tileMap->getTotalXTiles(),
-                               this->tileMap->getTotalYTiles());
+          this->camera->zoomIn(32);
           break;
         }
       }
@@ -63,8 +55,7 @@ void Gameplay::handleEvents(bool& gameIsRunning) {
           this->zoomedOut = true;
 
           this->tileMap->setTileSize(16);
-          this->camera->zoomOut(16, this->tileMap->getTotalXTiles(),
-                                this->tileMap->getTotalYTiles());
+          this->camera->zoomOut(16);
           break;
         }
       }
@@ -108,15 +99,14 @@ void Gameplay::setSelectedTile() {
   int Y;
   Uint32 mouse = SDL_GetMouseState(&X, &Y);
 
-  int cameraXPosition = this->camera->getXPosition();
-  int cameraYPosition = this->camera->getYPosition();
+  SDL_Point cameraPosition = this->camera->getPosition();
 
-  int selectedXCoordinate = floor(X / this->tileMap->getTileSize()) + cameraXPosition;
-  int selectedYCoordinate = floor(Y / this->tileMap->getTileSize()) + cameraYPosition;
+  int selectedXCoordinate = floor(X / this->tileMap->getTileSize()) + cameraPosition.x;
+  int selectedYCoordinate = floor(Y / this->tileMap->getTileSize()) + cameraPosition.y;
 
   // Unselect all tiles
-  for (int x = 0; x < this->camera->getVisibleXTiles() + cameraXPosition; x++) {
-    for (int y = 0; y < this->camera->getVisibleYTiles() + cameraYPosition; y++) {
+  for (int x = 0; x < this->camera->getVisibleXTiles() + cameraPosition.x; x++) {
+    for (int y = 0; y < this->camera->getVisibleYTiles() + cameraPosition.y; y++) {
       this->tileMap->unselectTile(x, y);
     }
   }
@@ -128,9 +118,7 @@ void Gameplay::update() {
   this->logger->log("updating in gameplay");
   this->rootElement->update();
 
-  this->camera->update(this->tileMap->getTileSize(), this->tileMap->getTotalXTiles(),
-                       this->tileMap->getTotalYTiles()); // update camera
-  // setSelectedTile();
+  this->camera->update(this->tileMap->getTileSize());
 
   this->npcVector[0]->updatePosition();
 }
@@ -138,16 +126,14 @@ void Gameplay::update() {
 void Gameplay::render() const {
   SDL_RenderClear(this->gameGlobal.renderer);
 
-  int cameraXPosition = this->camera->getXPosition();
-  int cameraYPosition = this->camera->getYPosition();
-  // std::cout << cameraXPosition << std::endl;
+  SDL_Point cameraPosition = this->camera->getPosition();
 
   // Loop through all visible x tiles
   for (int x = 0; x < this->camera->getVisibleXTiles() + 1; x++) {
     // Loop through all visible y tiles
     for (int y = 0; y < this->camera->getVisibleYTiles() + 1; y++) {
-      int currentXPosition = x + floor(cameraXPosition / 16);
-      int currentYPosition = y + floor(cameraYPosition / 16);
+      int currentXPosition = x + floor(cameraPosition.x / 16);
+      int currentYPosition = y + floor(cameraPosition.y / 16);
 
       // Render all visible tiles
       SDL_RenderCopy(this->gameGlobal.renderer,
@@ -158,7 +144,7 @@ void Gameplay::render() const {
       if (this->tileMap->getSelected(currentXPosition, currentYPosition)) {
         // Render selected texture over it
         SDL_RenderCopy(this->gameGlobal.renderer, this->selectedTexture, NULL,
-                       &(camera->destinationRect[x][y]));
+                       &(this->camera->destinationRect[x][y]));
       }
     }
   }
