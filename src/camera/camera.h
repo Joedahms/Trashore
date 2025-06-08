@@ -45,7 +45,7 @@ private:
   Uint64 previousTicks = 0;
 
   void shift(const SDL_Point shift);
-  int zoomLevel = 0;
+  int zoomLevel = 32;
 };
 
 #endif

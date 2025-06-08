@@ -35,11 +35,12 @@ Camera::Camera(const GameGlobal& gameGlobal,
  */
 void Camera::zoomIn() {
   // Max zoom
-  if (this->zoomLevel == 10) {
+  if (this->zoomLevel == 100) {
     return;
   }
 
   this->zoomLevel++;
+  std::cout << zoomLevel << std::endl;
   SDL_Point shiftAmount = {0, 0};
   for (auto& column : destinationRect) {
     for (auto& rectangle : column) {
