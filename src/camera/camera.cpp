@@ -34,11 +34,24 @@ Camera::Camera(const GameGlobal& gameGlobal,
  * @return None
  */
 void Camera::zoomIn() {
+  // Max zoom
+  if (this->zoomLevel == 10) {
+    return;
+  }
+
+  this->zoomLevel++;
+  SDL_Point shiftAmount = {0, 0};
   for (auto& column : destinationRect) {
     for (auto& rectangle : column) {
+      rectangle.x += shiftAmount.x;
+      rectangle.y += shiftAmount.y;
       rectangle.w++;
       rectangle.h++;
+
+      shiftAmount.y++;
     }
+    shiftAmount.y = 0;
+    shiftAmount.x++;
   }
 }
 
@@ -49,11 +62,19 @@ void Camera::zoomIn() {
  * @return None
  */
 void Camera::zoomOut() {
+  this->zoomLevel--;
+  SDL_Point shiftAmount = {0, 0};
   for (auto& column : destinationRect) {
     for (auto& rectangle : column) {
+      rectangle.x -= shiftAmount.x;
+      rectangle.y -= shiftAmount.y;
       rectangle.w--;
       rectangle.h--;
+
+      shiftAmount.y++;
     }
+    shiftAmount.y = 0;
+    shiftAmount.x++;
   }
 }
 
@@ -89,8 +110,6 @@ void Camera::checkBoundries() {
  * Update camera postion based on velocity. Ensure that the camera stays within the bounds
  * of the tile map.
  *
- * @param totalXTiles - Total amount of tiles on the x axis of the tile map.
- * @param totalYTiles - Total amount of tiles on the y axis of the tile map.
  * @return None
  */
 void Camera::update() {
