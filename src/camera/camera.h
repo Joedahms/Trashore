@@ -16,23 +16,14 @@ public:
          const SDL_Point mapSizeTiles,
          const int initialTileSize);
 
-  void zoomIn(const int tileSize);
-  void zoomOut(const int tileSize);
-  void zoomChange(int tileSize);
+  void zoomIn();
+  void zoomOut();
 
   void checkBoundries();
 
-  void update(int tileSize);
+  void update();
 
-  void shiftDestinationRectVertical(int tileSize);
-  void shiftDestinationRectHorizontal(int tileSize);
-  SDL_Rect& getDestinationRect(int xCoordinate, int yCoordinate);
-
-  // Needs to be dependent on screen size
   std::vector<std::vector<SDL_Rect>> destinationRect;
-
-  int getVisibleXTiles();
-  int getVisibleYTiles();
 
   void setYVelocity(int yVelocity);
   void setXVelocity(int xVelocity);
@@ -43,19 +34,17 @@ private:
   GameGlobal gameGlobal;
 
   SDL_Point screenSizePixels = {0, 0};
-
-  const SDL_Point MAP_SIZE_TILES;
-  SDL_Point mapSizePixels = {0, 0};
+  SDL_Point mapSizePixels    = {0, 0};
 
   SDL_Point position = {0, 0};
   SDL_Point velocity = {0, 0};
 
-  SDL_Point visibleTiles = {0, 0};
-
-  int deltaTime        = 0;
+  int deltaTime        = 0; // MS
   int totalDeltaTime   = 0;
   Uint64 currentTicks  = 0;
   Uint64 previousTicks = 0;
+
+  void shift(const SDL_Point shift);
 };
 
 #endif

@@ -25,10 +25,6 @@ private:
   std::unique_ptr<TileMap> tileMap;
   std::vector<std::unique_ptr<Character>> npcVector;
 
-  // Zoom flags. Game starts zoomed out.
-  bool zoomedIn  = false;
-  bool zoomedOut = true;
-
   SDL_Texture* selectedTexture;
 };
 

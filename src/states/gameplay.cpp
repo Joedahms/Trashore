@@ -38,26 +38,12 @@ void Gameplay::handleEvents(bool& gameIsRunning) {
       gameIsRunning = false;
       break;
 
-    case SDL_MOUSEWHEEL:                          // Mousewheel event
-      if (event.wheel.y > 0) {                    // Scroll up -> zoom in
-        if (this->tileMap->getTileSize() == 16) { // If not already zoomed in
-          this->zoomedIn  = true;
-          this->zoomedOut = false;
-
-          this->tileMap->setTileSize(32);
-          this->camera->zoomIn(32);
-          break;
-        }
+    case SDL_MOUSEWHEEL:       // Mousewheel event
+      if (event.wheel.y > 0) { // Scroll up -> zoom in
+        this->camera->zoomIn();
       }
-      else if (event.wheel.y < 0) {               // Scroll down -> zoom out
-        if (this->tileMap->getTileSize() == 32) { // If not already zoomed out
-          this->zoomedIn  = false;
-          this->zoomedOut = true;
-
-          this->tileMap->setTileSize(16);
-          this->camera->zoomOut(16);
-          break;
-        }
+      else if (event.wheel.y < 0) { // Scroll down -> zoom out
+        this->camera->zoomOut();
       }
 
     default:
@@ -104,6 +90,7 @@ void Gameplay::setSelectedTile() {
   int selectedXCoordinate = floor(X / this->tileMap->getTileSize()) + cameraPosition.x;
   int selectedYCoordinate = floor(Y / this->tileMap->getTileSize()) + cameraPosition.y;
 
+  /*
   // Unselect all tiles
   for (int x = 0; x < this->camera->getVisibleXTiles() + cameraPosition.x; x++) {
     for (int y = 0; y < this->camera->getVisibleYTiles() + cameraPosition.y; y++) {
@@ -112,13 +99,14 @@ void Gameplay::setSelectedTile() {
   }
 
   this->tileMap->selectTile(selectedXCoordinate, selectedYCoordinate);
+  */
 }
 
 void Gameplay::update() {
   this->logger->log("updating in gameplay");
   this->rootElement->update();
 
-  this->camera->update(this->tileMap->getTileSize());
+  this->camera->update();
 
   this->npcVector[0]->updatePosition();
 }
@@ -128,24 +116,19 @@ void Gameplay::render() const {
 
   SDL_Point cameraPosition = this->camera->getPosition();
 
-  // Loop through all visible x tiles
-  for (int x = 0; x < this->camera->getVisibleXTiles() + 1; x++) {
-    // Loop through all visible y tiles
-    for (int y = 0; y < this->camera->getVisibleYTiles() + 1; y++) {
-      int currentXPosition = x + floor(cameraPosition.x / 16);
-      int currentYPosition = y + floor(cameraPosition.y / 16);
-
-      // Render all visible tiles
-      SDL_RenderCopy(this->gameGlobal.renderer,
-                     this->tileMap->getTileTexture(currentXPosition, currentYPosition),
-                     NULL, &(this->camera->destinationRect[x][y]));
+  for (int x = 0; x < this->MAP_SIZE_TILES.x; x++) {
+    for (int y = 0; y < this->MAP_SIZE_TILES.y; y++) {
+      SDL_RenderCopy(this->gameGlobal.renderer, this->tileMap->getTileTexture(x, y), NULL,
+                     &(this->camera->destinationRect[x][y]));
 
       // If the current tile is selected
+      /*
       if (this->tileMap->getSelected(currentXPosition, currentYPosition)) {
         // Render selected texture over it
         SDL_RenderCopy(this->gameGlobal.renderer, this->selectedTexture, NULL,
                        &(this->camera->destinationRect[x][y]));
       }
+      */
     }
   }
 
