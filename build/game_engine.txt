@@ -1,6 +1,6 @@
-[Sun Jun  8 13:52:06 2025] Constructing game engine
-[Sun Jun  8 13:52:06 2025] Creating SDL game window
-[Sun Jun  8 13:52:06 2025] Initializing engine
-[Sun Jun  8 13:52:06 2025] Engine initialized
-[Sun Jun  8 13:52:08 2025] Engine is constructed and now running
-[Sun Jun  8 13:53:50 2025] GameEngine cleaned
+[Tue Jun 10 17:18:27 2025] Constructing game engine
+[Tue Jun 10 17:18:27 2025] Creating SDL game window
+[Tue Jun 10 17:18:27 2025] Initializing engine
+[Tue Jun 10 17:18:27 2025] Engine initialized
+[Tue Jun 10 17:18:29 2025] Engine is constructed and now running
+[Tue Jun 10 17:21:21 2025] GameEngine cleaned

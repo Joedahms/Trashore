@@ -33,11 +33,13 @@ public:
 private:
   GameGlobal gameGlobal;
 
-  SDL_Point screenSizePixels = {0, 0};
-  SDL_Point mapSizePixels    = {0, 0};
+  SDL_Point screenSizePixels    = {0, 0};
+  SDL_Point mapSizePixels       = {0, 0};
+  SDL_Point initialVisibleTiles = {0, 0};
 
-  SDL_Point position = {0, 0};
-  SDL_Point velocity = {0, 0};
+  SDL_Point position            = {0, 0};
+  SDL_Point positionWithoutZoom = {0, 0};
+  SDL_Point velocity            = {0, 0};
 
   int deltaTime        = 0; // MS
   int totalDeltaTime   = 0;
@@ -45,6 +47,7 @@ private:
   Uint64 previousTicks = 0;
 
   void shift(const SDL_Point shift);
+  void shift(const SDL_Point shift, bool zoomShift);
   int zoomLevel = 32;
 };
 

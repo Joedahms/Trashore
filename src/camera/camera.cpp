@@ -12,6 +12,9 @@ Camera::Camera(const GameGlobal& gameGlobal,
   this->screenSizePixels.x   = windowSurface->w;
   this->screenSizePixels.y   = windowSurface->h;
 
+  this->initialVisibleTiles.x = this->screenSizePixels.x / initialTileSize;
+  this->initialVisibleTiles.y = this->screenSizePixels.y / initialTileSize;
+
   int xPosition = 0;
   int yPosition = 0;
 
@@ -40,7 +43,6 @@ void Camera::zoomIn() {
   }
 
   this->zoomLevel++;
-  std::cout << zoomLevel << std::endl;
   SDL_Point shiftAmount = {0, 0};
   for (auto& column : destinationRect) {
     for (auto& rectangle : column) {
@@ -54,6 +56,14 @@ void Camera::zoomIn() {
     shiftAmount.y = 0;
     shiftAmount.x++;
   }
+
+  /*
+  shift(SDL_Point{this->initialVisibleTiles.x / 2, this->initialVisibleTiles.y / 2},
+        );
+  */
+  shift(SDL_Point{this->initialVisibleTiles.x / 2 + this->position.x / 16,
+                  this->initialVisibleTiles.y / 2 + this->position.y / 16},
+        true);
 }
 
 /**
@@ -77,6 +87,12 @@ void Camera::zoomOut() {
     shiftAmount.y = 0;
     shiftAmount.x++;
   }
+
+  //  shift(SDL_Point{-this->initialVisibleTiles.x / 2, -this->initialVisibleTiles.y /
+  //  2});
+  shift(SDL_Point{-(this->initialVisibleTiles.x / 2 + this->position.x / 16),
+                  -(this->initialVisibleTiles.y / 2 + this->position.y / 16)},
+        true);
 }
 
 /**
@@ -159,6 +175,19 @@ SDL_Point Camera::getPosition() { return this->position; }
 void Camera::shift(const SDL_Point shift) {
   this->position.x += shift.x;
   this->position.y += shift.y;
+  for (auto& column : this->destinationRect) {
+    for (auto& rectangle : column) {
+      rectangle.x -= shift.x;
+      rectangle.y -= shift.y;
+    }
+  }
+}
+
+void Camera::shift(const SDL_Point shift, bool zoomShift) {
+  if (!zoomShift) {
+    this->position.x += shift.x;
+    this->position.y += shift.y;
+  }
   for (auto& column : this->destinationRect) {
     for (auto& rectangle : column) {
       rectangle.x -= shift.x;
