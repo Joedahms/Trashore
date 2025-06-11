@@ -61,8 +61,8 @@ void Camera::zoomIn() {
   shift(SDL_Point{this->initialVisibleTiles.x / 2, this->initialVisibleTiles.y / 2},
         );
   */
-  shift(SDL_Point{this->initialVisibleTiles.x / 2 + this->position.x / 16,
-                  this->initialVisibleTiles.y / 2 + this->position.y / 16},
+  shift(SDL_Point{this->initialVisibleTiles.x / 2 + this->truePosition.x / 16,
+                  this->initialVisibleTiles.y / 2 + this->truePosition.y / 16},
         true);
 }
 
@@ -90,8 +90,8 @@ void Camera::zoomOut() {
 
   //  shift(SDL_Point{-this->initialVisibleTiles.x / 2, -this->initialVisibleTiles.y /
   //  2});
-  shift(SDL_Point{-(this->initialVisibleTiles.x / 2 + this->position.x / 16),
-                  -(this->initialVisibleTiles.y / 2 + this->position.y / 16)},
+  shift(SDL_Point{-(this->initialVisibleTiles.x / 2 + this->truePosition.x / 16),
+                  -(this->initialVisibleTiles.y / 2 + this->truePosition.y / 16)},
         true);
 }
 
@@ -103,23 +103,23 @@ void Camera::zoomOut() {
  */
 void Camera::checkBoundries() {
   // Left
-  if (this->position.x < 0) {
-    shift(SDL_Point{1, 0});
+  if (this->zoomedPosition.x < 0) {
+    shift(SDL_Point{1, 0}, false);
   }
 
   // Right
-  if (this->position.x + this->screenSizePixels.x > this->mapSizePixels.x) {
-    shift(SDL_Point{-1, 0});
+  if (this->zoomedPosition.x + this->screenSizePixels.x > this->mapSizePixels.x) {
+    shift(SDL_Point{-1, 0}, false);
   }
 
   // Top
-  if (this->position.y < 0) {
-    shift(SDL_Point{0, 1});
+  if (this->zoomedPosition.y < 0) {
+    shift(SDL_Point{0, 1}, false);
   }
 
   // Bottom
-  if (this->position.y + this->screenSizePixels.y > this->mapSizePixels.y) {
-    shift(SDL_Point{0, -1});
+  if (this->zoomedPosition.y + this->screenSizePixels.y > this->mapSizePixels.y) {
+    shift(SDL_Point{0, -1}, false);
   }
 }
 
@@ -142,10 +142,10 @@ void Camera::update() {
     if (deltaTimeSeconds >= fabsf(inverseVelocity)) {
       this->totalDeltaTime = 0;
       if (inverseVelocity > 0) {
-        shift(SDL_Point{1, 0});
+        shift(SDL_Point{1, 0}, false);
       }
       else {
-        shift(SDL_Point{-1, 0});
+        shift(SDL_Point{-1, 0}, false);
       }
     }
   }
@@ -156,10 +156,10 @@ void Camera::update() {
     if (deltaTimeSeconds >= fabsf(inverseVelocity)) {
       this->totalDeltaTime = 0;
       if (inverseVelocity > 0) {
-        shift(SDL_Point{0, 1});
+        shift(SDL_Point{0, 1}, false);
       }
       else {
-        shift(SDL_Point{0, -1});
+        shift(SDL_Point{0, -1}, false);
       }
     }
   }
@@ -170,23 +170,19 @@ void Camera::update() {
 void Camera::setYVelocity(int yVelocity) { this->velocity.y = yVelocity; }
 void Camera::setXVelocity(int xVelocity) { this->velocity.x = xVelocity; }
 
-SDL_Point Camera::getPosition() { return this->position; }
-
-void Camera::shift(const SDL_Point shift) {
-  this->position.x += shift.x;
-  this->position.y += shift.y;
-  for (auto& column : this->destinationRect) {
-    for (auto& rectangle : column) {
-      rectangle.x -= shift.x;
-      rectangle.y -= shift.y;
-    }
-  }
-}
+SDL_Point Camera::getPosition() { return this->zoomedPosition; }
 
 void Camera::shift(const SDL_Point shift, bool zoomShift) {
-  if (!zoomShift) {
-    this->position.x += shift.x;
-    this->position.y += shift.y;
+  if (zoomShift) {
+    this->zoomedPosition.x += shift.x;
+    this->zoomedPosition.y += shift.y;
+  }
+  else {
+    this->truePosition.x += shift.x;
+    this->truePosition.y += shift.y;
+
+    this->zoomedPosition.x += shift.x;
+    this->zoomedPosition.y += shift.y;
   }
   for (auto& column : this->destinationRect) {
     for (auto& rectangle : column) {

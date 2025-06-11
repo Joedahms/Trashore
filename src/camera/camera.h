@@ -37,9 +37,9 @@ private:
   SDL_Point mapSizePixels       = {0, 0};
   SDL_Point initialVisibleTiles = {0, 0};
 
-  SDL_Point position            = {0, 0};
-  SDL_Point positionWithoutZoom = {0, 0};
-  SDL_Point velocity            = {0, 0};
+  SDL_Point truePosition   = {0, 0};
+  SDL_Point zoomedPosition = {0, 0};
+  SDL_Point velocity       = {0, 0};
 
   int deltaTime        = 0; // MS
   int totalDeltaTime   = 0;
