@@ -3,33 +3,32 @@
 
 #include <vector>
 
+#include "../game_global.h"
 #include "tile_factory.h"
 
 class TileMap {
 public:
-  TileMap(int, int, int, SDL_Renderer*);
-
-  void setTileSize(int);
+  TileMap(const GameGlobal& gameGlobal,
+          const SDL_Point mapSizeTiles,
+          const int initialTileSize);
+  void setTileSize(const int newTileSize);
   int getTileSize();
 
-  void selectTile(int, int);
-  void unselectTile(int, int);
+  void selectTile(const int xCoordinate, const int yCoordinate);
+  void unselectTile(const int xCoordinate, const int yCoordinate);
 
-  SDL_Texture* getTileTexture(int, int);
+  SDL_Texture* getTileTexture(const int xCoordinate, const int yCoordinate);
 
-  bool getSelected(int, int);
-
-  int getTotalXTiles();
-  int getTotalYTiles();
+  bool getSelected(const int xCoordinate, const int yCoordinate);
 
 private:
+  GameGlobal gameGlobal;
+
   std::vector<std::vector<std::unique_ptr<Tile>>> tileVector;
-  std::unique_ptr<TileFactory> tile_factory = std::make_unique<TileFactory>();
+  std::unique_ptr<TileFactory> tileFactory;
 
-  int totalXTiles;
-  int totalYTiles;
-
-  int tileSize;
+  const SDL_Point MAP_SIZE_TILES;
+  int tileSize = 0;
 };
 
 #endif

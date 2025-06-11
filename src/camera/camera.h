@@ -4,62 +4,51 @@
 #include <SDL2/SDL.h>
 #include <vector>
 
+#include "../game_global.h"
+
 /**
  * The camera defines how the game is displayed to the user. It dictates what is
  * visible at any one given time.
  */
 class Camera {
 public:
-  Camera(int, int, int, int, int);
+  Camera(const GameGlobal& gameGlobal,
+         const SDL_Point mapSizeTiles,
+         const int initialTileSize);
 
-  void setXVelocity(int);
-  void setYVelocity(int);
+  void zoomIn();
+  void zoomOut();
 
-  int getXPosition();
-  int getYPosition();
+  void checkBoundries();
 
-  int getScreenHeight();
-  int getScreenWidth();
+  void update();
 
-  void zoomIn(int, int, int);
-  void zoomOut(int, int, int);
-
-  void checkBoundries(int, int);
-
-  void update(int tileSize, int totalXTiles, int totalYTiles);
-
-  void zoomChange(int, int, int);
-
-  void shiftDestinationRectVertical(int tileSize);
-  void shiftDestinationRectHorizontal(int tileSize);
-  SDL_Rect& getDestinationRect(int, int);
-
-  // Needs to be dependent on screen size
   std::vector<std::vector<SDL_Rect>> destinationRect;
 
-  int getVisibleXTiles();
-  int getVisibleYTiles();
+  void setYVelocity(int yVelocity);
+  void setXVelocity(int xVelocity);
+
+  SDL_Point getPosition();
 
 private:
-  int screenHeight;
-  int screenWidth;
+  GameGlobal gameGlobal;
 
-  int xPosition;
-  int yPosition;
+  SDL_Point screenSizePixels    = {0, 0};
+  SDL_Point mapSizePixels       = {0, 0};
+  SDL_Point initialVisibleTiles = {0, 0};
 
-  int xVelocity;
-  int yVelocity;
+  SDL_Point truePosition   = {0, 0};
+  SDL_Point zoomedPosition = {0, 0};
+  SDL_Point velocity       = {0, 0};
 
-  int visibleXTiles;
-  int visibleYTiles;
+  int deltaTime        = 0; // MS
+  int totalDeltaTime   = 0;
+  Uint64 currentTicks  = 0;
+  Uint64 previousTicks = 0;
 
-  int totalXPixels;
-  int totalYPixels;
-
-  int deltaTime;
-  int totalDeltaTime;
-  Uint64 currentTicks;
-  Uint64 previousTicks;
+  void shift(const SDL_Point shift);
+  void shift(const SDL_Point shift, bool zoomShift);
+  int zoomLevel = 32;
 };
 
 #endif

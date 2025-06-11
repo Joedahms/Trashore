@@ -14,8 +14,8 @@ int main(int argc, const char* argv[]) {
 
   // Initialize the game
   std::unique_ptr<GameEngine> gameEngine = std::make_unique<GameEngine>(
-      "game_engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH,
-      WINDOW_HEIGHT, FULLSCREEN);
+      "game_engine", SDL_WINDOWPOS_CENTERED_DISPLAY(1), SDL_WINDOWPOS_CENTERED_DISPLAY(1),
+      WINDOW_WIDTH, WINDOW_HEIGHT, FULLSCREEN);
 
   gameEngine->start();
   return 0;

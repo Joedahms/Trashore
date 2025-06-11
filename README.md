@@ -7,6 +7,16 @@ a game with it at some point. At the moment it is a 2d top down game.
 ## Language
 The primary language I am writing this in is CPP. I am using the SDL2 library to assist with I/O.
 
+## Comment Format
+To make functions easier to understand, a common comment format is used for each one.  
+/**  
+ \* Function Description  
+ \*  
+ \* @param paramName - Parameter Description  
+ \*  
+ \* @return Return Description  
+ */
+
 ## Dependencies
 libsdl2-image-dev
 libsdl2-ttf-dev

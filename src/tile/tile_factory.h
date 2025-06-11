@@ -5,10 +5,13 @@
 
 #include "tile.h"
 
-// factory for character objects
 class TileFactory {
-	public:
-		std::unique_ptr<Tile> create(tile_id id, SDL_Renderer*);
+public:
+  TileFactory(const GameGlobal& gameGlobal);
+  std::unique_ptr<Tile> create(tileId id);
+
+private:
+  GameGlobal gameGlobal;
 };
 
 #endif

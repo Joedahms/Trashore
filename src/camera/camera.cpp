@@ -3,60 +3,67 @@
 
 #include "camera.h"
 
-// test
+Camera::Camera(const GameGlobal& gameGlobal,
+               const SDL_Point mapSizeTiles,
+               const int initialTileSize)
+    : gameGlobal(gameGlobal),
+      mapSizePixels(mapSizeTiles.x * initialTileSize, mapSizeTiles.y * initialTileSize) {
+  SDL_Surface* windowSurface = SDL_GetWindowSurface(this->gameGlobal.window);
+  this->screenSizePixels.x   = windowSurface->w;
+  this->screenSizePixels.y   = windowSurface->h;
 
-/**
- * @param screenHeight - Height of the screen in pixels.
- * @param screenWidth - Width of the screen in pixels.
- * @param initialTileSize - Tiles are squares so side length of a tile in pixels.
- */
-Camera::Camera(int screenHeight,
-               int screenWidth,
-               int totalXTiles,
-               int totalYTiles,
-               int initialTileSize) {
-  this->screenHeight = screenHeight;
-  this->screenWidth  = screenWidth;
+  this->initialVisibleTiles.x = this->screenSizePixels.x / initialTileSize;
+  this->initialVisibleTiles.y = this->screenSizePixels.y / initialTileSize;
 
-  this->xPosition = 0;
-  this->yPosition = 0;
+  int xPosition = 0;
+  int yPosition = 0;
 
-  this->xVelocity = 0;
-  this->yVelocity = 0;
-
-  this->visibleXTiles = 0;
-  this->visibleYTiles = 0;
-
-  this->totalXPixels = totalXTiles * initialTileSize;
-  this->totalYPixels = totalYTiles * initialTileSize;
-
-  this->deltaTime      = 0;
-  this->totalDeltaTime = 0;
-  this->currentTicks   = 0;
-  this->previousTicks  = 0;
-
-  zoomChange(initialTileSize, totalXTiles, totalYTiles);
+  this->destinationRect.resize(mapSizeTiles.x);
+  for (int x = 0; x < mapSizeTiles.x; x++) {
+    for (int y = 0; y < mapSizeTiles.y; y++) {
+      this->destinationRect[x].emplace_back(
+          SDL_Rect{xPosition, yPosition, initialTileSize, initialTileSize});
+      yPosition += initialTileSize;
+    }
+    yPosition = 0;
+    xPosition += initialTileSize;
+  }
 }
-
-void Camera::setXVelocity(int xVelocity) { this->xVelocity = xVelocity; }
-void Camera::setYVelocity(int yVelocity) { this->yVelocity = yVelocity; }
-
-int Camera::getXPosition() { return this->xPosition; }
-int Camera::getYPosition() { return this->yPosition; }
-
-int Camera::getScreenHeight() { return this->screenHeight; }
-int Camera::getScreenWidth() { return this->screenWidth; }
 
 /**
  * Move the camera position for zoom in.
  *
- * @param tileSize - Size of the tiles in the tilemap.
+ * @param tileSize Size of the tiles in the tilemap
  * @return None
  */
-void Camera::zoomIn(int tileSize, int totalXTiles, int totalYTiles) {
-  this->xPosition += this->visibleXTiles / 4;
-  this->yPosition += this->visibleYTiles / 4;
-  zoomChange(tileSize, totalXTiles, totalYTiles);
+void Camera::zoomIn() {
+  // Max zoom
+  if (this->zoomLevel == 100) {
+    return;
+  }
+
+  this->zoomLevel++;
+  SDL_Point shiftAmount = {0, 0};
+  for (auto& column : destinationRect) {
+    for (auto& rectangle : column) {
+      rectangle.x += shiftAmount.x;
+      rectangle.y += shiftAmount.y;
+      rectangle.w++;
+      rectangle.h++;
+
+      shiftAmount.y++;
+    }
+    shiftAmount.y = 0;
+    shiftAmount.x++;
+  }
+
+  /*
+  shift(SDL_Point{this->initialVisibleTiles.x / 2, this->initialVisibleTiles.y / 2},
+        );
+  */
+  shift(SDL_Point{this->initialVisibleTiles.x / 2 + this->truePosition.x / 16,
+                  this->initialVisibleTiles.y / 2 + this->truePosition.y / 16},
+        true);
 }
 
 /**
@@ -65,93 +72,54 @@ void Camera::zoomIn(int tileSize, int totalXTiles, int totalYTiles) {
  * @param tileSize - Size of the tiles in the tilemap.
  * @return None
  */
-void Camera::zoomOut(int tileSize, int totalXTiles, int totalYTiles) {
-  this->xPosition -= this->visibleXTiles / 2;
-  this->yPosition -= this->visibleYTiles / 2;
-  zoomChange(tileSize, totalXTiles, totalYTiles);
+void Camera::zoomOut() {
+  this->zoomLevel--;
+  SDL_Point shiftAmount = {0, 0};
+  for (auto& column : destinationRect) {
+    for (auto& rectangle : column) {
+      rectangle.x -= shiftAmount.x;
+      rectangle.y -= shiftAmount.y;
+      rectangle.w--;
+      rectangle.h--;
+
+      shiftAmount.y++;
+    }
+    shiftAmount.y = 0;
+    shiftAmount.x++;
+  }
+
+  //  shift(SDL_Point{-this->initialVisibleTiles.x / 2, -this->initialVisibleTiles.y /
+  //  2});
+  shift(SDL_Point{-(this->initialVisibleTiles.x / 2 + this->truePosition.x / 16),
+                  -(this->initialVisibleTiles.y / 2 + this->truePosition.y / 16)},
+        true);
 }
 
 /**
  * Ensure that the camera is within the boundries of the tilemap. Checks at the left,
  * right, top, and bottom. Corrects the camera's position and the destination rectangles.
  *
- * @param totalXTiles - The total tiles on the x axis of the tile map.
- * @param totalYTiles - The total tiles on the y axis of the tile map.
- *
  * @return None
  */
-void Camera::checkBoundries(int totalXTiles, int totalYTiles) {
+void Camera::checkBoundries() {
   // Left
-  if (this->xPosition < 0) {
-    this->xPosition = 0;
-
-    for (int y = 0; y < this->visibleYTiles + 1; y++) {
-      for (int x = 0; x < this->visibleXTiles + 1; x++) {
-        this->destinationRect[x][y].x--;
-      }
-      this->destinationRect[this->visibleXTiles + 1][y].x--;
-    }
+  if (this->zoomedPosition.x < 0) {
+    shift(SDL_Point{1, 0}, false);
   }
 
   // Right
-  if (this->xPosition + this->screenWidth > this->totalXPixels) {
-    for (int y = 0; y < this->visibleYTiles + 1; y++) {
-      for (int x = 0; x < this->visibleXTiles + 1; x++) {
-        this->destinationRect[x][y].x++;
-      }
-      this->destinationRect[this->visibleXTiles + 1][y].x++;
-    }
-    this->xPosition = totalXTiles - this->visibleXTiles;
+  if (this->zoomedPosition.x + this->screenSizePixels.x > this->mapSizePixels.x) {
+    shift(SDL_Point{-1, 0}, false);
   }
 
   // Top
-  if (this->yPosition < 0) {
-    this->yPosition = 0;
-
-    for (int x = 0; x < this->visibleXTiles + 1; x++) {
-      for (int y = 0; y < this->visibleYTiles + 1; y++) {
-        this->destinationRect[x][y].y--;
-      }
-      this->destinationRect[x][this->visibleYTiles + 1].y--;
-    }
+  if (this->zoomedPosition.y < 0) {
+    shift(SDL_Point{0, 1}, false);
   }
 
   // Bottom
-  if (this->yPosition + this->screenHeight > this->totalYPixels) {
-    this->yPosition = totalYTiles - this->visibleYTiles;
-
-    for (int x = 0; x < this->visibleXTiles + 1; x++) {
-      for (int y = 0; y < this->visibleYTiles + 1; y++) {
-        this->destinationRect[x][y].y++;
-      }
-      this->destinationRect[x][this->visibleYTiles + 1].y++;
-    }
-  }
-}
-
-/**
- * Handle the changing of zoom level.
- *
- * @param tileSize - Size of the tiles in the tilemap.
- * @return None
- */
-void Camera::zoomChange(int tileSize, int totalXTiles, int totalYTiles) {
-  this->destinationRect.resize(this->screenWidth / tileSize + 2,
-                               std::vector<SDL_Rect>(this->screenHeight / tileSize + 2));
-
-  this->visibleXTiles = this->screenWidth / tileSize;
-  this->visibleYTiles = this->screenHeight / tileSize;
-
-  checkBoundries(totalXTiles, totalYTiles);
-
-  // Set up rectangles for rendering
-  for (int x = 0; x < this->visibleXTiles + 2; x++) {
-    for (int y = 0; y < this->visibleYTiles + 2; y++) {
-      this->destinationRect[x][y].x = x * tileSize;
-      this->destinationRect[x][y].y = y * tileSize;
-      this->destinationRect[x][y].w = tileSize;
-      this->destinationRect[x][y].h = tileSize;
-    }
+  if (this->zoomedPosition.y + this->screenSizePixels.y > this->mapSizePixels.y) {
+    shift(SDL_Point{0, -1}, false);
   }
 }
 
@@ -159,146 +127,67 @@ void Camera::zoomChange(int tileSize, int totalXTiles, int totalYTiles) {
  * Update camera postion based on velocity. Ensure that the camera stays within the bounds
  * of the tile map.
  *
- * @param totalXTiles - Total amount of tiles on the x axis of the tile map.
- * @param totalYTiles - Total amount of tiles on the y axis of the tile map.
  * @return None
  */
-void Camera::update(int tileSize, int totalXTiles, int totalYTiles) {
+void Camera::update() {
   // Make time stuff into function
   this->currentTicks = SDL_GetTicks64();
   this->deltaTime    = this->currentTicks - this->previousTicks;
   this->totalDeltaTime += this->deltaTime;
   this->previousTicks = this->currentTicks;
 
-  // Delta time is in milliseconds
-
-  if (this->xVelocity != 0) {
-    float inverseVelocity  = 1.0 / this->xVelocity;
+  if (this->velocity.x != 0) {
+    float inverseVelocity  = 1.0 / this->velocity.x;
     float deltaTimeSeconds = totalDeltaTime / 1000.0;
-
     if (deltaTimeSeconds >= fabsf(inverseVelocity)) {
       this->totalDeltaTime = 0;
       if (inverseVelocity > 0) {
-        this->xPosition++;
+        shift(SDL_Point{1, 0}, false);
       }
       else {
-        this->xPosition--;
+        shift(SDL_Point{-1, 0}, false);
       }
-      shiftDestinationRectHorizontal(tileSize);
     }
   }
 
-  if (this->yVelocity != 0) {
-    float inverseVelocity  = 1.0 / this->yVelocity;
+  if (this->velocity.y != 0) {
+    float inverseVelocity  = 1.0 / this->velocity.y;
     float deltaTimeSeconds = totalDeltaTime / 1000.0;
-
     if (deltaTimeSeconds >= fabsf(inverseVelocity)) {
       this->totalDeltaTime = 0;
       if (inverseVelocity > 0) {
-        this->yPosition++;
+        shift(SDL_Point{0, 1}, false);
       }
       else {
-        this->yPosition--;
+        shift(SDL_Point{0, -1}, false);
       }
-      shiftDestinationRectVertical(tileSize);
     }
   }
 
-  checkBoundries(totalXTiles, totalYTiles);
+  checkBoundries();
 }
 
-/**
- * When the camera moves up or down, move the destination rectangles accordingly. Handle
- * the case where a rectangle goes off the screen on one side and a new one appears on the
- * other.
- *
- * @param None
- * @return None
- */
-void Camera::shiftDestinationRectVertical(int tileSize) {
-  if (this->yVelocity > 0) {
-    if (this->yPosition % tileSize == 0) {
-      for (int x = 0; x < this->visibleXTiles + 1; x++) {
-        for (int y = 0; y < this->visibleYTiles + 1; y++) {
-          this->destinationRect[x][y].y = this->destinationRect[x][y + 1].y;
-        }
-        this->destinationRect[x][this->visibleYTiles + 1].y += tileSize;
-      }
-    }
-  }
+void Camera::setYVelocity(int yVelocity) { this->velocity.y = yVelocity; }
+void Camera::setXVelocity(int xVelocity) { this->velocity.x = xVelocity; }
 
-  for (int y = 0; y < this->visibleYTiles + 2; y++) {
-    for (int x = 0; x < this->visibleXTiles + 2; x++) {
-      if (this->yVelocity > 0) {
-        this->destinationRect[x][y].y--;
-      }
-      else {
-        this->destinationRect[x][y].y++;
-      }
-    }
-  }
+SDL_Point Camera::getPosition() { return this->zoomedPosition; }
 
-  if (this->yVelocity < 0) {
-    if (this->yPosition % tileSize == tileSize - 1) {
-      for (int x = 0; x < this->visibleXTiles + 1; x++) {
-        for (int y = this->visibleYTiles + 1; y > 0; y--) {
-          this->destinationRect[x][y].y = this->destinationRect[x][y - 1].y;
-        }
-        this->destinationRect[x][0].y -= tileSize;
-      }
+void Camera::shift(const SDL_Point shift, bool zoomShift) {
+  if (zoomShift) {
+    this->zoomedPosition.x += shift.x;
+    this->zoomedPosition.y += shift.y;
+  }
+  else {
+    this->truePosition.x += shift.x;
+    this->truePosition.y += shift.y;
+
+    this->zoomedPosition.x += shift.x;
+    this->zoomedPosition.y += shift.y;
+  }
+  for (auto& column : this->destinationRect) {
+    for (auto& rectangle : column) {
+      rectangle.x -= shift.x;
+      rectangle.y -= shift.y;
     }
   }
 }
-
-/**
- * When the camera moves left or right, move the destination rectangles accordingly.
- * Handle the case where a rectangle goes off the screen on one side and a new one appears
- * on the other.
- *
- * @param None
- * @return None
- */
-void Camera::shiftDestinationRectHorizontal(int tileSize) {
-  if (this->xVelocity > 0) {
-    // Shift all rectangles to the right
-    if (this->xPosition % tileSize == 0) {
-      for (int y = 0; y < this->visibleYTiles + 1; y++) {
-        for (int x = 0; x < this->visibleXTiles + 1; x++) {
-          this->destinationRect[x][y].x = this->destinationRect[x + 1][y].x;
-        }
-        this->destinationRect[this->visibleXTiles + 1][y].x += tileSize;
-      }
-    }
-  }
-
-  // Modify position by velocity
-  for (int x = 0; x < this->visibleXTiles + 2; x++) {
-    for (int y = 0; y < this->visibleYTiles + 2; y++) {
-      if (this->xVelocity > 0) {
-        this->destinationRect[x][y].x--;
-      }
-      else {
-        this->destinationRect[x][y].x++;
-      }
-    }
-  }
-
-  if (this->xVelocity < 0) {
-    // Shift all rectangles to the left
-    if (this->xPosition % tileSize == tileSize - 1) {
-      for (int y = 0; y < this->visibleYTiles + 1; y++) {
-        for (int x = this->visibleXTiles + 1; x > 0; x--) {
-          this->destinationRect[x][y].x = this->destinationRect[x - 1][y].x;
-        }
-        this->destinationRect[0][y].x -= tileSize;
-      }
-    }
-  }
-}
-
-SDL_Rect& Camera::getDestinationRect(int xCoordinate, int yCoordinate) {
-  return destinationRect[xCoordinate][yCoordinate];
-}
-
-int Camera::getVisibleXTiles() { return visibleXTiles; }
-int Camera::getVisibleYTiles() { return visibleYTiles; }
