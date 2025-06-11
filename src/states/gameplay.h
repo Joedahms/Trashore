@@ -3,6 +3,7 @@
 
 #include "../camera/camera.h"
 #include "../character/character_factory.h"
+#include "../elements/gui_box.h"
 #include "../tile/tile_map.h"
 #include "state.h"
 

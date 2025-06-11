@@ -40,6 +40,7 @@ add_executable(sdlGameEngine
   src/elements/button.cpp
   src/elements/text.cpp
   src/elements/loading_bar.cpp
+  src/elements/gui_box.cpp
 
   src/elements/flappy_food/flappy_food.cpp
   src/elements/flappy_food/bird.cpp

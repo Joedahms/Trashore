@@ -23,6 +23,10 @@ Gameplay::Gameplay(const GameGlobal& gameGlobal, const EngineState& state)
   this->npcVector[0]->setYVelocity(0);
   this->logger->log("NPC initialized");
 
+  std::unique_ptr<GuiBox> buildMenu =
+      std::make_unique<GuiBox>(gameGlobal, LogFiles::GAMEPLAY, SDL_Rect{0, 0, 100, 100});
+  this->rootElement->addElement(std::move(buildMenu));
+
   this->logger->log("Initializing textures...");
   SDL_Surface* tmp_surface = IMG_Load("sprites/selected.png");
   selectedTexture = SDL_CreateTextureFromSurface(this->gameGlobal.renderer, tmp_surface);
@@ -133,6 +137,7 @@ void Gameplay::render() const {
   }
 
   this->npcVector[0]->render();
+  this->rootElement->render();
 
   SDL_RenderPresent(this->gameGlobal.renderer);
 }
