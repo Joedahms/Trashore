@@ -24,7 +24,8 @@ Gameplay::Gameplay(const GameGlobal& gameGlobal, const EngineState& state)
   this->logger->log("NPC initialized");
 
   std::unique_ptr<GuiBox> buildMenu =
-      std::make_unique<GuiBox>(gameGlobal, LogFiles::GAMEPLAY, SDL_Rect{0, 0, 100, 100});
+      std::make_unique<GuiBox>(gameGlobal, LogFiles::GAMEPLAY, SDL_Rect{0, 590, 600, 50});
+  buildMenu->setCenteredHorizontal();
   this->rootElement->addElement(std::move(buildMenu));
 
   this->logger->log("Initializing textures...");
