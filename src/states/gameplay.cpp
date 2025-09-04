@@ -30,6 +30,13 @@ Gameplay::Gameplay(const GameGlobal& gameGlobal, const EngineState& state)
   selectedTexture = SDL_CreateTextureFromSurface(this->gameGlobal.renderer, tmp_surface);
   SDL_FreeSurface(tmp_surface);
   this->logger->log("Textures initialized");
+
+  this->texture = SDL_CreateTexture(
+
+      this->gameGlobal.renderer,
+      SDL_PIXELFORMAT_RGBA8888, // Pixel format
+      SDL_TEXTUREACCESS_TARGET, // This makes it a render target
+      1024, 640);
 }
 
 void Gameplay::handleEvents(bool& gameIsRunning) {
@@ -42,8 +49,16 @@ void Gameplay::handleEvents(bool& gameIsRunning) {
 
     case SDL_MOUSEWHEEL:
       if (event.wheel.y > 0) { // Scroll up -> zoom in
+        this->destination.x -= 2;
+        this->destination.y -= 2;
+        this->destination.w += 4;
+        this->destination.h += 4;
       }
       else if (event.wheel.y < 0) { // Scroll down -> zoom out
+        this->destination.x += 2;
+        this->destination.y += 2;
+        this->destination.w -= 4;
+        this->destination.h -= 4;
       }
 
     default:
@@ -100,7 +115,10 @@ void Gameplay::update() {
   this->npcVector[0]->updatePosition();
 }
 
+int SDL_SetRenderTarget(SDL_Renderer* renderer, SDL_Texture* texture);
+
 void Gameplay::render() const {
+  SDL_SetRenderTarget(this->gameGlobal.renderer, this->texture);
   SDL_RenderClear(this->gameGlobal.renderer);
 
   SDL_Point cameraPosition = this->camera->getPosition();
@@ -121,6 +139,8 @@ void Gameplay::render() const {
                      &tileRectangle);
     }
   }
+  SDL_SetRenderTarget(this->gameGlobal.renderer, NULL);
+  SDL_RenderCopy(this->gameGlobal.renderer, this->texture, NULL, &this->destination);
 
   this->npcVector[0]->render();
 
