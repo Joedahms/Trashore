@@ -34,13 +34,13 @@ Gameplay::Gameplay(const GameGlobal& gameGlobal, const EngineState& state)
 
 void Gameplay::handleEvents(bool& gameIsRunning) {
   SDL_Event event;
-  while (SDL_PollEvent(&event) != 0) { // While events in the queue
+  while (SDL_PollEvent(&event) != 0) {
     switch (event.type) {
     case SDL_QUIT: // Quit event
       gameIsRunning = false;
       break;
 
-    case SDL_MOUSEWHEEL:       // Mousewheel event
+    case SDL_MOUSEWHEEL:
       if (event.wheel.y > 0) { // Scroll up -> zoom in
       }
       else if (event.wheel.y < 0) { // Scroll down -> zoom out

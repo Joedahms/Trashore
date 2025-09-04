@@ -22,30 +22,30 @@ void Camera::checkBoundries() {
 
 void Camera::checkLeftBoundry() {
   if (this->position.x < 0) {
-    //    shift(SDL_Point{1, 0}, false);
+    this->position.x += 1;
   }
 }
 
 void Camera::checkRightBoundry() {
   if (this->position.x + this->screenSizePixels.x > this->mapSizePixels.x) {
-    //   shift(SDL_Point{-1, 0}, false);
+    this->position.x -= 1;
   }
 }
 
 void Camera::checkTopBoundry() {
   if (this->position.y < 0) {
-    //  shift(SDL_Point{0, 1}, false);
+    this->position.y += 1;
   }
 }
 
 void Camera::checkBottomBoundry() {
   if (this->position.y + this->screenSizePixels.y > this->mapSizePixels.y) {
-    // shift(SDL_Point{0, -1}, false);
+    this->position.y -= 1;
   }
 }
 
 void Camera::update() {
-  // Make time stuff into function
+  // TODO: Make time stuff into function
   this->currentTicks = SDL_GetTicks64();
   this->deltaTime    = this->currentTicks - this->previousTicks;
   this->totalDeltaTime += this->deltaTime;
