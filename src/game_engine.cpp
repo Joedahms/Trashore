@@ -8,15 +8,6 @@
 #include "game_global.h"
 #include "states/state.h"
 
-/**
- * @param windowTitle Title of the game window
- * @param windowXPosition X position of the game window
- * @param windowYPostition Y position of the game window
- * @param screenWidth Width of the game window in pixels
- * @param screenHeight Height of the game window in pixels
- * @param fullscreen Whether or not the game window should be fullscreen
- * @param context The zeroMQ context with which to create sockets with
- */
 GameEngine::GameEngine(const char* windowTitle,
                        const int windowXPosition,
                        const int windowYPosition,
@@ -60,18 +51,6 @@ void GameEngine::start() {
   clean();
 }
 
-/**
- * Setup the SDL game window.
- *
- * @param windowTitle The name of the window. Is what is gameed on the top bezel of
- * the window when the game is running.
- * @param windowXPosition The X position of the window on the user's screen.
- * @param windowYPosition The Y position of the window on the user's screen.
- * @param screenWidth The width of the screen in pixels.
- * @param screenHeight The height of the screen in pixels.
- * @param fullscreen Whether or not the game window should be fullscreen.
- * @return Pointer to the SDL game window.
- */
 SDL_Window* GameEngine::setupWindow(const char* windowTitle,
                                     int windowXPosition,
                                     int windowYPosition,
@@ -96,12 +75,6 @@ SDL_Window* GameEngine::setupWindow(const char* windowTitle,
   this->logger.log("SDL game window created");
 }
 
-/**
- * Setup SDL, the renderer, and TTF. Renderer is part of the global game objects.
- *
- * @param window The SDL game window
- * @return None
- */
 void GameEngine::initializeEngine(SDL_Window* window) {
   this->logger.log("Initializing engine");
   int sdlInitReturn = SDL_Init(SDL_INIT_EVERYTHING);
@@ -151,39 +124,12 @@ void GameEngine::handleStateChange() {
   }
 }
 
-/**
- * Check the current state, and call that state's handle events method.
- *
- * @param engineToDisplay Pipe from the game engine to the game
- * @param displayToEngine Pipe from the display to the displayEngine
- * @return None
- */
 void GameEngine::handleEvents() { this->engineState->handleEvents(this->gameIsRunning); }
 
-/**
- * Not implemented but may want to add:
- * First check if it's time to update. If it is, reset the time since last
- * update.
- *
- * @param None
- * @return None
- */
 void GameEngine::update() { this->engineState->update(); }
 
-/**
- * Check current state and call that state's function to render.
- *
- * @param None
- * @return None
- */
 void GameEngine::renderState() { this->engineState->render(); }
 
-/**
- * Free SDL resources and quit.
- *
- * @param None
- * @return None
- */
 void GameEngine::clean() {
   SDL_DestroyWindow(this->gameGlobal.window);
   SDL_DestroyRenderer(this->gameGlobal.renderer);

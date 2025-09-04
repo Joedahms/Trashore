@@ -7,11 +7,6 @@
 
 enum characterId { PLAYER, NPC };
 
-/**
- * @class Character
- *
- * Represent playable and non playable character entities
- */
 class Character {
 public:
   virtual void print() = 0;

@@ -16,6 +16,9 @@ public:
   void render() const override;
   void exit() override;
 
+  // TODO: pull this out into something else where more things can use it
+  SDL_Point subtractPoints(const SDL_Point pointA, const SDL_Point pointB) const;
+
 private:
   const SDL_Point MAP_SIZE_TILES = {200, 200};
   const int INITIAL_TILE_SIZE    = 16;

@@ -1,3 +1,5 @@
+#include <SDL2/SDL_locale.h>
+#include <SDL2/SDL_render.h>
 #include <cassert>
 
 #include "gameplay.h"
@@ -40,10 +42,8 @@ void Gameplay::handleEvents(bool& gameIsRunning) {
 
     case SDL_MOUSEWHEEL:       // Mousewheel event
       if (event.wheel.y > 0) { // Scroll up -> zoom in
-        this->camera->zoomIn();
       }
       else if (event.wheel.y < 0) { // Scroll down -> zoom out
-        this->camera->zoomOut();
       }
 
     default:
@@ -89,17 +89,6 @@ void Gameplay::setSelectedTile() {
 
   int selectedXCoordinate = floor(X / this->tileMap->getTileSize()) + cameraPosition.x;
   int selectedYCoordinate = floor(Y / this->tileMap->getTileSize()) + cameraPosition.y;
-
-  /*
-  // Unselect all tiles
-  for (int x = 0; x < this->camera->getVisibleXTiles() + cameraPosition.x; x++) {
-    for (int y = 0; y < this->camera->getVisibleYTiles() + cameraPosition.y; y++) {
-      this->tileMap->unselectTile(x, y);
-    }
-  }
-
-  this->tileMap->selectTile(selectedXCoordinate, selectedYCoordinate);
-  */
 }
 
 void Gameplay::update() {
@@ -118,17 +107,18 @@ void Gameplay::render() const {
 
   for (int x = 0; x < this->MAP_SIZE_TILES.x; x++) {
     for (int y = 0; y < this->MAP_SIZE_TILES.y; y++) {
-      SDL_RenderCopy(this->gameGlobal.renderer, this->tileMap->getTileTexture(x, y), NULL,
-                     &(this->camera->destinationRect[x][y]));
+      SDL_Rect tileRectangle = this->tileMap->getTileRectangle(SDL_Point{x, y});
+      SDL_Point tilePosition = SDL_Point{tileRectangle.x, tileRectangle.y};
 
-      // If the current tile is selected
-      /*
-      if (this->tileMap->getSelected(currentXPosition, currentYPosition)) {
-        // Render selected texture over it
-        SDL_RenderCopy(this->gameGlobal.renderer, this->selectedTexture, NULL,
-                       &(this->camera->destinationRect[x][y]));
-      }
-      */
+      SDL_Point tilePositionWithinCamera =
+          subtractPoints(tilePosition, this->camera->getPosition());
+
+      tileRectangle.x = tilePositionWithinCamera.x;
+      tileRectangle.y = tilePositionWithinCamera.y;
+
+      // TODO: Check if within camera viewport
+      SDL_RenderCopy(this->gameGlobal.renderer, this->tileMap->getTileTexture(x, y), NULL,
+                     &tileRectangle);
     }
   }
 
@@ -138,3 +128,9 @@ void Gameplay::render() const {
 }
 
 void Gameplay::exit() {}
+
+SDL_Point Gameplay::subtractPoints(const SDL_Point pointA, const SDL_Point pointB) const {
+  int x = pointA.x - pointB.x;
+  int y = pointA.y - pointB.y;
+  return SDL_Point{x, y};
+}
