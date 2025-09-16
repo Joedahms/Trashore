@@ -49,16 +49,21 @@ void Gameplay::handleEvents(bool& gameIsRunning) {
 
     case SDL_MOUSEWHEEL:
       if (event.wheel.y > 0) { // Scroll up -> zoom in
-        this->destination.x -= 2;
-        this->destination.y -= 2;
-        this->destination.w += 4;
-        this->destination.h += 4;
+        this->camera->destination.x *= 1.01;
+        this->camera->destination.y *= 1.01;
+        this->camera->destination.x -= 512 * 0.01;
+        this->camera->destination.y -= 320 * 0.01;
+        this->camera->destination.w *= 1.01;
+        this->camera->destination.h *= 1.01;
       }
       else if (event.wheel.y < 0) { // Scroll down -> zoom out
-        this->destination.x += 2;
-        this->destination.y += 2;
-        this->destination.w -= 4;
-        this->destination.h -= 4;
+        this->camera->destination.x *= 0.9;
+        this->camera->destination.y *= 0.9;
+        this->camera->destination.x += 512 * 0.1;
+        this->camera->destination.y += 320 * 0.1;
+
+        this->camera->destination.w *= 0.9;
+        this->camera->destination.h *= 0.9;
       }
 
     default:
@@ -115,8 +120,8 @@ void Gameplay::update() {
   this->npcVector[0]->updatePosition();
 }
 
-int SDL_SetRenderTarget(SDL_Renderer* renderer, SDL_Texture* texture);
-
+// vertical lines
+// Tiles are being misshaped when zooming in
 void Gameplay::render() const {
   SDL_SetRenderTarget(this->gameGlobal.renderer, this->texture);
   SDL_RenderClear(this->gameGlobal.renderer);
@@ -140,7 +145,8 @@ void Gameplay::render() const {
     }
   }
   SDL_SetRenderTarget(this->gameGlobal.renderer, NULL);
-  SDL_RenderCopy(this->gameGlobal.renderer, this->texture, NULL, &this->destination);
+  SDL_RenderCopy(this->gameGlobal.renderer, this->texture, NULL,
+                 &this->camera->destination);
 
   this->npcVector[0]->render();
 

@@ -25,6 +25,8 @@ public:
   void setXVelocity(int xVelocity);
 
   SDL_Point getPosition();
+  SDL_Point position   = {0, 0};
+  SDL_Rect destination = {0, 0, 1024, 640};
 
 private:
   GameGlobal gameGlobal;
@@ -33,17 +35,12 @@ private:
   SDL_Point mapSizePixels       = {0, 0};
   SDL_Point initialVisibleTiles = {0, 0};
 
-  SDL_Point position = {0, 0};
   SDL_Point velocity = {0, 0};
 
   int deltaTime        = 0; // MS
   int totalDeltaTime   = 0;
   Uint64 currentTicks  = 0;
   Uint64 previousTicks = 0;
-
-  void shift(const SDL_Point shift);
-  void shift(const SDL_Point shift, bool zoomShift);
-  int zoomLevel = 32;
 };
 
 #endif

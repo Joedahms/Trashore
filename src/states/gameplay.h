@@ -31,7 +31,6 @@ private:
   SDL_Texture* selectedTexture;
 
   SDL_Texture* texture;
-  SDL_Rect destination = {0, 0, 1024, 640};
 };
 
 #endif

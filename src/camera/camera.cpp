@@ -1,4 +1,5 @@
 #include "camera.h"
+#include <iostream>
 
 Camera::Camera(const GameGlobal& gameGlobal,
                const SDL_Point mapSizeTiles,
@@ -14,6 +15,10 @@ Camera::Camera(const GameGlobal& gameGlobal,
 }
 
 void Camera::checkBoundries() {
+  // Need to factor in the destination rectangle
+  // Currently this only works if the destination rectangle is unmodified
+  // If the destination rectangle x = -2 then left bound is camera x - 2
+  // If the destination rectangle x = -4 then left bound is camera x - 4
   checkLeftBoundry();
   checkRightBoundry();
   checkTopBoundry();
@@ -21,9 +26,17 @@ void Camera::checkBoundries() {
 }
 
 void Camera::checkLeftBoundry() {
+  if (this->position.x < destination.x) {
+    this->position.x += 1;
+    //    std::cout << "postion x: " << this->position.x << std::endl;
+    //   std::cout << "destination x: " << this->destination.x << std::endl;
+  }
+
+  /*
   if (this->position.x < 0) {
     this->position.x += 1;
   }
+  */
 }
 
 void Camera::checkRightBoundry() {
@@ -63,6 +76,7 @@ void Camera::update() {
         this->position.x -= 1;
       }
     }
+    std::cout << "position x: " << this->position.x << std::endl;
   }
 
   if (this->velocity.y != 0) {
