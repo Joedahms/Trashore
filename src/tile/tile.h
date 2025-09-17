@@ -16,6 +16,8 @@ public:
   void unsetSelected();
   bool getSelected();
   SDL_Texture* getTileTexture();
+  SDL_Rect getTileRectangle();
+  void setTileRectangle(const SDL_Rect rectangle);
 
 protected:
   GameGlobal gameGlobal;

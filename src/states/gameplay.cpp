@@ -1,3 +1,5 @@
+#include <SDL2/SDL_locale.h>
+#include <SDL2/SDL_render.h>
 #include <cassert>
 
 #include "gameplay.h"
@@ -28,22 +30,40 @@ Gameplay::Gameplay(const GameGlobal& gameGlobal, const EngineState& state)
   selectedTexture = SDL_CreateTextureFromSurface(this->gameGlobal.renderer, tmp_surface);
   SDL_FreeSurface(tmp_surface);
   this->logger->log("Textures initialized");
+
+  this->texture = SDL_CreateTexture(
+
+      this->gameGlobal.renderer,
+      SDL_PIXELFORMAT_RGBA8888, // Pixel format
+      SDL_TEXTUREACCESS_TARGET, // This makes it a render target
+      1024, 640);
 }
 
 void Gameplay::handleEvents(bool& gameIsRunning) {
   SDL_Event event;
-  while (SDL_PollEvent(&event) != 0) { // While events in the queue
+  while (SDL_PollEvent(&event) != 0) {
     switch (event.type) {
     case SDL_QUIT: // Quit event
       gameIsRunning = false;
       break;
 
-    case SDL_MOUSEWHEEL:       // Mousewheel event
+    case SDL_MOUSEWHEEL:
       if (event.wheel.y > 0) { // Scroll up -> zoom in
-        this->camera->zoomIn();
+        this->camera->destination.x *= 1.01;
+        this->camera->destination.y *= 1.01;
+        this->camera->destination.x -= 512 * 0.01;
+        this->camera->destination.y -= 320 * 0.01;
+        this->camera->destination.w *= 1.01;
+        this->camera->destination.h *= 1.01;
       }
       else if (event.wheel.y < 0) { // Scroll down -> zoom out
-        this->camera->zoomOut();
+        this->camera->destination.x *= 0.9;
+        this->camera->destination.y *= 0.9;
+        this->camera->destination.x += 512 * 0.1;
+        this->camera->destination.y += 320 * 0.1;
+
+        this->camera->destination.w *= 0.9;
+        this->camera->destination.h *= 0.9;
       }
 
     default:
@@ -89,17 +109,6 @@ void Gameplay::setSelectedTile() {
 
   int selectedXCoordinate = floor(X / this->tileMap->getTileSize()) + cameraPosition.x;
   int selectedYCoordinate = floor(Y / this->tileMap->getTileSize()) + cameraPosition.y;
-
-  /*
-  // Unselect all tiles
-  for (int x = 0; x < this->camera->getVisibleXTiles() + cameraPosition.x; x++) {
-    for (int y = 0; y < this->camera->getVisibleYTiles() + cameraPosition.y; y++) {
-      this->tileMap->unselectTile(x, y);
-    }
-  }
-
-  this->tileMap->selectTile(selectedXCoordinate, selectedYCoordinate);
-  */
 }
 
 void Gameplay::update() {
@@ -111,26 +120,33 @@ void Gameplay::update() {
   this->npcVector[0]->updatePosition();
 }
 
+// vertical lines
+// Tiles are being misshaped when zooming in
 void Gameplay::render() const {
+  SDL_SetRenderTarget(this->gameGlobal.renderer, this->texture);
   SDL_RenderClear(this->gameGlobal.renderer);
 
   SDL_Point cameraPosition = this->camera->getPosition();
 
   for (int x = 0; x < this->MAP_SIZE_TILES.x; x++) {
     for (int y = 0; y < this->MAP_SIZE_TILES.y; y++) {
-      SDL_RenderCopy(this->gameGlobal.renderer, this->tileMap->getTileTexture(x, y), NULL,
-                     &(this->camera->destinationRect[x][y]));
+      SDL_Rect tileRectangle = this->tileMap->getTileRectangle(SDL_Point{x, y});
+      SDL_Point tilePosition = SDL_Point{tileRectangle.x, tileRectangle.y};
 
-      // If the current tile is selected
-      /*
-      if (this->tileMap->getSelected(currentXPosition, currentYPosition)) {
-        // Render selected texture over it
-        SDL_RenderCopy(this->gameGlobal.renderer, this->selectedTexture, NULL,
-                       &(this->camera->destinationRect[x][y]));
-      }
-      */
+      SDL_Point tilePositionWithinCamera =
+          subtractPoints(tilePosition, this->camera->getPosition());
+
+      tileRectangle.x = tilePositionWithinCamera.x;
+      tileRectangle.y = tilePositionWithinCamera.y;
+
+      // TODO: Check if within camera viewport
+      SDL_RenderCopy(this->gameGlobal.renderer, this->tileMap->getTileTexture(x, y), NULL,
+                     &tileRectangle);
     }
   }
+  SDL_SetRenderTarget(this->gameGlobal.renderer, NULL);
+  SDL_RenderCopy(this->gameGlobal.renderer, this->texture, NULL,
+                 &this->camera->destination);
 
   this->npcVector[0]->render();
 
@@ -138,3 +154,9 @@ void Gameplay::render() const {
 }
 
 void Gameplay::exit() {}
+
+SDL_Point Gameplay::subtractPoints(const SDL_Point pointA, const SDL_Point pointB) const {
+  int x = pointA.x - pointB.x;
+  int y = pointA.y - pointB.y;
+  return SDL_Point{x, y};
+}

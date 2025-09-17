@@ -5,7 +5,6 @@
 #include "tile.h"
 #include "tile_map.h"
 
-// Pass tile size
 TileMap::TileMap(const GameGlobal& gameGlobal,
                  const SDL_Point mapSizeTiles,
                  const int initialTileSize)
@@ -17,6 +16,7 @@ TileMap::TileMap(const GameGlobal& gameGlobal,
   std::unique_ptr<Tile> waterTile;
   std::unique_ptr<Tile> dirtTile;
 
+  SDL_Point tilePosition = {0, 0};
   for (int x = 0; x < this->MAP_SIZE_TILES.x; x++) {
     for (int y = 0; y < this->MAP_SIZE_TILES.y; y++) {
       randomNum = rand() % 2 + 1; // random tile (either one or two)
@@ -25,6 +25,8 @@ TileMap::TileMap(const GameGlobal& gameGlobal,
       case 1:              // Water tile
         {
           std::unique_ptr<Tile> waterTile = this->tileFactory->create(tileId::WATER_TILE);
+          waterTile->setTileRectangle(
+              SDL_Rect{tilePosition.x, tilePosition.y, this->tileSize, this->tileSize});
           this->tileVector[x].emplace_back(std::move(waterTile));
           break;
         }
@@ -32,6 +34,9 @@ TileMap::TileMap(const GameGlobal& gameGlobal,
       case 2: // Dirt tile
         {
           std::unique_ptr<Tile> dirtTile = this->tileFactory->create(tileId::DIRT_TILE);
+          // TODO: I think this rectangle might be set somewhere else but idk
+          dirtTile->setTileRectangle(
+              SDL_Rect{tilePosition.x, tilePosition.y, this->tileSize, this->tileSize});
           this->tileVector[x].emplace_back(std::move(dirtTile));
           break;
         }
@@ -39,7 +44,10 @@ TileMap::TileMap(const GameGlobal& gameGlobal,
       default:
         break;
       }
+      tilePosition.y += tileSize;
     }
+    tilePosition.y = 0;
+    tilePosition.x += tileSize;
   }
 }
 
@@ -60,4 +68,8 @@ SDL_Texture* TileMap::getTileTexture(const int xCoordinate, const int yCoordinat
 
 bool TileMap::getSelected(const int xCoordinate, const int yCoordinate) {
   return this->tileVector[xCoordinate][yCoordinate]->getSelected();
+}
+
+SDL_Rect TileMap::getTileRectangle(const SDL_Point tileCoordinate) {
+  return this->tileVector[tileCoordinate.x][tileCoordinate.y]->getTileRectangle();
 }

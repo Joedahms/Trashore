@@ -21,6 +21,8 @@ public:
 
   bool getSelected(const int xCoordinate, const int yCoordinate);
 
+  SDL_Rect getTileRectangle(const SDL_Point tileCoordinate);
+
 private:
   GameGlobal gameGlobal;
 
