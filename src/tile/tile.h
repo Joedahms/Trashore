@@ -9,15 +9,16 @@ enum tileId { WATER_TILE, DIRT_TILE };
 
 class Tile {
 public:
-  Tile(const GameGlobal& gameGlobal, const std::string& spritePath);
+  virtual ~Tile() = default;
+  Tile(const GameGlobal& gameGlobal, std::string spritePath);
 
   virtual void print() = 0;
   void setSelected();
   void unsetSelected();
-  bool getSelected();
-  SDL_Texture* getTileTexture();
-  SDL_Rect getTileRectangle();
-  void setTileRectangle(const SDL_Rect rectangle);
+  bool getSelected() const;
+  SDL_Texture* getTileTexture() const;
+  SDL_Rect getTileRectangle() const;
+  void setTileRectangle(SDL_Rect rectangle);
 
 protected:
   GameGlobal gameGlobal;

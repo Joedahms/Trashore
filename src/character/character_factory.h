@@ -6,13 +6,14 @@
 #include "../game_global.h"
 #include "character.h"
 
-class CharacterFactory {
+class CharacterFactory final {
 public:
-  CharacterFactory(GameGlobal);
-  virtual std::unique_ptr<Character> create(characterId id);
+  explicit CharacterFactory(GameGlobal);
+  ~CharacterFactory() = default;
+  std::unique_ptr<Character> create(characterId id);
 
 private:
-  GameGlobal gameGlobal;
+  GameGlobal gameGlobal{};
 };
 
 #endif

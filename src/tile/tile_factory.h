@@ -7,7 +7,7 @@
 
 class TileFactory {
 public:
-  TileFactory(const GameGlobal& gameGlobal);
+  explicit TileFactory(const GameGlobal& gameGlobal);
   std::unique_ptr<Tile> create(tileId id);
 
 private:

@@ -8,10 +8,10 @@
 TileFactory::TileFactory(const GameGlobal& gameGlobal) : gameGlobal(gameGlobal) {}
 
 std::unique_ptr<Tile> TileFactory::create(tileId id) {
-  if (tileId::WATER_TILE == id) {
+  if (WATER_TILE == id) {
     return std::make_unique<WaterTile>(gameGlobal);
   }
-  if (tileId::DIRT_TILE == id) {
+  if (DIRT_TILE == id) {
     return std::make_unique<DirtTile>(gameGlobal);
   }
   return nullptr;

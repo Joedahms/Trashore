@@ -4,10 +4,10 @@
 #include "../game_global.h"
 #include "character.h"
 
-class Npc : public Character {
+class Npc final : public Character {
 public:
-  Npc(GameGlobal);
-  void print();
+  explicit Npc(GameGlobal);
+  void print() override;
 };
 
 #endif

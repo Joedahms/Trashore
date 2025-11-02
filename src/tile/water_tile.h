@@ -3,10 +3,10 @@
 
 #include "tile.h"
 
-class WaterTile : public Tile {
+class WaterTile final : public Tile {
 public:
-  WaterTile(const GameGlobal& gameGlobal);
-  void print();
+  explicit WaterTile(const GameGlobal& gameGlobal);
+  void print() override;
 };
 
 #endif

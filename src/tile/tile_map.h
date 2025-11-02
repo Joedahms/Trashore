@@ -8,20 +8,18 @@
 
 class TileMap {
 public:
-  TileMap(const GameGlobal& gameGlobal,
-          const SDL_Point mapSizeTiles,
-          const int initialTileSize);
-  void setTileSize(const int newTileSize);
-  int getTileSize();
+  TileMap(const GameGlobal& gameGlobal, SDL_Point mapSizeTiles, int initialTileSize);
+  void setTileSize(int newTileSize);
+  int getTileSize() const;
 
-  void selectTile(const int xCoordinate, const int yCoordinate);
-  void unselectTile(const int xCoordinate, const int yCoordinate);
+  void selectTile(int xCoordinate, int yCoordinate) const;
+  void unselectTile(int xCoordinate, int yCoordinate) const;
 
-  SDL_Texture* getTileTexture(const int xCoordinate, const int yCoordinate);
+  SDL_Texture* getTileTexture(int xCoordinate, int yCoordinate) const;
 
-  bool getSelected(const int xCoordinate, const int yCoordinate);
+  bool getSelected(int xCoordinate, int yCoordinate) const;
 
-  SDL_Rect getTileRectangle(const SDL_Point tileCoordinate);
+  SDL_Rect getTileRectangle(SDL_Point tileCoordinate) const;
 
 private:
   GameGlobal gameGlobal;

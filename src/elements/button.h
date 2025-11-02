@@ -2,36 +2,32 @@
 #define BUTTON_H
 
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_ttf.h>
 #include <functional>
-#include <memory>
 #include <string>
 
 #include "../game_global.h"
 #include "composite_element.h"
 #include "element.h"
-#include "text.h"
 
 /**
  * Clickable button containing centered text. Can be set to perform an action upon click.
  */
-class Button : public CompositeElement {
+class Button final : public CompositeElement {
 public:
-  Button(const struct GameGlobal& gameGlobal,
+  Button(const GameGlobal& gameGlobal,
          const std::string& logFile,
-         const SDL_Rect boundaryRectangle,
-         const std::string& textContent,
-         const SDL_Point textPadding,
+         SDL_Rect boundaryRectangle,
+         std::string  textContent,
+         SDL_Point textPadding,
          std::function<void()> onClick);
 
-  Button(const struct GameGlobal& gameGlobal,
+  Button(const GameGlobal& gameGlobal,
          const std::string& logFile,
-         const SDL_Rect boundaryRectangle,
-         const std::string& textContent,
-         const SDL_Point textPadding,
-         const std::string& notifyMessage);
+         SDL_Rect boundaryRectangle,
+         std::string  textContent,
+         SDL_Point textPadding,
+         std::string  notifyMessage);
 
-  //  void initialize();
   void updateSelf() override;
   void renderSelf() const override;
   void handleEventSelf(const SDL_Event& event) override;
@@ -42,9 +38,9 @@ private:
   std::function<void()> onClick;
   std::string notifyMessage;
 
-  SDL_Color backgroundColor;
-  SDL_Color defaultColor;
-  SDL_Color hoveredColor;
+  SDL_Color backgroundColor{};
+  SDL_Color defaultColor{};
+  SDL_Color hoveredColor{};
 
   void updateColor();
 };

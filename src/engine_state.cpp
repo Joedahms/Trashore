@@ -1,6 +1,8 @@
 #include "engine_state.h"
 
-std::string engineStateToString(EngineState engineState) {
+#include <string>
+
+std::string engineStateToString(const EngineState engineState) {
   switch (engineState) {
   case EngineState::MAIN_MENU:
     return "MAIN_MENU";

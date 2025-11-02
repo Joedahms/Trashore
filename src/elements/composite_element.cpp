@@ -8,9 +8,6 @@ CompositeElement::CompositeElement(const GameGlobal& gameGlobal,
 
 /**
  * Update this element then update all of its children.
- *
- * @param None
- * @return None
  */
 void CompositeElement::update() {
   updateSelf();
@@ -22,9 +19,6 @@ void CompositeElement::update() {
 /**
  * Default updateSelf for a composite element. If a child of another composite element,
  * perform updates relating to being a child.
- *
- * @param None
- * @return None
  */
 void CompositeElement::updateSelf() {
   if (parent) {
@@ -37,11 +31,9 @@ void CompositeElement::updateSelf() {
  * this.
  *
  * @param element The new element to be added to the composite
- * @return None
  */
 void CompositeElement::addElement(std::shared_ptr<Element> element) {
-  SDL_Rect elementRect = element->getBoundaryRectangle();
-  if (elementRect.w == 0) {
+  if (SDL_Rect elementRect = element->getBoundaryRectangle(); elementRect.w == 0) {
     elementRect.w = this->boundaryRectangle.w;
     element->setBoundaryRectangle(elementRect);
   }
@@ -54,9 +46,6 @@ void CompositeElement::addElement(std::shared_ptr<Element> element) {
 
 /**
  * Render this element then render all of its children.
- *
- * @param None
- * @return None
  */
 void CompositeElement::render() const {
   renderSelf();
@@ -74,8 +63,7 @@ void CompositeElement::renderSelf() const {
 /**
  * Handle the event then ask all children to handle the event.
  *
- * @param event The SDL event that occured.
- * @return None
+ * @param event The SDL event that occurred.
  */
 void CompositeElement::handleEvent(const SDL_Event& event) {
   handleEventSelf(event);
@@ -103,7 +91,7 @@ void CompositeElement::checkCollision(std::vector<SDL_Rect>& boundaryRectangles)
   if (this->canCollide) {
     checkCollisionImpl(boundaryRectangles);
   }
-  for (auto& element : this->children) {
+  for (auto const& element : this->children) {
     element->checkCollision(boundaryRectangles);
   }
 }
@@ -111,12 +99,9 @@ void CompositeElement::checkCollision(std::vector<SDL_Rect>& boundaryRectangles)
 /**
  * Remove all child elements from this composite element.
  * This will destroy elements if this composite holds the last reference.
- *
- * @param None
- * @return None
  */
 void CompositeElement::removeAllChildren() {
-  for (auto& child : this->children) {
+  for (auto const& child : this->children) {
     if (child) {
       child->setParent(nullptr);
     }
@@ -125,9 +110,9 @@ void CompositeElement::removeAllChildren() {
   this->children.clear();
 }
 
-void CompositeElement::containChildren() {
+void CompositeElement::containChildren() const {
   for (auto& child : this->children) {
-    SDL_Rect childRect              = child->getBoundaryRectangle();
+    const SDL_Rect childRect        = child->getBoundaryRectangle();
     SDL_Point childRelativePosition = child->getPositionRelativeToParent();
     Velocity childVelocity          = child->getVelocity();
 

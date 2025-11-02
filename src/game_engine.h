@@ -2,10 +2,7 @@
 #define DISPLAY_ENGINE_H
 
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
 #include <memory>
-#include <string>
-#include <vector>
 
 #include "logger.h"
 
@@ -18,21 +15,20 @@
 class GameEngine {
 public:
   GameEngine(const char* windowTitle,
-             const int windowXPosition,
-             const int windowYPosition,
-             const int screenWidth,
-             const int screenHeight,
-             const bool fullscreen);
+             int windowXPosition,
+             int windowYPosition,
+             int screenWidth,
+             int screenHeight,
+             bool fullscreen);
   void start();
 
 private:
   Logger logger;
-  GameGlobal gameGlobal;
+  GameGlobal gameGlobal{};
   State* engineState       = nullptr;
   EngineState currentState = EngineState::MAIN_MENU;
   bool gameIsRunning       = false;
 
-  // States
   std::unique_ptr<MainMenu> mainMenu;
   std::unique_ptr<Gameplay> gameplay;
 
@@ -41,14 +37,14 @@ private:
                           int windowYPosition,
                           int screenWidth,
                           int screenHeight,
-                          bool fullscreen);
+                          bool fullscreen) const;
   void initializeEngine(SDL_Window* window);
 
   void handleStateChange();
   void handleEvents();
-  void update();
-  void renderState();
-  void clean();
+  void update() const;
+  void renderState() const;
+  void clean() const;
 };
 
 #endif

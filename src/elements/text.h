@@ -11,29 +11,32 @@
 /**
  * Represents a string of characters that can be rendered.
  */
-class Text : public Element {
+class Text final : public Element {
 public:
   Text(const GameGlobal& gameGlobal,
        const std::string& logFile,
-       const SDL_Rect boundaryRectangle,
+       SDL_Rect boundaryRectangle,
        const std::string& fontPath,
-       const std::string& content,
-       const int fontSize,
-       const SDL_Color color);
-  ~Text();
+       std::string content,
+       int fontSize,
+       SDL_Color color);
+  ~Text() override;
 
   void setContent(const std::string& content) override;
   std::string getContent() const override { return this->content; }
 
   void render() const override;
-  void handleEvent(const SDL_Event& event);
+  void handleEvent(const SDL_Event& event) override;
 
 private:
   TTF_Font* font;
   std::string content;
   int fontSize;
   SDL_Color color;
-  SDL_Texture* texture;
+  SDL_Texture* texture{};
+
+  void setWidthAndHeight();
+  void setTexture();
 };
 
 #endif

@@ -1,6 +1,5 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
-#include <assert.h>
 #include <iostream>
 #include <thread>
 
@@ -32,7 +31,7 @@ GameEngine::GameEngine(const char* windowTitle,
 }
 
 void GameEngine::start() {
-  std::chrono::milliseconds msPerFrame = std::chrono::milliseconds(16);
+  const auto msPerFrame = std::chrono::milliseconds(16);
 
   while (this->gameIsRunning) {
     std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
@@ -43,7 +42,7 @@ void GameEngine::start() {
     renderState();
 
     std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
-    std::chrono::milliseconds sleepDuration =
+    auto sleepDuration =
         std::chrono::duration_cast<std::chrono::milliseconds>(start + msPerFrame - now);
     std::this_thread::sleep_for(sleepDuration);
   }
@@ -52,11 +51,11 @@ void GameEngine::start() {
 }
 
 SDL_Window* GameEngine::setupWindow(const char* windowTitle,
-                                    int windowXPosition,
-                                    int windowYPosition,
-                                    int screenWidth,
-                                    int screenHeight,
-                                    bool fullscreen) {
+                                    const int windowXPosition,
+                                    const int windowYPosition,
+                                    const int screenWidth,
+                                    const int screenHeight,
+                                    const bool fullscreen) const {
   this->logger.log("Creating SDL game window");
 
   int flags = 0;
@@ -65,25 +64,23 @@ SDL_Window* GameEngine::setupWindow(const char* windowTitle,
   }
 
   try {
-    return SDL_CreateWindow(windowTitle, windowXPosition, windowYPosition, screenWidth,
-                            screenHeight, flags);
+    SDL_Window* window = SDL_CreateWindow(windowTitle, windowXPosition, windowYPosition,
+                                          screenWidth, screenHeight, flags);
+    this->logger.log("SDL game window created");
+    return window;
   } catch (...) {
     std::cerr << "Error setting up SDL game window";
     exit(1);
   }
-
-  this->logger.log("SDL game window created");
 }
 
 void GameEngine::initializeEngine(SDL_Window* window) {
   this->logger.log("Initializing engine");
-  int sdlInitReturn = SDL_Init(SDL_INIT_EVERYTHING);
-  if (sdlInitReturn != 0) {
+  if (const int sdlInitReturn = SDL_Init(SDL_INIT_EVERYTHING); sdlInitReturn != 0) {
     std::cerr << "Failed to initialize engine";
     exit(1);
   }
 
-  // Create renderer
   this->gameGlobal.renderer = SDL_CreateRenderer(
       window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
   if (!this->gameGlobal.renderer) {
@@ -93,9 +90,7 @@ void GameEngine::initializeEngine(SDL_Window* window) {
 
   SDL_SetRenderDrawColor(this->gameGlobal.renderer, 255, 255, 255, 255);
 
-  // Initialize TTF
-  int ttfInitReturn = TTF_Init();
-  if (ttfInitReturn == -1) {
+  if (const int ttfInitReturn = TTF_Init(); ttfInitReturn == -1) {
     std::cerr << "Failed to initialize TTF";
     exit(1);
   }
@@ -106,9 +101,8 @@ void GameEngine::initializeEngine(SDL_Window* window) {
 void GameEngine::handleStateChange() {
   if (this->engineState->checkStateChange()) {
     this->engineState->exit();
-    EngineState currentState = this->engineState->getCurrentState();
 
-    switch (currentState) {
+    switch (this->engineState->getCurrentState()) {
     case EngineState::MAIN_MENU:
       this->engineState = this->mainMenu.get();
       break;
@@ -126,11 +120,11 @@ void GameEngine::handleStateChange() {
 
 void GameEngine::handleEvents() { this->engineState->handleEvents(this->gameIsRunning); }
 
-void GameEngine::update() { this->engineState->update(); }
+void GameEngine::update() const { this->engineState->update(); }
 
-void GameEngine::renderState() { this->engineState->render(); }
+void GameEngine::renderState() const { this->engineState->render(); }
 
-void GameEngine::clean() {
+void GameEngine::clean() const {
   SDL_DestroyWindow(this->gameGlobal.window);
   SDL_DestroyRenderer(this->gameGlobal.renderer);
   SDL_Quit();

@@ -1,116 +1,57 @@
 #include <SDL2/SDL.h>
 #include <iostream>
 #include <memory>
+#include <utility>
 
 #include "../game_global.h"
 #include "button.h"
 #include "element.h"
+#include "text.h"
 
 /**
  * @param gameGlobal Global display variables
+ * @param logFile Name of log file
  * @param boundaryRectangle Rectangle to describe the position relative to parent element
  * as well as the width and height. The x and y parameters of the rectangle are used as
  * the position relative to the parent.
  * @param textContent The text to print in the middle of the button
  * @param textPadding How offset the text should be from parent
- * @param callback The callback function to execute when the button is clicked
+ * @param onClick The callback function to execute when the button is clicked
  */
-Button::Button(const struct GameGlobal& gameGlobal,
+Button::Button(const GameGlobal& gameGlobal,
                const std::string& logFile,
                const SDL_Rect boundaryRectangle,
-               const std::string& textContent,
+               std::string textContent,
                const SDL_Point textPadding,
                std::function<void()> onClick)
-    : CompositeElement(gameGlobal, logFile, boundaryRectangle), textContent(textContent),
-      textPadding(textPadding), onClick(onClick) {
+    : CompositeElement(gameGlobal, logFile, boundaryRectangle),
+      textContent(std::move(textContent)), textPadding(textPadding),
+      onClick(std::move(onClick)) {
   this->logger->log("Constructing " + this->textContent + " button");
 
-  // Colors
   this->backgroundColor = {255, 0, 0, 255}; // Red
   this->hoveredColor    = {0, 255, 0, 255}; // Green
   this->defaultColor    = {255, 0, 0, 255}; // Red
 
-  // Button Text
-  SDL_Color textColor        = {255, 255, 0, 255}; // Yellow
-  SDL_Rect textRect          = {textPadding.x, textPadding.y, 0, 0};
-  std::shared_ptr<Text> text = std::make_shared<Text>(
-      this->gameGlobal, this->logFile, textRect, GameGlobal::futuramFontPath,
-      this->textContent.c_str(), 24, textColor);
+  SDL_Color textColor = {255, 255, 0, 255}; // Yellow
+  SDL_Rect textRect   = {textPadding.x, textPadding.y, 0, 0};
+  auto text           = std::make_shared<Text>(this->gameGlobal, this->logFile, textRect,
+                                               GameGlobal::futuramFontPath,
+                                               this->textContent.c_str(), 24, textColor);
   text->setCentered();
 
-  // Size based on text
   if (this->boundaryRectangle.w == 0 && this->boundaryRectangle.h == 0) {
-    SDL_Rect textboundaryRectangle = text->getBoundaryRectangle();
-    this->boundaryRectangle.w      = textboundaryRectangle.w + textPadding.x;
-    this->boundaryRectangle.h      = textboundaryRectangle.h + textPadding.y;
+    const SDL_Rect textBoundaryRectangle = text->getBoundaryRectangle();
+    this->boundaryRectangle.w            = textBoundaryRectangle.w + textPadding.x;
+    this->boundaryRectangle.h            = textBoundaryRectangle.h + textPadding.y;
   }
 
-  addElement(std::move(text));
+  CompositeElement::addElement(std::move(text));
   this->logger->log(this->textContent + " button constructed");
 }
-
-Button::Button(const struct GameGlobal& gameGlobal,
-               const std::string& logFile,
-               const SDL_Rect boundaryRectangle,
-               const std::string& textContent,
-               const SDL_Point textPadding,
-               const std::string& notifyMessage)
-    : CompositeElement(gameGlobal, logFile, boundaryRectangle), textContent(textContent),
-      textPadding(textPadding), notifyMessage(notifyMessage) {
-  this->logger->log("Constructing " + this->textContent + " button");
-
-  // Colors
-  this->backgroundColor = {255, 0, 0, 255}; // Red
-  this->hoveredColor    = {0, 255, 0, 255}; // Green
-  this->defaultColor    = {255, 0, 0, 255}; // Red
-
-  // Button Text
-  SDL_Color textColor        = {255, 255, 0, 255}; // Yellow
-  SDL_Rect textRect          = {textPadding.x, textPadding.y, 0, 0};
-  std::shared_ptr<Text> text = std::make_shared<Text>(
-      this->gameGlobal, this->logFile, textRect, GameGlobal::futuramFontPath,
-      this->textContent.c_str(), 24, textColor);
-  text->setCentered();
-
-  // Size based on text
-  if (this->boundaryRectangle.w == 0 && this->boundaryRectangle.h == 0) {
-    SDL_Rect textboundaryRectangle = text->getBoundaryRectangle();
-    this->boundaryRectangle.w      = textboundaryRectangle.w + textPadding.x;
-    this->boundaryRectangle.h      = textboundaryRectangle.h + textPadding.y;
-  }
-
-  addElement(std::move(text));
-  this->logger->log(this->textContent + " button constructed");
-}
-
-/*
-void Button::initialize() {
-  this->logger->log("Initializing " + this->textContent + " button");
-
-  this->onClick = [this]() {
-    if (auto mediatorShared = this->mediator.lock()) {
-      this->logger->log(this->textContent + " button notifying mediator with message " +
-                        this->notifyMessage);
-
-      mediatorShared->notify(shared_from_this(), this->notifyMessage);
-
-      this->logger->log(this->textContent + " button successfully notified mediator");
-    }
-    else {
-      this->logger->log(this->textContent + " button unable to get mediator lock");
-      // uh oh
-    }
-  };
-
-  this->logger->log("Successfully initialized " + this->textContent + " button");
-}
-*/
 
 /**
  * Change color if the cursor is hovered over the button.
- *
- * @param None
- * @return None
  */
 void Button::updateSelf() {
   if (parent) {
@@ -122,12 +63,8 @@ void Button::updateSelf() {
 
 /**
  * Render the background color
- *
- * @param None
- * @return None
  */
 void Button::renderSelf() const {
-  // Set draw color and fill the button
   SDL_SetRenderDrawColor(this->gameGlobal.renderer, backgroundColor.r, backgroundColor.g,
                          backgroundColor.b, backgroundColor.a);
   SDL_RenderFillRect(this->gameGlobal.renderer, &this->boundaryRectangle);
@@ -138,7 +75,6 @@ void Button::renderSelf() const {
  * function.
  *
  * @param event An SDL event that has occured.
- * @return None
  */
 void Button::handleEventSelf(const SDL_Event& event) {
   if (event.type == SDL_MOUSEBUTTONDOWN) {
@@ -152,9 +88,6 @@ void Button::handleEventSelf(const SDL_Event& event) {
 
 /**
  * Choose background color based on mouse position.
- *
- * @param None
- * @return None
  */
 void Button::updateColor() {
   if (checkMouseHovered()) {

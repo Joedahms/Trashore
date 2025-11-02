@@ -11,10 +11,10 @@ CharacterFactory::CharacterFactory(GameGlobal gameGlobal) {
 }
 
 std::unique_ptr<Character> CharacterFactory::create(characterId id) {
-  if (characterId::PLAYER == id) {
+  if (PLAYER == id) {
     return std::make_unique<Player>();
   }
-  if (characterId::NPC == id) {
+  if (NPC == id) {
     return std::make_unique<Npc>(this->gameGlobal);
   }
   return nullptr;
