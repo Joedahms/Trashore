@@ -1,9 +1,9 @@
 #ifndef FLAPPY_FOOD_H
 #define FLAPPY_FOOD_H
 
-#include "../../game_global.h"
-#include "../composite_element.h"
-#include "../text.h"
+#include "../../GameGlobal.h"
+#include "../CompositeElement.h"
+#include "../Text.h"
 #include "bird.h"
 #include "obstacle.h"
 #include "obstacle_pair.h"
