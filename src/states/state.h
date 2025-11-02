@@ -2,7 +2,6 @@
 #define STATE_H
 
 #include <memory>
-#include <vector>
 
 #include "../elements/container.h"
 #include "../engine_state.h"
@@ -11,22 +10,23 @@
 
 class State {
 public:
+  virtual ~State() = default;
   State(const GameGlobal& gameGlobal,
-        const std::string& logFile,
-        const EngineState& state);
+        std::string logFile,
+        const EngineState& currentState);
   virtual void handleEvents(bool& gameIsRunning);
   virtual void update();
   virtual void render() const = 0;
   virtual void enter();
   virtual void exit() = 0;
 
-  EngineState getCurrentState();
-  void setCurrentState(EngineState currentState);
+  EngineState getCurrentState() const;
+  void setCurrentState(EngineState newCurrentState);
 
-  bool checkStateChange();
+  bool checkStateChange() const;
 
 protected:
-  struct GameGlobal gameGlobal;
+  GameGlobal gameGlobal;
   const std::string logFile;
   std::unique_ptr<Logger> logger;
 

@@ -12,7 +12,7 @@ class CompositeElement : public Element {
 public:
   CompositeElement(const GameGlobal& gameGlobal,
                    const std::string& logFile,
-                   const SDL_Rect boundaryRectangle);
+                   SDL_Rect boundaryRectangle);
   void addElement(std::shared_ptr<Element> element) override;
   void update() override;
   void render() const override;
@@ -26,8 +26,7 @@ protected:
   virtual void renderSelf() const;
   virtual void handleEventSelf(const SDL_Event& event) = 0;
   void addBoundaryRectangleSelf(std::vector<SDL_Rect>& boundaryRectangles) const;
-  void checkCollisionSelf(std::vector<SDL_Rect>& boundaryRectangles);
-  void containChildren();
+  void containChildren() const;
 
   std::vector<std::shared_ptr<Element>> children;
 };

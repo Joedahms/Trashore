@@ -22,23 +22,19 @@ LoadingBar::LoadingBar(const GameGlobal& gameGlobal,
 
 /**
  * Loading bar slowly fills the border.
- *
- * @param None
- * @return None
  */
 void LoadingBar::update() {
   if (parent) {
     hasParentUpdate();
   }
 
-  float pixelsPerMs =
+  const float pixelsPerMs =
       static_cast<float>(this->boundaryRectangle.w) / (this->totalTimeSeconds * 1000);
   this->pixelsPerUpdate = pixelsPerMs * this->updatePeriodMs;
 
   // Get time since last update
-  this->currentUpdate = std::chrono::steady_clock::now();
-  std::chrono::milliseconds updateDifference;
-  updateDifference = std::chrono::duration_cast<std::chrono::milliseconds>(
+  this->currentUpdate         = std::chrono::steady_clock::now();
+  const auto updateDifference = std::chrono::duration_cast<std::chrono::milliseconds>(
       this->currentUpdate - this->previousUpdate);
 
   if (this->barRectangle.w <= this->boundaryRectangle.w) {
@@ -72,57 +68,11 @@ void LoadingBar::handleEvent(const SDL_Event& event) {
   }
 }
 
-/**
- * If the mouse is clicked over the loading bar, it is held and no longer centered in any
- * way.
- *
- * @param None
- * @return None
- */
-void LoadingBar::handleMouseDown() {
-  if (checkMouseHovered()) {
-    this->held = true;
-
-    this->centerWithinParent           = false;
-    this->centerVerticalWithinParent   = false;
-    this->centerHorizontalWithinParent = false;
-  }
-  else {
-    if (!fixed) {
-      this->velocity.y = -5;
-    }
-  }
-}
-
-/**
- * If the mouse is moved while the loading bar is held, the loading bar should follow the
- * mouse. The loading bar is drug by the mouse.
- *
- * @param event The SDL_MOUSEMOTION event to handle
- * @return None
- */
-void LoadingBar::handleMouseMotion(const SDL_Event& event) {
-  if (this->held) {
-    this->fixed = false;
-
-    this->velocity.x += event.motion.x - this->previousMotion.x;
-    this->velocity.y += event.motion.y - this->previousMotion.y;
-    this->previousMotion.x = event.motion.x;
-    this->previousMotion.y = event.motion.y;
-  }
-  this->previousMotion.x = event.motion.x;
-  this->previousMotion.y = event.motion.y;
-}
-
-void LoadingBar::handleMouseUp() { this->held = false; }
-
 void LoadingBar::render() const {
-  // Border
   if (this->hasBorder) {
     renderBorder();
   }
 
-  // Bar
   SDL_SetRenderDrawColor(this->gameGlobal.renderer, barColor.r, barColor.g, barColor.b,
                          barColor.a);
   SDL_RenderFillRect(this->gameGlobal.renderer, &this->barRectangle);

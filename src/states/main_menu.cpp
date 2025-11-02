@@ -10,12 +10,13 @@
 
 /**
  * @param gameGlobal Global display variables.
+ * @param state COME UP WITH A BETTER DESCRIPTION FO THIS
  */
 MainMenu::MainMenu(const GameGlobal& gameGlobal, const EngineState& state)
     : State(gameGlobal, LogFiles::MAIN_MENU, state) {
   this->logger->log("Constructing main menu state");
 
-  std::shared_ptr<Text> title = std::make_shared<Text>(
+  auto title = std::make_shared<Text>(
       this->gameGlobal, this->logFile, SDL_Rect{0, 100, 0, 0},
       GameGlobal::futuramFontPath, "TRASHORE", 24, SDL_Color{0, 255, 0, 0});
   title->setCenteredHorizontal();
@@ -23,7 +24,7 @@ MainMenu::MainMenu(const GameGlobal& gameGlobal, const EngineState& state)
 
   // Start Scan
   SDL_Rect newScanButtonRectangle       = {200, 150, 200, 50};
-  std::shared_ptr<Button> newScanButton = std::make_shared<Button>(
+  auto newScanButton = std::make_shared<Button>(
       this->gameGlobal, this->logFile, newScanButtonRectangle, "Start Game",
       SDL_Point{10, 10}, [this]() { this->currentState = EngineState::GAMEPLAY; });
   newScanButton->setCenteredHorizontal();

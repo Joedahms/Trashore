@@ -3,28 +3,25 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_rect.h>
-#include <vector>
 
 #include "../game_global.h"
 
 class Camera {
 public:
-  Camera(const GameGlobal& gameGlobal,
-         const SDL_Point mapSizeTiles,
-         const int initialTileSize);
+  Camera(const GameGlobal& gameGlobal, SDL_Point mapSizeTiles, int initialTileSize);
 
-  void checkBoundries();
-  void checkLeftBoundry();
-  void checkRightBoundry();
-  void checkBottomBoundry();
-  void checkTopBoundry();
+  void checkBoundaries();
+  void checkLeftBoundary();
+  void checkRightBoundary();
+  void checkBottomBoundary();
+  void checkTopBoundary();
 
   void update();
 
   void setYVelocity(int yVelocity);
   void setXVelocity(int xVelocity);
 
-  SDL_Point getPosition();
+  SDL_Point getPosition() const;
   SDL_Point position   = {0, 0};
   SDL_Rect destination = {0, 0, 1024, 640};
 
@@ -37,8 +34,8 @@ private:
 
   SDL_Point velocity = {0, 0};
 
-  int deltaTime        = 0; // MS
-  int totalDeltaTime   = 0;
+  int deltaTimeMs      = 0;
+  int totalDeltaTimeMs = 0;
   Uint64 currentTicks  = 0;
   Uint64 previousTicks = 0;
 };

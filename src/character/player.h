@@ -3,12 +3,11 @@
 
 #include "character.h"
 
-class Player : public Character 
-{
-	public:
-		Player();
-		~Player();
-		void print();
+class Player final : public Character {
+public:
+  Player();
+  ~Player() override;
+  void print() override;
 };
 
 #endif

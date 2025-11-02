@@ -14,28 +14,28 @@ public:
 
   void updatePosition();
 
-  int getYPosition();
-  int getXPosition();
+  [[nodiscard]] int getYPosition() const;
+  [[nodiscard]] int getXPosition() const;
 
   void setYVelocity(int);
   void setXVelocity(int);
 
-  SDL_Texture* getTexture();
-  SDL_Rect getRectangle();
+  [[nodiscard]] SDL_Texture* getTexture() const;
+  [[nodiscard]] SDL_Rect getRectangle() const;
 
-  void render();
+  void render() const;
 
 protected:
-  GameGlobal gameGlobal;
+  GameGlobal gameGlobal{};
 
-  SDL_Texture* texture;
-  SDL_Rect rectangle;
+  SDL_Texture* texture{};
+  SDL_Rect rectangle{};
 
-  int yPosition;
-  int xPosition;
+  int yPosition{};
+  int xPosition{};
 
-  int yVelocity;
-  int xVelocity;
+  int yVelocity{};
+  int xVelocity{};
 };
 
 #endif

@@ -24,9 +24,7 @@ struct Acceleration {
  */
 class Element : public std::enable_shared_from_this<Element> {
 public:
-  Element(const struct GameGlobal& gameGlobal,
-          const std::string& logFile,
-          const SDL_Rect boundaryRectangle);
+  Element(const GameGlobal& gameGlobal, std::string logFile, SDL_Rect boundaryRectangle);
   virtual ~Element() = default;
   virtual void addElement(std::shared_ptr<Element> element) {}
   virtual void update();
@@ -38,41 +36,41 @@ public:
   virtual std::string getContent() const;
   virtual void setContent(const std::string& content) {}
 
-  void setParent(Element* parent);
+  void setParent(Element* newParent);
 
-  SDL_Point getPositionRelativeToParent();
+  SDL_Point getPositionRelativeToParent() const;
   void setPositionRelativeToParent(const SDL_Point& relativePosition);
 
-  SDL_Rect getBoundaryRectangle();
-  void setBoundaryRectangle(SDL_Rect boundaryRectangle);
+  SDL_Rect getBoundaryRectangle() const;
+  void setBoundaryRectangle(SDL_Rect newBoundaryRectangle);
 
   void setCentered();
 
   void setCenteredVertical();
-  bool checkCenterVertical();
+  bool checkCenterVertical() const;
 
   void setCenteredHorizontal();
-  bool checkCenterHorizontal();
+  bool checkCenterHorizontal() const;
 
-  bool checkMouseHovered();
+  bool checkMouseHovered() const;
 
-  void addBorder(const int& borderThickness);
+  void addBorder(const int& newBorderThickness);
   void renderBorder() const;
 
-  Velocity getVelocity();
-  void setVelocity(Velocity velocity);
-  Acceleration getAcceleration();
-  void setAcceleration(Acceleration acceleration);
+  Velocity getVelocity() const;
+  void setVelocity(Velocity newVelocity);
+  Acceleration getAcceleration() const;
+  void setAcceleration(Acceleration newAcceleration);
 
-  int getBorderThickness();
-  bool getFixed();
-  bool getScreenBoundX();
-  bool getScreenBoundY();
-  bool getHasCollided();
-  void setFixed(bool fixed);
-  void setCanCollide(bool canCollide);
-  void setCollisionFixed(bool collisionFixed);
-  void setGravityAffected(bool gravityAffected);
+  int getBorderThickness() const;
+  bool getFixed() const;
+  bool getScreenBoundX() const;
+  bool getScreenBoundY() const;
+  bool getHasCollided() const;
+  void setFixed(bool newFixed);
+  void setCanCollide(bool newCanCollide);
+  void setCollisionFixed(bool newCollisionFixed);
+  void setGravityAffected(bool newGravityAffected);
   void setHasCollided(bool collided);
 
 private:
@@ -80,7 +78,7 @@ private:
   void centerHorizontal();
 
 protected:
-  struct GameGlobal gameGlobal;
+  GameGlobal gameGlobal;
   const std::string logFile;
   std::unique_ptr<Logger> logger;
   std::string debugName = "no debug name";
@@ -101,7 +99,6 @@ protected:
 
   bool gravityAffected = false;
   bool fixed           = true;
-  bool held            = false;
   bool screenBoundX    = true;
   bool screenBoundY    = true;
   bool canCollide      = false;
@@ -111,12 +108,12 @@ protected:
   Velocity velocity         = {0, 0};
   Acceleration acceleration = {0, 0};
 
-  void setupPosition(const SDL_Rect& boundaryRectangle);
+  void setupPosition(const SDL_Rect& newBoundaryRectangle);
   void hasParentUpdate();
   void updatePosition();
-  void checkCollisionImpl(std::vector<SDL_Rect>& boundaryRectangles);
-  SDL_Point calculateOverlap(const SDL_Rect boundaryRectangle) const;
-  void fixCollision(const SDL_Point overlap, const SDL_Rect boundaryRectangle);
+  void checkCollisionImpl(const std::vector<SDL_Rect>& boundaryRectangles);
+  SDL_Point calculateOverlap(SDL_Rect overlappingWithBoundaryRectangle) const;
+  void fixCollision(SDL_Point overlap, SDL_Rect collidedWithBoundaryRectangle);
 };
 
 #endif

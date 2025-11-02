@@ -5,11 +5,11 @@
 
 #include "element.h"
 
-class LoadingBar : public Element {
+class LoadingBar final : public Element {
 public:
   LoadingBar(const GameGlobal& gameGlobal,
              const std::string& logFile,
-             const SDL_Rect boundaryRectangle,
+             SDL_Rect boundaryRectangle,
              const int& borderThickness,
              const float& totalTimeSeconds,
              const float& updatePeriodMs);
@@ -19,11 +19,11 @@ public:
   void render() const override;
 
 private:
-  SDL_Rect barRectangle;
-  SDL_Color barColor;
+  SDL_Rect barRectangle{};
+  SDL_Color barColor{};
   float totalTimeSeconds;
   float updatePeriodMs;
-  int pixelsPerUpdate;
+  int pixelsPerUpdate{};
 
   SDL_Point previousMotion = {0, 0};
 

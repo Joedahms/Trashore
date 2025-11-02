@@ -70,23 +70,23 @@ void Gameplay::handleEvents(bool& gameIsRunning) {
       break;
     }
   }
-  checkKeystates();
+  checkKeyStates();
 }
 
-void Gameplay::checkKeystates() {
-  const Uint8* keystates = SDL_GetKeyboardState(NULL);
+void Gameplay::checkKeyStates() const {
+  const Uint8* keyStates = SDL_GetKeyboardState(nullptr);
 
   // Camera movement (arrow keys)
-  if (keystates[SDL_SCANCODE_UP]) {
+  if (keyStates[SDL_SCANCODE_UP]) {
     this->camera->setYVelocity(-128);
   }
-  else if (keystates[SDL_SCANCODE_DOWN]) {
+  else if (keyStates[SDL_SCANCODE_DOWN]) {
     this->camera->setYVelocity(128);
   }
-  else if (keystates[SDL_SCANCODE_RIGHT]) {
+  else if (keyStates[SDL_SCANCODE_RIGHT]) {
     this->camera->setXVelocity(128);
   }
-  else if (keystates[SDL_SCANCODE_LEFT]) {
+  else if (keyStates[SDL_SCANCODE_LEFT]) {
     this->camera->setXVelocity(-128);
   }
   else { // No arrow key pressed
@@ -95,20 +95,9 @@ void Gameplay::checkKeystates() {
   }
 
   // Pause menu
-  if (keystates[SDL_SCANCODE_ESCAPE]) {
+  if (keyStates[SDL_SCANCODE_ESCAPE]) {
     // pause
   }
-}
-
-void Gameplay::setSelectedTile() {
-  int X;
-  int Y;
-  Uint32 mouse = SDL_GetMouseState(&X, &Y);
-
-  SDL_Point cameraPosition = this->camera->getPosition();
-
-  int selectedXCoordinate = floor(X / this->tileMap->getTileSize()) + cameraPosition.x;
-  int selectedYCoordinate = floor(Y / this->tileMap->getTileSize()) + cameraPosition.y;
 }
 
 void Gameplay::update() {
@@ -126,18 +115,16 @@ void Gameplay::render() const {
   SDL_SetRenderTarget(this->gameGlobal.renderer, this->texture);
   SDL_RenderClear(this->gameGlobal.renderer);
 
-  SDL_Point cameraPosition = this->camera->getPosition();
-
   for (int x = 0; x < this->MAP_SIZE_TILES.x; x++) {
     for (int y = 0; y < this->MAP_SIZE_TILES.y; y++) {
       SDL_Rect tileRectangle = this->tileMap->getTileRectangle(SDL_Point{x, y});
-      SDL_Point tilePosition = SDL_Point{tileRectangle.x, tileRectangle.y};
+      const auto tilePosition = SDL_Point{tileRectangle.x, tileRectangle.y};
 
-      SDL_Point tilePositionWithinCamera =
+      auto [tilePositionWithinCameraX, tilePositionWithinCameraY] =
           subtractPoints(tilePosition, this->camera->getPosition());
 
-      tileRectangle.x = tilePositionWithinCamera.x;
-      tileRectangle.y = tilePositionWithinCamera.y;
+      tileRectangle.x = tilePositionWithinCameraX;
+      tileRectangle.y = tilePositionWithinCameraY;
 
       // TODO: Check if within camera viewport
       SDL_RenderCopy(this->gameGlobal.renderer, this->tileMap->getTileTexture(x, y), NULL,
@@ -153,10 +140,8 @@ void Gameplay::render() const {
   SDL_RenderPresent(this->gameGlobal.renderer);
 }
 
-void Gameplay::exit() {}
-
-SDL_Point Gameplay::subtractPoints(const SDL_Point pointA, const SDL_Point pointB) const {
-  int x = pointA.x - pointB.x;
-  int y = pointA.y - pointB.y;
+SDL_Point Gameplay::subtractPoints(const SDL_Point pointA, const SDL_Point pointB) {
+  const int x = pointA.x - pointB.x;
+  const int y = pointA.y - pointB.y;
   return SDL_Point{x, y};
 }

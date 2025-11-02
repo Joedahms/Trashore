@@ -7,15 +7,15 @@ void Character::updatePosition() {
   this->rectangle.y = this->rectangle.y += this->yVelocity;
 }
 
-int Character::getYPosition() { return this->yPosition; }
-int Character::getXPosition() { return this->yPosition; }
+int Character::getYPosition() const { return this->yPosition; }
+int Character::getXPosition() const { return this->yPosition; }
 
 void Character::setYVelocity(int newYVelocity) { this->yVelocity = newYVelocity; }
 void Character::setXVelocity(int newXVelocity) { this->xVelocity = newXVelocity; }
 
-SDL_Texture* Character::getTexture() { return this->texture; }
-SDL_Rect Character::getRectangle() { return this->rectangle; }
+SDL_Texture* Character::getTexture() const { return this->texture; }
+SDL_Rect Character::getRectangle() const { return this->rectangle; }
 
-void Character::render() {
-  SDL_RenderCopy(this->gameGlobal.renderer, this->texture, NULL, &this->rectangle);
+void Character::render() const {
+  SDL_RenderCopy(this->gameGlobal.renderer, this->texture, nullptr, &this->rectangle);
 }

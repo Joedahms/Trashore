@@ -10,14 +10,12 @@ class Gameplay : public State {
 public:
   Gameplay(const GameGlobal& gameGlobal, const EngineState& state);
   void handleEvents(bool& gameIsRunning) override;
-  void checkKeystates();
-  void setSelectedTile();
+  void checkKeyStates() const;
   void update() override;
   void render() const override;
-  void exit() override;
 
   // TODO: pull this out into something else where more things can use it
-  SDL_Point subtractPoints(const SDL_Point pointA, const SDL_Point pointB) const;
+  [[nodiscard]] static SDL_Point subtractPoints(SDL_Point pointA, SDL_Point pointB);
 
 private:
   const SDL_Point MAP_SIZE_TILES = {200, 200};

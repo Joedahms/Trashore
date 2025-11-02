@@ -1,19 +1,9 @@
 #include <iostream>
 
-#include "character.h"
 #include "player.h"
 
-Player::Player()
-{
+Player::Player() = default;
 
-}
+Player::~Player() = default;
 
-Player::~Player()
-{
-
-}
-
-void Player::print()
-{
-	std::cout << "player" << std::endl;
-}
+void Player::print() { std::cout << "player" << std::endl; }

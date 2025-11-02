@@ -5,19 +5,19 @@
 
 /**
  * A simple composite element that just contains other elements without adding any of its
- * own functionality. Useful as a root element of an element heirarchy.
+ * own functionality. Useful as a root element of an element hierarchy.
  */
 class Container : public CompositeElement {
 public:
   Container(const GameGlobal& gameGlobal,
             const std::string& logFile,
-            const SDL_Rect boundaryRectangle);
+            SDL_Rect boundaryRectangle);
   void update() override;
   void handleEventSelf(const SDL_Event& event) override;
 
 private:
-  void checkElementPositionX(std::shared_ptr<Element> element);
-  void checkElementPositionY(std::shared_ptr<Element> element);
+  void checkElementPositionX(std::shared_ptr<Element> element) const;
+  void checkElementPositionY(const std::shared_ptr<Element>& element) const;
 };
 
 #endif

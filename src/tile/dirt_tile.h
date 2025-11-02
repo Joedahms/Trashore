@@ -3,10 +3,10 @@
 
 #include "tile.h"
 
-class DirtTile : public Tile {
+class DirtTile final : public Tile {
 public:
-  DirtTile(const GameGlobal& gameGlobal);
-  void print();
+  explicit DirtTile(const GameGlobal& gameGlobal);
+  void print() override;
 };
 
 #endif
