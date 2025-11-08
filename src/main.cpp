@@ -3,9 +3,9 @@
 #include <iostream>
 #include <string>
 
-#include "game_engine.h"
-#include "game_global.h"
-#include "logger.h"
+#include "GameEngine.h"
+#include "GameGlobal.h"
+#include "Logger.h"
 
 int main(int argc, const char* argv[]) {
   constexpr int WINDOW_WIDTH  = 1024;

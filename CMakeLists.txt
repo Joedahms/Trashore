@@ -19,54 +19,54 @@ find_package(SDL2_ttf REQUIRED)
 
 # Include directories for all libraries
 include_directories(
-  ${SDL2_INCLUDE_DIRS} 
-  ${SDL2_IMAGE_INCLUDE_DIRS}
+        ${SDL2_INCLUDE_DIRS}
+        ${SDL2_IMAGE_INCLUDE_DIRS}
 )
 
 # Add executable with all source files
 add_executable(sdlGameEngine
-  src/main.cpp
-  src/logger.cpp
+        src/main.cpp
+        src/Logger.cpp
 
-  src/log_files.cpp
-  src/engine_state.cpp
-  src/game_engine.cpp
-  src/sdl_debug.cpp
-  src/game_global.cpp
+        src/LogFiles.cpp
+        src/EngineState.cpp
+        src/GameEngine.cpp
+        src/SdlDebug.cpp
+        src/GameGlobal.cpp
 
-  src/elements/container.cpp
-  src/elements/element.cpp
-  src/elements/composite_element.cpp
-  src/elements/button.cpp
-  src/elements/text.cpp
-  src/elements/loading_bar.cpp
+        src/elements/Container.cpp
+        src/elements/Element.cpp
+        src/elements/CompositeElement.cpp
+        src/elements/Button.cpp
+        src/elements/Text.cpp
+        src/elements/LoadingBar.cpp
 
-  src/elements/flappy_food/flappy_food.cpp
-  src/elements/flappy_food/bird.cpp
-  src/elements/flappy_food/obstacle.cpp
-  src/elements/flappy_food/obstacle_pair.cpp
+        src/elements/flappy_food/flappy_food.cpp
+        src/elements/flappy_food/bird.cpp
+        src/elements/flappy_food/obstacle.cpp
+        src/elements/flappy_food/obstacle_pair.cpp
 
-  src/states/state.cpp
-  src/states/main_menu.cpp
-  src/states/gameplay.cpp
+        src/states/State.cpp
+        src/states/MainMenu.cpp
+        src/states/Gameplay.cpp
 
-  src/camera/camera.cpp
+        src/camera/Camera.cpp
 
-  src/character/character.cpp 
-  src/character/character_factory.cpp 
-  src/character/npc.cpp 
-  src/character/player.cpp 
+        src/character/Character.cpp
+        src/character/CharacterFactory.cpp
+        src/character/Npc.cpp
+        src/character/Player.cpp
 
-  src/tile/dirt_tile.cpp
-  src/tile/tile.cpp
-  src/tile/tile_factory.cpp
-  src/tile/tile_map.cpp
-  src/tile/water_tile.cpp
+        src/tile/DirtTile.cpp
+        src/tile/Tile.cpp
+        src/tile/TileFactory.cpp
+        src/tile/TileMap.cpp
+        src/tile/WaterTile.cpp
 )
 
 # Link all libraries
 target_link_libraries(sdlGameEngine
-  ${SDL2_LIBRARIES}
-  SDL2_image
-  SDL2_ttf
+        ${SDL2_LIBRARIES}
+        SDL2_image
+        SDL2_ttf
 )
