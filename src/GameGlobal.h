@@ -1,7 +1,7 @@
 #ifndef GAME_GLOBAL_H
 #define GAME_GLOBAL_H
 
-#include <SDL2/SDL.h>
+#include <SDL3/SDL.h>
 #include <string>
 
 struct GameGlobal {

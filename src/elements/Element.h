@@ -1,7 +1,7 @@
 #ifndef ELEMENT_H
 #define ELEMENT_H
 
-#include <SDL2/SDL.h>
+#include <SDL3/SDL.h>
 #include <memory>
 
 #include "../GameGlobal.h"
@@ -25,25 +25,24 @@ struct Acceleration {
  */
 class Element : public std::enable_shared_from_this<Element> {
 public:
-  Element(const GameGlobal& gameGlobal, std::string logFile, SDL_Rect boundaryRectangle);
+  Element(const GameGlobal& gameGlobal, std::string logFile, SDL_FRect boundaryRectangle);
   virtual ~Element() = default;
-  virtual void addElement(std::shared_ptr<Element> element) {}
+  virtual void addElement(const std::shared_ptr<Element> element) {}
   virtual void update();
   virtual void render() const;
   virtual void handleEvent(const SDL_Event& event) = 0;
-  virtual void addBoundaryRectangle(std::vector<SDL_Rect>& boundaryRectangles) const;
-  virtual void checkCollision(std::vector<SDL_Rect>& boundaryRectangles);
+  virtual void addBoundaryRectangle(std::vector<SDL_FRect>& boundaryRectangles) const;
 
   virtual std::string getContent() const;
   virtual void setContent(const std::string& content) {}
 
   void setParent(Element* newParent);
 
-  SDL_Point getPositionRelativeToParent() const;
-  void setPositionRelativeToParent(const SDL_Point& relativePosition);
+  SDL_FPoint getPositionRelativeToParent() const;
+  void setPositionRelativeToParent(const SDL_FPoint& relativePosition);
 
-  SDL_Rect getBoundaryRectangle() const;
-  void setBoundaryRectangle(SDL_Rect newBoundaryRectangle);
+  SDL_FRect getBoundaryRectangle() const;
+  void setBoundaryRectangle(SDL_FRect newBoundaryRectangle);
 
   void setCentered();
 
@@ -64,15 +63,8 @@ public:
   void setAcceleration(Acceleration newAcceleration);
 
   int getBorderThickness() const;
-  bool getFixed() const;
   bool getScreenBoundX() const;
   bool getScreenBoundY() const;
-  bool getHasCollided() const;
-  void setFixed(bool newFixed);
-  void setCanCollide(bool newCanCollide);
-  void setCollisionFixed(bool newCollisionFixed);
-  void setGravityAffected(bool newGravityAffected);
-  void setHasCollided(bool collided);
 
 private:
   void centerVertical();
@@ -87,9 +79,9 @@ protected:
   std::chrono::steady_clock::time_point previousUpdate;
   std::chrono::steady_clock::time_point currentUpdate;
 
-  SDL_Rect boundaryRectangle         = {0, 0, 0, 0};
-  SDL_Point positionRelativeToParent = {0, 0};
-  Element* parent                    = nullptr;
+  SDL_FRect boundaryRectangle         = {0, 0, 0, 0};
+  SDL_FPoint positionRelativeToParent = {0, 0};
+  Element* parent                     = nullptr;
 
   bool centerWithinParent           = false;
   bool centerVerticalWithinParent   = false;
@@ -98,23 +90,15 @@ protected:
   bool hasBorder      = false;
   int borderThickness = 1;
 
-  bool gravityAffected = false;
-  bool fixed           = true;
-  bool screenBoundX    = true;
-  bool screenBoundY    = true;
-  bool canCollide      = false;
-  bool collisionFixed  = true;
-  bool hasCollided     = false;
+  bool screenBoundX = true;
+  bool screenBoundY = true;
 
   Velocity velocity         = {0, 0};
   Acceleration acceleration = {0, 0};
 
-  void setupPosition(const SDL_Rect& newBoundaryRectangle);
+  void setupPosition(const SDL_FRect& newBoundaryRectangle);
   void hasParentUpdate();
   void updatePosition();
-  void checkCollisionImpl(const std::vector<SDL_Rect>& boundaryRectangles);
-  SDL_Point calculateOverlap(SDL_Rect overlappingWithBoundaryRectangle) const;
-  void fixCollision(SDL_Point overlap, SDL_Rect collidedWithBoundaryRectangle);
 };
 
 #endif

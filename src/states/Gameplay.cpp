@@ -1,8 +1,10 @@
-#include <SDL2/SDL_locale.h>
-#include <SDL2/SDL_render.h>
+#include <SDL3/SDL_locale.h>
+#include <SDL3/SDL_render.h>
 #include <cassert>
 
 #include "Gameplay.h"
+
+#include <SDL3_image/SDL_image.h>
 
 Gameplay::Gameplay(const GameGlobal& gameGlobal, const EngineState& state)
     : State(gameGlobal, LogFiles::GAMEPLAY, state) {
@@ -28,7 +30,7 @@ Gameplay::Gameplay(const GameGlobal& gameGlobal, const EngineState& state)
   this->logger->log("Initializing textures...");
   SDL_Surface* tmp_surface = IMG_Load("sprites/selected.png");
   selectedTexture = SDL_CreateTextureFromSurface(this->gameGlobal.renderer, tmp_surface);
-  SDL_FreeSurface(tmp_surface);
+  SDL_DestroySurface(tmp_surface);
   this->logger->log("Textures initialized");
 
   this->texture = SDL_CreateTexture(
@@ -43,11 +45,11 @@ void Gameplay::handleEvents(bool& gameIsRunning) {
   SDL_Event event;
   while (SDL_PollEvent(&event) != 0) {
     switch (event.type) {
-    case SDL_QUIT: // Quit event
+    case SDL_EVENT_QUIT: // Quit event
       gameIsRunning = false;
       break;
 
-    case SDL_MOUSEWHEEL:
+    case SDL_EVENT_MOUSE_WHEEL:
       if (event.wheel.y > 0) { // Scroll up -> zoom in
         this->camera->destination.x *= 1.01;
         this->camera->destination.y *= 1.01;
@@ -74,7 +76,7 @@ void Gameplay::handleEvents(bool& gameIsRunning) {
 }
 
 void Gameplay::checkKeyStates() const {
-  const Uint8* keyStates = SDL_GetKeyboardState(nullptr);
+  const bool* keyStates = SDL_GetKeyboardState(nullptr);
 
   // Camera movement (arrow keys)
   if (keyStates[SDL_SCANCODE_UP]) {
@@ -117,7 +119,7 @@ void Gameplay::render() const {
 
   for (int x = 0; x < this->MAP_SIZE_TILES.x; x++) {
     for (int y = 0; y < this->MAP_SIZE_TILES.y; y++) {
-      SDL_Rect tileRectangle = this->tileMap->getTileRectangle(SDL_Point{x, y});
+      SDL_Rect tileRectangle  = this->tileMap->getTileRectangle(SDL_Point{x, y});
       const auto tilePosition = SDL_Point{tileRectangle.x, tileRectangle.y};
 
       auto [tilePositionWithinCameraX, tilePositionWithinCameraY] =
@@ -127,13 +129,17 @@ void Gameplay::render() const {
       tileRectangle.y = tilePositionWithinCameraY;
 
       // TODO: Check if within camera viewport
-      SDL_RenderCopy(this->gameGlobal.renderer, this->tileMap->getTileTexture(x, y), NULL,
-                     &tileRectangle);
+      /* SDL_GPU
+      SDL_RenderTexture(this->gameGlobal.renderer, this->tileMap->getTileTexture(x, y),
+                        NULL, &tileRectangle);
+                        */
     }
   }
   SDL_SetRenderTarget(this->gameGlobal.renderer, NULL);
+  /* Switch to SDL_GPU
   SDL_RenderCopy(this->gameGlobal.renderer, this->texture, NULL,
                  &this->camera->destination);
+                 */
 
   this->npcVector[0]->render();
 

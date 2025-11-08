@@ -1,3 +1,4 @@
+#include <SDL3_image/SDL_image.h>
 #include <cassert>
 #include <iostream>
 
@@ -13,7 +14,7 @@ DirtTile::DirtTile(const GameGlobal& gameGlobal)
       SDL_CreateTextureFromSurface(this->gameGlobal.renderer, temporarySurface);
   assert(this->texture != nullptr);
 
-  SDL_FreeSurface(temporarySurface);
+  SDL_DestroySurface(temporarySurface);
 }
 
 void DirtTile::print() { std::cout << "dirt tile" << std::endl; }

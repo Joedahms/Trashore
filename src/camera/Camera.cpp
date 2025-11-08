@@ -1,4 +1,6 @@
 #include "Camera.h"
+
+#include <cmath>
 #include <iostream>
 
 Camera::Camera(const GameGlobal& gameGlobal,
@@ -59,7 +61,7 @@ void Camera::checkBottomBoundary() {
 
 void Camera::update() {
   // TODO: Make time stuff into function
-  this->currentTicks = SDL_GetTicks64();
+  this->currentTicks = SDL_GetTicks();
   this->deltaTimeMs  = this->currentTicks - this->previousTicks;
   this->totalDeltaTimeMs += this->deltaTimeMs;
   this->previousTicks = this->currentTicks;
@@ -67,7 +69,7 @@ void Camera::update() {
   if (this->velocity.x != 0) {
     const float inverseVelocity = 1.0 / this->velocity.x;
     if (const float deltaTimeSeconds = totalDeltaTimeMs / 1000.0;
-        deltaTimeSeconds >= fabsf(inverseVelocity)) {
+        deltaTimeSeconds >= std::fabsf(inverseVelocity)) {
       this->totalDeltaTimeMs = 0;
       if (inverseVelocity > 0) {
         this->position.x += 1;
@@ -82,7 +84,7 @@ void Camera::update() {
   if (this->velocity.y != 0) {
     const float inverseVelocity = 1.0 / this->velocity.y;
     if (const float deltaTimeSeconds = totalDeltaTimeMs / 1000.0;
-        deltaTimeSeconds >= fabsf(inverseVelocity)) {
+        deltaTimeSeconds >= std::fabsf(inverseVelocity)) {
       this->totalDeltaTimeMs = 0;
       if (inverseVelocity > 0) {
         this->position.y += 1;

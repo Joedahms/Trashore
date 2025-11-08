@@ -3,7 +3,7 @@
 
 CompositeElement::CompositeElement(const GameGlobal& gameGlobal,
                                    const std::string& logFile,
-                                   const SDL_Rect boundaryRectangle)
+                                   const SDL_FRect boundaryRectangle)
     : Element(gameGlobal, logFile, boundaryRectangle) {}
 
 /**
@@ -33,7 +33,7 @@ void CompositeElement::updateSelf() {
  * @param element The new element to be added to the composite
  */
 void CompositeElement::addElement(std::shared_ptr<Element> element) {
-  if (SDL_Rect elementRect = element->getBoundaryRectangle(); elementRect.w == 0) {
+  if (SDL_FRect elementRect = element->getBoundaryRectangle(); elementRect.w == 0) {
     elementRect.w = this->boundaryRectangle.w;
     element->setBoundaryRectangle(elementRect);
   }
@@ -73,27 +73,16 @@ void CompositeElement::handleEvent(const SDL_Event& event) {
 }
 
 void CompositeElement::addBoundaryRectangle(
-    std::vector<SDL_Rect>& boundaryRectangles) const {
-  if (this->canCollide) {
-    addBoundaryRectangleSelf(boundaryRectangles);
-  }
+    std::vector<SDL_FRect>& boundaryRectangles) const {
+  addBoundaryRectangleSelf(boundaryRectangles);
   for (const auto& element : this->children) {
     element->addBoundaryRectangle(boundaryRectangles);
   }
 }
 
 void CompositeElement::addBoundaryRectangleSelf(
-    std::vector<SDL_Rect>& boundaryRectangles) const {
+    std::vector<SDL_FRect>& boundaryRectangles) const {
   boundaryRectangles.push_back(this->boundaryRectangle);
-}
-
-void CompositeElement::checkCollision(std::vector<SDL_Rect>& boundaryRectangles) {
-  if (this->canCollide) {
-    checkCollisionImpl(boundaryRectangles);
-  }
-  for (auto const& element : this->children) {
-    element->checkCollision(boundaryRectangles);
-  }
 }
 
 /**
@@ -112,9 +101,9 @@ void CompositeElement::removeAllChildren() {
 
 void CompositeElement::containChildren() const {
   for (auto& child : this->children) {
-    const SDL_Rect childRect        = child->getBoundaryRectangle();
-    SDL_Point childRelativePosition = child->getPositionRelativeToParent();
-    Velocity childVelocity          = child->getVelocity();
+    const SDL_FRect childRect        = child->getBoundaryRectangle();
+    SDL_FPoint childRelativePosition = child->getPositionRelativeToParent();
+    Velocity childVelocity           = child->getVelocity();
 
     if (childRect.y + childRect.h >
         this->boundaryRectangle.y + this->boundaryRectangle.h) {

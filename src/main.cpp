@@ -1,10 +1,6 @@
-#include <SDL2/SDL.h>
-
-#include <iostream>
-#include <string>
+#include <SDL3/SDL.h>
 
 #include "GameEngine.h"
-#include "GameGlobal.h"
 #include "Logger.h"
 
 int main(int argc, const char* argv[]) {

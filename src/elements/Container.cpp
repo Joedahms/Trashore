@@ -2,7 +2,7 @@
 
 Container::Container(const GameGlobal& gameGlobal,
                      const std::string& logFile,
-                     const SDL_Rect boundaryRectangle)
+                     const SDL_FRect boundaryRectangle)
     : CompositeElement(gameGlobal, logFile, boundaryRectangle) {}
 
 void Container::update() {
@@ -10,9 +10,6 @@ void Container::update() {
 
   for (const auto& element : this->children) {
     element->update();
-    if (element->getFixed()) {
-      continue;
-    }
     if (element->getScreenBoundX()) {
       checkElementPositionX(element);
     }
@@ -23,10 +20,10 @@ void Container::update() {
 }
 
 void Container::checkElementPositionX(std::shared_ptr<Element> element) const {
-  Velocity elementVelocity                  = element->getVelocity();
-  const int elementBorderThickness          = element->getBorderThickness();
-  SDL_Point elementPositionRelativeToParent = element->getPositionRelativeToParent();
-  const SDL_Rect elementBoundaryRectangle   = element->getBoundaryRectangle();
+  Velocity elementVelocity                   = element->getVelocity();
+  const int elementBorderThickness           = element->getBorderThickness();
+  SDL_FPoint elementPositionRelativeToParent = element->getPositionRelativeToParent();
+  const SDL_FRect elementBoundaryRectangle   = element->getBoundaryRectangle();
 
   // Left
   if (elementPositionRelativeToParent.x - elementBorderThickness < 0) {
@@ -38,8 +35,8 @@ void Container::checkElementPositionX(std::shared_ptr<Element> element) const {
   }
 
   // Right
-  const int elementRightEdge = elementPositionRelativeToParent.x +
-                               elementBoundaryRectangle.w + elementBorderThickness;
+  const float elementRightEdge = elementPositionRelativeToParent.x +
+                                 elementBoundaryRectangle.w + elementBorderThickness;
   if (elementRightEdge > this->boundaryRectangle.x + this->boundaryRectangle.w) {
     elementVelocity.x = 0;
     element->setVelocity(elementVelocity);
@@ -52,10 +49,10 @@ void Container::checkElementPositionX(std::shared_ptr<Element> element) const {
 }
 
 void Container::checkElementPositionY(const std::shared_ptr<Element>& element) const {
-  Velocity elementVelocity                  = element->getVelocity();
-  const int elementBorderThickness          = element->getBorderThickness();
-  SDL_Point elementPositionRelativeToParent = element->getPositionRelativeToParent();
-  const SDL_Rect elementBoundaryRectangle   = element->getBoundaryRectangle();
+  Velocity elementVelocity                   = element->getVelocity();
+  const int elementBorderThickness           = element->getBorderThickness();
+  SDL_FPoint elementPositionRelativeToParent = element->getPositionRelativeToParent();
+  const SDL_FRect elementBoundaryRectangle   = element->getBoundaryRectangle();
 
   // Top
   if (elementPositionRelativeToParent.y - elementBorderThickness < 0) {

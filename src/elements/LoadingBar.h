@@ -1,7 +1,7 @@
 #ifndef LOADING_BAR_H
 #define LOADING_BAR_H
 
-#include <SDL2/SDL.h>
+#include <SDL3/SDL.h>
 
 #include "Element.h"
 
@@ -9,7 +9,7 @@ class LoadingBar final : public Element {
 public:
   LoadingBar(const GameGlobal& gameGlobal,
              const std::string& logFile,
-             SDL_Rect boundaryRectangle,
+             SDL_FRect boundaryRectangle,
              const int& borderThickness,
              const float& totalTimeSeconds,
              const float& updatePeriodMs);
@@ -19,7 +19,7 @@ public:
   void render() const override;
 
 private:
-  SDL_Rect barRectangle{};
+  SDL_FRect barRectangle{};
   SDL_Color barColor{};
   float totalTimeSeconds;
   float updatePeriodMs;

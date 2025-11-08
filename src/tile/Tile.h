@@ -1,8 +1,6 @@
 #ifndef TILE_H
 #define TILE_H
 
-#include <SDL2/SDL_image.h>
-
 #include "../GameGlobal.h"
 
 enum tileId { WATER_TILE, DIRT_TILE };

@@ -1,7 +1,7 @@
 #ifndef DISPLAY_ENGINE_H
 #define DISPLAY_ENGINE_H
 
-#include <SDL2/SDL.h>
+#include <SDL3/SDL.h>
 #include <memory>
 
 #include "Logger.h"

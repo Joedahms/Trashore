@@ -1,4 +1,4 @@
-#include <SDL2/SDL.h>
+#include <SDL3/SDL.h>
 #include <iostream>
 #include <memory>
 #include <utility>
@@ -20,9 +20,9 @@
  */
 Button::Button(const GameGlobal& gameGlobal,
                const std::string& logFile,
-               const SDL_Rect boundaryRectangle,
+               const SDL_FRect boundaryRectangle,
                std::string textContent,
-               const SDL_Point textPadding,
+               const SDL_FPoint textPadding,
                std::function<void()> onClick)
     : CompositeElement(gameGlobal, logFile, boundaryRectangle),
       textContent(std::move(textContent)), textPadding(textPadding),
@@ -34,16 +34,16 @@ Button::Button(const GameGlobal& gameGlobal,
   this->defaultColor    = {255, 0, 0, 255}; // Red
 
   SDL_Color textColor = {255, 255, 0, 255}; // Yellow
-  SDL_Rect textRect   = {textPadding.x, textPadding.y, 0, 0};
+  SDL_FRect textRect  = {textPadding.x, textPadding.y, 0, 0};
   auto text           = std::make_shared<Text>(this->gameGlobal, this->logFile, textRect,
                                                GameGlobal::futuramFontPath,
                                                this->textContent.c_str(), 24, textColor);
   text->setCentered();
 
   if (this->boundaryRectangle.w == 0 && this->boundaryRectangle.h == 0) {
-    const SDL_Rect textBoundaryRectangle = text->getBoundaryRectangle();
-    this->boundaryRectangle.w            = textBoundaryRectangle.w + textPadding.x;
-    this->boundaryRectangle.h            = textBoundaryRectangle.h + textPadding.y;
+    const SDL_FRect textBoundaryRectangle = text->getBoundaryRectangle();
+    this->boundaryRectangle.w             = textBoundaryRectangle.w + textPadding.x;
+    this->boundaryRectangle.h             = textBoundaryRectangle.h + textPadding.y;
   }
 
   CompositeElement::addElement(std::move(text));
@@ -77,12 +77,10 @@ void Button::renderSelf() const {
  * @param event An SDL event that has occured.
  */
 void Button::handleEventSelf(const SDL_Event& event) {
-  if (event.type == SDL_MOUSEBUTTONDOWN) {
-    if (checkMouseHovered()) {
-      this->logger->log(this->textContent + " button clicked");
-      onClick();
-      this->logger->log(this->textContent + " button click callback successful");
-    }
+  if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN && checkMouseHovered()) {
+    this->logger->log(this->textContent + " button clicked");
+    onClick();
+    this->logger->log(this->textContent + " button click callback successful");
   }
 }
 

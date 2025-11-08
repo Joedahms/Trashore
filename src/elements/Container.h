@@ -11,7 +11,7 @@ class Container : public CompositeElement {
 public:
   Container(const GameGlobal& gameGlobal,
             const std::string& logFile,
-            SDL_Rect boundaryRectangle);
+            SDL_FRect boundaryRectangle);
   void update() override;
   void handleEventSelf(const SDL_Event& event) override;
 
