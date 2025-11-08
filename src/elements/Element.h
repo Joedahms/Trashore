@@ -7,6 +7,8 @@
 #include "../GameGlobal.h"
 #include "../Logger.h"
 
+#include <vector>
+
 struct Velocity {
   float x;
   float y;

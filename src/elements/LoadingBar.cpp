@@ -57,15 +57,6 @@ void LoadingBar::handleEvent(const SDL_Event& event) {
       SDL_Quit();
     }
   }
-  if (event.type == SDL_MOUSEBUTTONDOWN) {
-    handleMouseDown();
-  }
-  else if (event.type == SDL_MOUSEMOTION) {
-    handleMouseMotion(event);
-  }
-  else if (event.type == SDL_MOUSEBUTTONUP) {
-    handleMouseUp();
-  }
 }
 
 void LoadingBar::render() const {
