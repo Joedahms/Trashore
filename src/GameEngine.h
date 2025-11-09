@@ -19,16 +19,17 @@ public:
   GameEngine(const char* windowTitle, int screenWidth, int screenHeight, bool fullscreen);
   void start();
 
+  static void setCurrentState(EngineState newEngineState);
+
 private:
   Logger logger;
   GameGlobal gameGlobal{};
-  State* engineState       = nullptr;
-  EngineState currentState = EngineState::MAIN_MENU;
-  bool gameIsRunning       = false;
+  State* engineState = nullptr;
+  static EngineState currentState;
+  bool gameIsRunning = false;
 
   std::unique_ptr<SystemInterface_SDL> systemInterface;
   std::unique_ptr<RenderInterface_SDL> renderInterface;
-  Rml::Context* context; // Also store context if you need it
 
   std::unique_ptr<MainMenu> mainMenu;
   std::unique_ptr<Gameplay> gameplay;

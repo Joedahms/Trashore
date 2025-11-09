@@ -10,6 +10,8 @@
 #include "RmlUi_Renderer_SDL.h"
 #include "states/State.h"
 
+EngineState GameEngine::currentState = EngineState::MAIN_MENU;
+
 GameEngine::GameEngine(const char* windowTitle,
                        const int screenWidth,
                        const int screenHeight,
@@ -22,8 +24,8 @@ GameEngine::GameEngine(const char* windowTitle,
 
   initializeEngine(this->gameGlobal.window);
 
-  this->mainMenu = std::make_unique<MainMenu>(this->gameGlobal, EngineState::MAIN_MENU);
-  this->gameplay = std::make_unique<Gameplay>(this->gameGlobal, EngineState::GAMEPLAY);
+  this->mainMenu = std::make_unique<MainMenu>(this->gameGlobal);
+  this->gameplay = std::make_unique<Gameplay>(this->gameGlobal);
 
   this->engineState = this->mainMenu.get();
 
@@ -49,6 +51,10 @@ void GameEngine::start() {
   }
 
   clean();
+}
+
+void GameEngine::setCurrentState(const EngineState newEngineState) {
+  currentState = newEngineState;
 }
 
 SDL_Window* GameEngine::setupWindow(const char* windowTitle,
@@ -103,40 +109,57 @@ void GameEngine::initializeEngine(SDL_Window* window) {
   // Now we can initialize RmlUi.
   Rml::Initialise();
 
+  if (!Rml::LoadFontFace("../fonts/16020_FUTURAM.ttf")) {
+    std::cerr << "Failed to load font";
+  }
+
   int windowWidth;
   int windowHeight;
   SDL_GetWindowSize(window, &windowWidth, &windowHeight);
 
-  this->context = Rml::CreateContext("default", Rml::Vector2i(windowWidth, windowHeight));
-  if (!context) {
+  this->gameGlobal.rmlContext =
+      Rml::CreateContext("default", Rml::Vector2i(windowWidth, windowHeight));
+  if (!this->gameGlobal.rmlContext) {
     Rml::Shutdown();
-    std::cerr << "Error creating context";
+    std::cerr << "Error creating rmlContext";
   }
 
   this->logger.log("Engine initialized");
 }
 
 void GameEngine::handleStateChange() {
-  if (this->engineState->checkStateChange()) {
-    switch (this->engineState->getCurrentState()) {
-    case EngineState::MAIN_MENU:
-      this->engineState = this->mainMenu.get();
-      break;
+  switch (currentState) {
+  case EngineState::MAIN_MENU:
+    this->engineState = this->mainMenu.get();
+    break;
 
-    case EngineState::GAMEPLAY:
-      this->engineState = this->gameplay.get();
-      break;
+  case EngineState::GAMEPLAY:
+    this->engineState = this->gameplay.get();
+    break;
 
-    default:
-      break;
-    }
-    this->engineState->enter();
+  default:
+    break;
   }
 }
 
-void GameEngine::handleEvents() { this->engineState->handleEvents(this->gameIsRunning); }
+void GameEngine::handleEvents() {
+  SDL_Event event;
+  while (SDL_PollEvent(&event)) {
+    if (event.type == SDL_EVENT_QUIT) {
+      this->gameIsRunning = false;
+    }
 
-void GameEngine::update() const { this->engineState->update(); }
+    // Pass events to RmlUi
+    RmlSDL::InputEventHandler(this->gameGlobal.rmlContext, this->gameGlobal.window,
+                              event);
+  }
+  engineState->handleEvents(this->gameIsRunning);
+}
+
+void GameEngine::update() const {
+  this->gameGlobal.rmlContext->Update();
+  this->engineState->update();
+}
 
 void GameEngine::renderState() const { this->engineState->render(); }
 

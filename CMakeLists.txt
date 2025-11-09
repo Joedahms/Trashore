@@ -77,6 +77,10 @@ add_executable(sdlGameEngine
         src/tile/TileFactory.cpp
         src/tile/TileMap.cpp
         src/tile/WaterTile.cpp
+        src/states/MainMenuRmlEventListener.cpp
+        src/states/MainMenuRmlEventListener.h
+        src/states/MainMenuRmlEventHandler.cpp
+        src/states/MainMenuRmlEventHandler.h
 )
 
 # Link all libraries

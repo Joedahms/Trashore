@@ -6,8 +6,7 @@
 
 #include <SDL3_image/SDL_image.h>
 
-Gameplay::Gameplay(const GameGlobal& gameGlobal, const EngineState& state)
-    : State(gameGlobal, LogFiles::GAMEPLAY, state) {
+Gameplay::Gameplay(const GameGlobal& gameGlobal) : State(gameGlobal, LogFiles::GAMEPLAY) {
   this->logger->log("Initializing tile map...");
   this->tileMap = std::make_unique<TileMap>(gameGlobal, this->MAP_SIZE_TILES,
                                             this->INITIAL_TILE_SIZE);
