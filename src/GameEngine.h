@@ -11,6 +11,8 @@
 
 #include "EngineState.h"
 #include "GameGlobal.h"
+#include "RmlUi_Platform_SDL.h"
+#include "RmlUi_Renderer_SDL.h"
 
 class GameEngine {
 public:
@@ -23,6 +25,10 @@ private:
   State* engineState       = nullptr;
   EngineState currentState = EngineState::MAIN_MENU;
   bool gameIsRunning       = false;
+
+  std::unique_ptr<SystemInterface_SDL> systemInterface;
+  std::unique_ptr<RenderInterface_SDL> renderInterface;
+  Rml::Context* context; // Also store context if you need it
 
   std::unique_ptr<MainMenu> mainMenu;
   std::unique_ptr<Gameplay> gameplay;

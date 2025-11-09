@@ -1,3 +1,4 @@
+#include <RmlUi/Core.h>
 #include <SDL3/SDL.h>
 #include <SDL3_ttf/SDL_ttf.h>
 #include <iostream>
@@ -5,6 +6,8 @@
 
 #include "GameEngine.h"
 #include "GameGlobal.h"
+#include "RmlUi_Platform_SDL.h"
+#include "RmlUi_Renderer_SDL.h"
 #include "states/State.h"
 
 GameEngine::GameEngine(const char* windowTitle,
@@ -90,6 +93,26 @@ void GameEngine::initializeEngine(SDL_Window* window) {
     exit(1);
   }
 
+  this->systemInterface = std::make_unique<SystemInterface_SDL>();
+  this->renderInterface =
+      std::make_unique<RenderInterface_SDL>(this->gameGlobal.renderer);
+
+  Rml::SetSystemInterface(this->systemInterface.get());
+  Rml::SetRenderInterface(this->renderInterface.get());
+
+  // Now we can initialize RmlUi.
+  Rml::Initialise();
+
+  int windowWidth;
+  int windowHeight;
+  SDL_GetWindowSize(window, &windowWidth, &windowHeight);
+
+  this->context = Rml::CreateContext("default", Rml::Vector2i(windowWidth, windowHeight));
+  if (!context) {
+    Rml::Shutdown();
+    std::cerr << "Error creating context";
+  }
+
   this->logger.log("Engine initialized");
 }
 
@@ -118,6 +141,7 @@ void GameEngine::update() const { this->engineState->update(); }
 void GameEngine::renderState() const { this->engineState->render(); }
 
 void GameEngine::clean() const {
+  Rml::Shutdown();
   SDL_DestroyWindow(this->gameGlobal.window);
   SDL_DestroyRenderer(this->gameGlobal.renderer);
   SDL_Quit();
