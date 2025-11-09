@@ -101,4 +101,4 @@ void Camera::update() {
 void Camera::setYVelocity(const int yVelocity) { this->velocity.y = yVelocity; }
 void Camera::setXVelocity(const int xVelocity) { this->velocity.x = xVelocity; }
 
-SDL_Point Camera::getPosition() const { return this->position; }
+SDL_FPoint Camera::getPosition() const { return this->position; }

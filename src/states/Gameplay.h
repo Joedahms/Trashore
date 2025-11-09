@@ -15,7 +15,7 @@ public:
   void render() const override;
 
   // TODO: pull this out into something else where more things can use it
-  [[nodiscard]] static SDL_Point subtractPoints(SDL_Point pointA, SDL_Point pointB);
+  [[nodiscard]] static SDL_FPoint subtractFPoints(SDL_FPoint pointA, SDL_FPoint pointB);
 
 private:
   const SDL_Point MAP_SIZE_TILES = {200, 200};

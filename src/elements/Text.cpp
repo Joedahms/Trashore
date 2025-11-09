@@ -18,7 +18,7 @@ Text::Text(const GameGlobal& gameGlobal,
       fontSize(fontSize), color(color) {
   this->font = TTF_OpenFont(fontPath.c_str(), this->fontSize);
   if (this->font == nullptr) {
-    std::cerr << "Text failed to open font";
+    std::cerr << "Text failed to open font " << SDL_GetError();
     exit(1);
   }
 

@@ -119,35 +119,31 @@ void Gameplay::render() const {
 
   for (int x = 0; x < this->MAP_SIZE_TILES.x; x++) {
     for (int y = 0; y < this->MAP_SIZE_TILES.y; y++) {
-      SDL_Rect tileRectangle  = this->tileMap->getTileRectangle(SDL_Point{x, y});
-      const auto tilePosition = SDL_Point{tileRectangle.x, tileRectangle.y};
+      SDL_FRect tileRectangle = this->tileMap->getTileRectangle(SDL_Point{x, y});
+      const auto tilePosition = SDL_FPoint{tileRectangle.x, tileRectangle.y};
 
       auto [tilePositionWithinCameraX, tilePositionWithinCameraY] =
-          subtractPoints(tilePosition, this->camera->getPosition());
+          subtractFPoints(tilePosition, this->camera->getPosition());
 
       tileRectangle.x = tilePositionWithinCameraX;
       tileRectangle.y = tilePositionWithinCameraY;
 
       // TODO: Check if within camera viewport
-      /* SDL_GPU
       SDL_RenderTexture(this->gameGlobal.renderer, this->tileMap->getTileTexture(x, y),
                         NULL, &tileRectangle);
-                        */
     }
   }
   SDL_SetRenderTarget(this->gameGlobal.renderer, NULL);
-  /* Switch to SDL_GPU
-  SDL_RenderCopy(this->gameGlobal.renderer, this->texture, NULL,
-                 &this->camera->destination);
-                 */
+  SDL_RenderTexture(this->gameGlobal.renderer, this->texture, NULL,
+                    &this->camera->destination);
 
   this->npcVector[0]->render();
 
   SDL_RenderPresent(this->gameGlobal.renderer);
 }
 
-SDL_Point Gameplay::subtractPoints(const SDL_Point pointA, const SDL_Point pointB) {
-  const int x = pointA.x - pointB.x;
-  const int y = pointA.y - pointB.y;
-  return SDL_Point{x, y};
+SDL_FPoint Gameplay::subtractFPoints(const SDL_FPoint pointA, const SDL_FPoint pointB) {
+  const float x = pointA.x - pointB.x;
+  const float y = pointA.y - pointB.y;
+  return SDL_FPoint{x, y};
 }

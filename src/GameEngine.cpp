@@ -60,13 +60,9 @@ SDL_Window* GameEngine::setupWindow(const char* windowTitle,
   }
 
   try {
-    /* SDL_GPU
-    SDL_Window* window = SDL_CreateWindow(windowTitle, windowXPosition, windowYPosition,
-                                          screenWidth, screenHeight, flags);
+    SDL_Window* window = SDL_CreateWindow(windowTitle, screenWidth, screenHeight, flags);
     this->logger.log("SDL game window created");
     return window;
-
-                                          */
   } catch (...) {
     std::cerr << "Error setting up SDL game window";
     exit(1);
@@ -74,30 +70,27 @@ SDL_Window* GameEngine::setupWindow(const char* windowTitle,
 }
 
 void GameEngine::initializeEngine(SDL_Window* window) {
-  /* SDL_GPU
-    this->logger.log("Initializing engine");
-    if (const int sdlInitReturn = SDL_Init(SDL_INIT_EVERYTHING); sdlInitReturn != 0) {
-      std::cerr << "Failed to initialize engine";
-      exit(1);
-    }
+  this->logger.log("Initializing engine");
+  if (const bool sdlInitReturn = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
+      !sdlInitReturn) {
+    std::cerr << "Failed to initialize engine";
+    exit(1);
+  }
 
-    this->gameGlobal.renderer = SDL_CreateRenderer(
-        window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    if (!this->gameGlobal.renderer) {
-      std::cerr << "Error creating renderer";
-      exit(1);
-    }
+  this->gameGlobal.renderer = SDL_CreateRenderer(window, nullptr);
+  if (this->gameGlobal.renderer == nullptr) {
+    std::cerr << "Error creating renderer " << SDL_GetError();
+    exit(1);
+  }
 
-    SDL_SetRenderDrawColor(this->gameGlobal.renderer, 255, 255, 255, 255);
+  SDL_SetRenderDrawColor(this->gameGlobal.renderer, 255, 255, 255, 255);
 
-    if (const int ttfInitReturn = TTF_Init(); ttfInitReturn == -1) {
-      std::cerr << "Failed to initialize TTF";
-      exit(1);
-    }
+  if (const int ttfInitReturn = TTF_Init(); ttfInitReturn == -1) {
+    std::cerr << "Failed to initialize TTF";
+    exit(1);
+  }
 
-    this->logger.log("Engine initialized");
-
-  */
+  this->logger.log("Engine initialized");
 }
 
 void GameEngine::handleStateChange() {
