@@ -1,5 +1,3 @@
-#include <SDL2/SDL_ttf.h>
-#include <iostream>
 #include <memory>
 
 #include "../GameGlobal.h"
@@ -16,17 +14,17 @@ MainMenu::MainMenu(const GameGlobal& gameGlobal, const EngineState& state)
     : State(gameGlobal, LogFiles::MAIN_MENU, state) {
   this->logger->log("Constructing main menu state");
 
-  auto title = std::make_shared<Text>(this->gameGlobal, this->logFile,
-                                      SDL_Rect{0, 100, 0, 0}, GameGlobal::futuramFontPath,
-                                      "TRASHORE", 24, SDL_Color{0, 255, 0, 0});
+  auto title = std::make_shared<Text>(
+      this->gameGlobal, this->logFile, SDL_FRect{0, 100, 0, 0},
+      GameGlobal::futuramFontPath, "TRASHORE", 24, SDL_Color{0, 255, 0, 0});
   title->setCenteredHorizontal();
   rootElement->addElement(std::move(title));
 
   // Start Scan
-  SDL_Rect newScanButtonRectangle = {200, 150, 200, 50};
-  auto newScanButton              = std::make_shared<Button>(
+  SDL_FRect newScanButtonRectangle = {200, 150, 200, 50};
+  auto newScanButton               = std::make_shared<Button>(
       this->gameGlobal, this->logFile, newScanButtonRectangle, "Start Game",
-      SDL_Point{10, 10}, [this]() { this->currentState = EngineState::GAMEPLAY; });
+      SDL_FPoint{10, 10}, [this]() { this->currentState = EngineState::GAMEPLAY; });
   newScanButton->setCenteredHorizontal();
   rootElement->addElement(std::move(newScanButton));
 

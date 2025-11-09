@@ -1,5 +1,5 @@
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_ttf.h>
+#include <SDL3/SDL.h>
+#include <SDL3_ttf/SDL_ttf.h>
 #include <iostream>
 #include <thread>
 
@@ -8,16 +8,14 @@
 #include "states/State.h"
 
 GameEngine::GameEngine(const char* windowTitle,
-                       const int windowXPosition,
-                       const int windowYPosition,
                        const int screenWidth,
                        const int screenHeight,
                        const bool fullscreen)
     : logger("game_engine.txt") {
   this->logger.log("Constructing game engine");
 
-  this->gameGlobal.window = setupWindow(windowTitle, windowXPosition, windowYPosition,
-                                        screenWidth, screenHeight, fullscreen);
+  this->gameGlobal.window =
+      setupWindow(windowTitle, screenWidth, screenHeight, fullscreen);
 
   initializeEngine(this->gameGlobal.window);
 
@@ -51,8 +49,6 @@ void GameEngine::start() {
 }
 
 SDL_Window* GameEngine::setupWindow(const char* windowTitle,
-                                    const int windowXPosition,
-                                    const int windowYPosition,
                                     const int screenWidth,
                                     const int screenHeight,
                                     const bool fullscreen) const {
@@ -64,8 +60,7 @@ SDL_Window* GameEngine::setupWindow(const char* windowTitle,
   }
 
   try {
-    SDL_Window* window = SDL_CreateWindow(windowTitle, windowXPosition, windowYPosition,
-                                          screenWidth, screenHeight, flags);
+    SDL_Window* window = SDL_CreateWindow(windowTitle, screenWidth, screenHeight, flags);
     this->logger.log("SDL game window created");
     return window;
   } catch (...) {
@@ -76,15 +71,15 @@ SDL_Window* GameEngine::setupWindow(const char* windowTitle,
 
 void GameEngine::initializeEngine(SDL_Window* window) {
   this->logger.log("Initializing engine");
-  if (const int sdlInitReturn = SDL_Init(SDL_INIT_EVERYTHING); sdlInitReturn != 0) {
+  if (const bool sdlInitReturn = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
+      !sdlInitReturn) {
     std::cerr << "Failed to initialize engine";
     exit(1);
   }
 
-  this->gameGlobal.renderer = SDL_CreateRenderer(
-      window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-  if (!this->gameGlobal.renderer) {
-    std::cerr << "Error creating renderer";
+  this->gameGlobal.renderer = SDL_CreateRenderer(window, nullptr);
+  if (this->gameGlobal.renderer == nullptr) {
+    std::cerr << "Error creating renderer " << SDL_GetError();
     exit(1);
   }
 

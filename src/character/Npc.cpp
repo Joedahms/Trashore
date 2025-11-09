@@ -1,5 +1,5 @@
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
+#include <SDL3/SDL.h>
+#include <SDL3_image/SDL_image.h>
 #include <cassert>
 #include <iostream>
 
@@ -18,7 +18,7 @@ Npc::Npc(const GameGlobal gameGlobal) {
 
   this->rectangle = {0, 0, 16, 16};
 
-  SDL_FreeSurface(npcSurface);
+  SDL_DestroySurface(npcSurface);
 }
 
 void Npc::print() { std::cout << "npc" << std::endl; }

@@ -2,13 +2,11 @@
 #define LOGGER_H
 #include <ctime>
 #include <fstream>
-#include <iostream>
 #include <map>
 #include <mutex>
 #include <string>
 
 class Logger {
-private:
   static std::mutex globalMutex;
   static std::map<std::string, std::ofstream*> sharedFiles;
   static std::map<std::string, int> refCounts;

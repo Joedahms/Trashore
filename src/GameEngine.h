@@ -1,7 +1,7 @@
 #ifndef DISPLAY_ENGINE_H
 #define DISPLAY_ENGINE_H
 
-#include <SDL2/SDL.h>
+#include <SDL3/SDL.h>
 #include <memory>
 
 #include "Logger.h"
@@ -14,12 +14,7 @@
 
 class GameEngine {
 public:
-  GameEngine(const char* windowTitle,
-             int windowXPosition,
-             int windowYPosition,
-             int screenWidth,
-             int screenHeight,
-             bool fullscreen);
+  GameEngine(const char* windowTitle, int screenWidth, int screenHeight, bool fullscreen);
   void start();
 
 private:
@@ -33,8 +28,6 @@ private:
   std::unique_ptr<Gameplay> gameplay;
 
   SDL_Window* setupWindow(const char* windowTitle,
-                          int windowXPosition,
-                          int windowYPosition,
                           int screenWidth,
                           int screenHeight,
                           bool fullscreen) const;

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.28)
 set(CMAKE_CXX_COMPILER "/usr/bin/g++-14")
 
-project(sdlGameEngine DESCRIPTION "Game engine in SDL2" LANGUAGES CXX)
+project(sdlGameEngine DESCRIPTION "Game engine in SDL3" LANGUAGES CXX)
 
 # Set build type and C++ standard
 set(CMAKE_BUILD_TYPE Debug)
@@ -13,14 +13,14 @@ set(CXXFLAGS "-Wall")
 set(CMAKE_CXX_FLAGS "${CXXFLAGS}")
 
 # Find required packages
-find_package(SDL2 REQUIRED)
-find_package(SDL2_image REQUIRED)
-find_package(SDL2_ttf REQUIRED)
+find_package(SDL3 REQUIRED)
+find_package(SDL3_image REQUIRED)
+find_package(SDL3_ttf REQUIRED)
 
 # Include directories for all libraries
 include_directories(
-        ${SDL2_INCLUDE_DIRS}
-        ${SDL2_IMAGE_INCLUDE_DIRS}
+        ${SDL3_INCLUDE_DIRS}
+        ${SDL3_IMAGE_INCLUDE_DIRS}
 )
 
 # Add executable with all source files
@@ -41,10 +41,10 @@ add_executable(sdlGameEngine
         src/elements/Text.cpp
         src/elements/LoadingBar.cpp
 
-        src/elements/flappy_food/flappy_food.cpp
-        src/elements/flappy_food/bird.cpp
-        src/elements/flappy_food/obstacle.cpp
-        src/elements/flappy_food/obstacle_pair.cpp
+        #src/elements/flappy_food/flappy_food.cpp
+        #src/elements/flappy_food/bird.cpp
+        #src/elements/flappy_food/obstacle.cpp
+        #src/elements/flappy_food/obstacle_pair.cpp
 
         src/states/State.cpp
         src/states/MainMenu.cpp
@@ -66,7 +66,7 @@ add_executable(sdlGameEngine
 
 # Link all libraries
 target_link_libraries(sdlGameEngine
-        ${SDL2_LIBRARIES}
-        SDL2_image
-        SDL2_ttf
+        ${SDL3_LIBRARIES}
+        SDL3_image
+        SDL3_ttf
 )

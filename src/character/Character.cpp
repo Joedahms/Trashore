@@ -1,4 +1,4 @@
-#include <SDL2/SDL.h>
+#include <SDL3/SDL.h>
 
 #include "Character.h"
 
@@ -14,8 +14,8 @@ void Character::setYVelocity(int newYVelocity) { this->yVelocity = newYVelocity;
 void Character::setXVelocity(int newXVelocity) { this->xVelocity = newXVelocity; }
 
 SDL_Texture* Character::getTexture() const { return this->texture; }
-SDL_Rect Character::getRectangle() const { return this->rectangle; }
+SDL_FRect Character::getRectangle() const { return this->rectangle; }
 
 void Character::render() const {
-  SDL_RenderCopy(this->gameGlobal.renderer, this->texture, nullptr, &this->rectangle);
+  SDL_RenderTexture(this->gameGlobal.renderer, this->texture, nullptr, &this->rectangle);
 }

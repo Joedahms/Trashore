@@ -2,7 +2,7 @@
 
 LoadingBar::LoadingBar(const GameGlobal& gameGlobal,
                        const std::string& logFile,
-                       const SDL_Rect boundaryRectangle,
+                       const SDL_FRect boundaryRectangle,
                        const int& borderThickness,
                        const float& totalTimeSeconds,
                        const float& updatePeriodMs)
@@ -16,8 +16,6 @@ LoadingBar::LoadingBar(const GameGlobal& gameGlobal,
 
   this->previousUpdate = std::chrono::steady_clock::now();
   addBorder(this->borderThickness);
-
-  this->canCollide = true;
 }
 
 /**
@@ -28,9 +26,8 @@ void LoadingBar::update() {
     hasParentUpdate();
   }
 
-  const float pixelsPerMs =
-      static_cast<float>(this->boundaryRectangle.w) / (this->totalTimeSeconds * 1000);
-  this->pixelsPerUpdate = pixelsPerMs * this->updatePeriodMs;
+  const float pixelsPerMs = this->boundaryRectangle.w / (this->totalTimeSeconds * 1000);
+  this->pixelsPerUpdate   = pixelsPerMs * this->updatePeriodMs;
 
   // Get time since last update
   this->currentUpdate         = std::chrono::steady_clock::now();
@@ -52,8 +49,8 @@ void LoadingBar::update() {
 }
 
 void LoadingBar::handleEvent(const SDL_Event& event) {
-  if (event.type == SDL_KEYDOWN) {
-    if (event.key.keysym.sym == SDLK_ESCAPE) {
+  if (event.type == SDL_EVENT_KEY_DOWN) {
+    if (event.key.raw == SDLK_ESCAPE) {
       SDL_Quit();
     }
   }

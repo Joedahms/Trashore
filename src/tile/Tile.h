@@ -1,8 +1,6 @@
 #ifndef TILE_H
 #define TILE_H
 
-#include <SDL2/SDL_image.h>
-
 #include "../GameGlobal.h"
 
 enum tileId { WATER_TILE, DIRT_TILE };
@@ -15,17 +13,17 @@ public:
   virtual void print() = 0;
   void setSelected();
   void unsetSelected();
-  bool getSelected() const;
-  SDL_Texture* getTileTexture() const;
-  SDL_Rect getTileRectangle() const;
-  void setTileRectangle(SDL_Rect rectangle);
+  [[nodiscard]] bool getSelected() const;
+  [[nodiscard]] SDL_Texture* getTileTexture() const;
+  [[nodiscard]] SDL_FRect getTileRectangle() const;
+  void setTileRectangle(SDL_FRect newRectangle);
 
 protected:
   GameGlobal gameGlobal;
 
   const std::string spritePath;
 
-  SDL_Rect rectangle   = {0, 0, 0, 0};
+  SDL_FRect rectangle  = {0, 0, 0, 0};
   SDL_Texture* texture = nullptr;
   bool selected        = false;
 };

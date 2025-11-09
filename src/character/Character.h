@@ -1,7 +1,7 @@
 #ifndef CHARACTER_H
 #define CHARACTER_H
 
-#include <SDL2/SDL.h>
+#include <SDL3/SDL.h>
 
 #include "../GameGlobal.h"
 
@@ -21,7 +21,7 @@ public:
   void setXVelocity(int);
 
   [[nodiscard]] SDL_Texture* getTexture() const;
-  [[nodiscard]] SDL_Rect getRectangle() const;
+  [[nodiscard]] SDL_FRect getRectangle() const;
 
   void render() const;
 
@@ -29,7 +29,7 @@ protected:
   GameGlobal gameGlobal{};
 
   SDL_Texture* texture{};
-  SDL_Rect rectangle{};
+  SDL_FRect rectangle{};
 
   int yPosition{};
   int xPosition{};

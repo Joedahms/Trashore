@@ -1,8 +1,8 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_rect.h>
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_rect.h>
 
 #include "../GameGlobal.h"
 
@@ -21,9 +21,9 @@ public:
   void setYVelocity(int yVelocity);
   void setXVelocity(int xVelocity);
 
-  SDL_Point getPosition() const;
-  SDL_Point position   = {0, 0};
-  SDL_Rect destination = {0, 0, 1024, 640};
+  [[nodiscard]] SDL_FPoint getPosition() const;
+  SDL_FPoint position   = {0, 0};
+  SDL_FRect destination = {0, 0, 1024, 640};
 
 private:
   GameGlobal gameGlobal;

@@ -1,10 +1,6 @@
-#include <SDL2/SDL.h>
-
-#include <iostream>
-#include <string>
+#include <SDL3/SDL.h>
 
 #include "GameEngine.h"
-#include "GameGlobal.h"
 #include "Logger.h"
 
 int main(int argc, const char* argv[]) {
@@ -12,9 +8,8 @@ int main(int argc, const char* argv[]) {
   constexpr int WINDOW_HEIGHT = 640;
   constexpr bool FULLSCREEN   = false;
 
-  const auto gameEngine = std::make_unique<GameEngine>(
-      "game_engine", SDL_WINDOWPOS_CENTERED_DISPLAY(1), SDL_WINDOWPOS_CENTERED_DISPLAY(1),
-      WINDOW_WIDTH, WINDOW_HEIGHT, FULLSCREEN);
+  const auto gameEngine = std::make_unique<GameEngine>("game_engine", WINDOW_WIDTH,
+                                                       WINDOW_HEIGHT, FULLSCREEN);
 
   gameEngine->start();
   return 0;

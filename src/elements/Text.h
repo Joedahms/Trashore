@@ -1,8 +1,8 @@
 #ifndef TEXT_H
 #define TEXT_H
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_ttf.h>
+#include <SDL3/SDL.h>
+#include <SDL3_ttf/SDL_ttf.h>
 #include <string>
 
 #include "../GameGlobal.h"
@@ -15,7 +15,7 @@ class Text final : public Element {
 public:
   Text(const GameGlobal& gameGlobal,
        const std::string& logFile,
-       SDL_Rect boundaryRectangle,
+       SDL_FRect boundaryRectangle,
        const std::string& fontPath,
        std::string content,
        int fontSize,
