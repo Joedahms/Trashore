@@ -14,12 +14,7 @@
 
 class GameEngine {
 public:
-  GameEngine(const char* windowTitle,
-             int windowXPosition,
-             int windowYPosition,
-             int screenWidth,
-             int screenHeight,
-             bool fullscreen);
+  GameEngine(const char* windowTitle, int screenWidth, int screenHeight, bool fullscreen);
   void start();
 
 private:
@@ -33,8 +28,6 @@ private:
   std::unique_ptr<Gameplay> gameplay;
 
   SDL_Window* setupWindow(const char* windowTitle,
-                          int windowXPosition,
-                          int windowYPosition,
                           int screenWidth,
                           int screenHeight,
                           bool fullscreen) const;

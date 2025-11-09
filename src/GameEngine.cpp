@@ -8,16 +8,14 @@
 #include "states/State.h"
 
 GameEngine::GameEngine(const char* windowTitle,
-                       const int windowXPosition,
-                       const int windowYPosition,
                        const int screenWidth,
                        const int screenHeight,
                        const bool fullscreen)
     : logger("game_engine.txt") {
   this->logger.log("Constructing game engine");
 
-  this->gameGlobal.window = setupWindow(windowTitle, windowXPosition, windowYPosition,
-                                        screenWidth, screenHeight, fullscreen);
+  this->gameGlobal.window =
+      setupWindow(windowTitle, screenWidth, screenHeight, fullscreen);
 
   initializeEngine(this->gameGlobal.window);
 
@@ -51,8 +49,6 @@ void GameEngine::start() {
 }
 
 SDL_Window* GameEngine::setupWindow(const char* windowTitle,
-                                    const int windowXPosition,
-                                    const int windowYPosition,
                                     const int screenWidth,
                                     const int screenHeight,
                                     const bool fullscreen) const {
