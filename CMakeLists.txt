@@ -62,7 +62,7 @@ add_executable(sdlGameEngine
         #src/elements/flappy_food/obstacle_pair.cpp
 
         src/states/State.cpp
-        src/states/MainMenu.cpp
+        src/states/main_menu/MainMenu.cpp
         src/states/Gameplay.cpp
 
         src/camera/Camera.cpp
@@ -77,10 +77,10 @@ add_executable(sdlGameEngine
         src/tile/TileFactory.cpp
         src/tile/TileMap.cpp
         src/tile/WaterTile.cpp
-        src/states/MainMenuRmlEventListener.cpp
-        src/states/MainMenuRmlEventListener.h
-        src/states/MainMenuRmlEventHandler.cpp
-        src/states/MainMenuRmlEventHandler.h
+        src/states/main_menu/MainMenuRmlEventListener.cpp
+        src/states/main_menu/MainMenuRmlEventListener.h
+        src/states/main_menu/MainMenuRmlEventHandler.cpp
+        src/states/main_menu/MainMenuRmlEventHandler.h
 )
 
 # Link all libraries

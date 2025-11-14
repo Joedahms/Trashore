@@ -7,7 +7,7 @@
 #include "Logger.h"
 
 #include "states/Gameplay.h"
-#include "states/MainMenu.h"
+#include "states/main_menu/MainMenu.h"
 
 #include "EngineState.h"
 #include "GameGlobal.h"

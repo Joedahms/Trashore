@@ -4,7 +4,7 @@
 
 #include "MainMenuRmlEventHandler.h"
 
-#include "../GameEngine.h"
+#include "../../GameEngine.h"
 
 #include <RmlUi/Core/Element.h>
 

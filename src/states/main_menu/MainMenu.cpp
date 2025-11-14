@@ -1,8 +1,8 @@
 #include <memory>
 
-#include "../GameGlobal.h"
-#include "../LogFiles.h"
-#include "../elements/Button.h"
+#include "../../GameGlobal.h"
+#include "../../LogFiles.h"
+#include "../../elements/Button.h"
 #include "MainMenu.h"
 
 #include <RmlUi/Core/Element.h>

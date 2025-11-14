@@ -1,10 +1,10 @@
 #ifndef MAIN_MENU_H
 #define MAIN_MENU_H
 
-#include "../GameGlobal.h"
+#include "../../GameGlobal.h"
+#include "../State.h"
 #include "MainMenuRmlEventHandler.h"
 #include "MainMenuRmlEventListener.h"
-#include "State.h"
 
 class MainMenu final : public State {
 public:

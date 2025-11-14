@@ -4,7 +4,7 @@
 
 #ifndef SDLGAMEENGINE_MAINMENURMLEVENTHANDLER_H
 #define SDLGAMEENGINE_MAINMENURMLEVENTHANDLER_H
-#include "../EngineState.h"
+#include "../../EngineState.h"
 
 #include <RmlUi/Core/Event.h>
 
