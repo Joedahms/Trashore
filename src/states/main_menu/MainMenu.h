@@ -15,6 +15,7 @@ public:
 private:
   Rml::ElementDocument* document;
   Rml::Element* startButton = nullptr;
+  Rml::Element* quitButton  = nullptr;
   std::unique_ptr<MainMenuRmlEventListener> eventListener;
   MainMenuRmlEventHandler* eventHandler = nullptr;
 };

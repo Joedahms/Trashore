@@ -17,7 +17,7 @@ MainMenu::MainMenu(const GameGlobal& gameGlobal)
     : State(gameGlobal, LogFiles::MAIN_MENU) {
   this->logger->log("Constructing main menu state");
 
-  this->document = this->gameGlobal.rmlContext->LoadDocument("../menu.rml");
+  this->document = this->gameGlobal.rmlContext->LoadDocument("../rml/menu.html");
 
   if (this->document) {
     this->document->Show();
@@ -29,12 +29,23 @@ MainMenu::MainMenu(const GameGlobal& gameGlobal)
   this->eventListener = std::make_unique<MainMenuRmlEventListener>();
 
   this->startButton = this->document->GetElementById("start_game");
-  if (startButton) {
-    startButton->AddEventListener(Rml::EventId::Click, this->eventListener.get(), true);
+  if (this->startButton) {
+    this->startButton->AddEventListener(Rml::EventId::Click, this->eventListener.get(),
+                                        true);
   }
   else {
     Rml::Log::Message(Rml::Log::LT_WARNING, "No");
   }
+
+  this->quitButton = this->document->GetElementById("quit");
+  if (this->quitButton) {
+    this->quitButton->AddEventListener(Rml::EventId::Click, this->eventListener.get(),
+                                       true);
+  }
+  else {
+    Rml::Log::Message(Rml::Log::LT_WARNING, "No");
+  }
+
   this->logger->log("Main menu state constructed");
 }
 

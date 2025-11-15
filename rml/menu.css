@@ -1,0 +1,34 @@
+body {
+    font-family: "Futura Md BT";
+    margin: 0;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f0f0;
+}
+
+p {
+    font-size: 40px;
+    color: red;
+}
+
+button {
+    padding: 12px 24px;
+    font-size: 16px;
+    margin: 8px;
+    cursor: pointer;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+button:active {
+    background-color: #3d8b40;
+}

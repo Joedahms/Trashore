@@ -21,12 +21,13 @@ public:
 
   static void setCurrentState(EngineState newEngineState);
 
+  static inline bool gameIsRunning = false;
+
 private:
   Logger logger;
   GameGlobal gameGlobal{};
   State* engineState = nullptr;
   static EngineState currentState;
-  bool gameIsRunning = false;
 
   std::unique_ptr<SystemInterface_SDL> systemInterface;
   std::unique_ptr<RenderInterface_SDL> renderInterface;

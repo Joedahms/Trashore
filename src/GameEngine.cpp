@@ -29,14 +29,14 @@ GameEngine::GameEngine(const char* windowTitle,
 
   this->engineState = this->mainMenu.get();
 
-  this->gameIsRunning = true;
+  gameIsRunning = true;
   this->logger.log("Engine is constructed and now running");
 }
 
 void GameEngine::start() {
   const auto msPerFrame = std::chrono::milliseconds(16);
 
-  while (this->gameIsRunning) {
+  while (gameIsRunning) {
     std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
 
     handleEvents();
@@ -146,14 +146,14 @@ void GameEngine::handleEvents() {
   SDL_Event event;
   while (SDL_PollEvent(&event)) {
     if (event.type == SDL_EVENT_QUIT) {
-      this->gameIsRunning = false;
+      gameIsRunning = false;
     }
 
     // Pass events to RmlUi
     RmlSDL::InputEventHandler(this->gameGlobal.rmlContext, this->gameGlobal.window,
                               event);
   }
-  engineState->handleEvents(this->gameIsRunning);
+  engineState->handleEvents(gameIsRunning);
 }
 
 void GameEngine::update() const {

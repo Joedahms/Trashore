@@ -6,7 +6,7 @@
 int main(int argc, const char* argv[]) {
   constexpr int WINDOW_WIDTH  = 1024;
   constexpr int WINDOW_HEIGHT = 640;
-  constexpr bool FULLSCREEN   = false;
+  constexpr bool FULLSCREEN   = true;
 
   const auto gameEngine = std::make_unique<GameEngine>("game_engine", WINDOW_WIDTH,
                                                        WINDOW_HEIGHT, FULLSCREEN);

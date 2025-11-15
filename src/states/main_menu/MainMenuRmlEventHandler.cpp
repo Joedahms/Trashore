@@ -17,5 +17,8 @@ void MainMenuRmlEventHandler::handleEvent(Rml::Event& event) {
     if (buttonId == "start_game") {
       GameEngine::setCurrentState(EngineState::GAMEPLAY);
     }
+    else if (buttonId == "quit") {
+      GameEngine::gameIsRunning = false;
+    }
   }
 }
