@@ -8,7 +8,7 @@
 
 class Gameplay : public State {
 public:
-  Gameplay(const GameGlobal& gameGlobal, const EngineState& state);
+  Gameplay(const GameGlobal& gameGlobal);
   void handleEvents(bool& gameIsRunning) override;
   void checkKeyStates() const;
   void update() override;

@@ -1,15 +1,11 @@
 #include <cassert>
-#include <iostream>
 #include <utility>
 
 #include "../GameGlobal.h"
 #include "State.h"
 
-State::State(const GameGlobal& gameGlobal,
-             std::string logFile,
-             const EngineState& currentState)
-    : gameGlobal(gameGlobal), logFile(std::move(logFile)), defaultState(currentState),
-      currentState(currentState) {
+State::State(const GameGlobal& gameGlobal, std::string logFile)
+    : gameGlobal(gameGlobal), logFile(std::move(logFile)) {
   this->logger        = std::make_unique<Logger>(this->logFile);
   this->windowSurface = SDL_GetWindowSurface(this->gameGlobal.window);
   assert(windowSurface != nullptr);
@@ -31,18 +27,3 @@ void State::handleEvents(bool& displayIsRunning) {
 }
 
 void State::update() { this->rootElement->update(); }
-
-void State::enter() { this->currentState = this->defaultState; }
-
-EngineState State::getCurrentState() const { return this->currentState; }
-
-void State::setCurrentState(const EngineState newCurrentState) {
-  this->currentState = newCurrentState;
-}
-
-bool State::checkStateChange() const {
-  if (this->currentState != this->defaultState) {
-    return true;
-  }
-  return false;
-}

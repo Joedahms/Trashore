@@ -11,26 +11,15 @@
 class State {
 public:
   virtual ~State() = default;
-  State(const GameGlobal& gameGlobal,
-        std::string logFile,
-        const EngineState& currentState);
+  State(const GameGlobal& gameGlobal, std::string logFile);
   virtual void handleEvents(bool& gameIsRunning);
   virtual void update();
   virtual void render() const = 0;
-  virtual void enter();
-
-  EngineState getCurrentState() const;
-  void setCurrentState(EngineState newCurrentState);
-
-  bool checkStateChange() const;
 
 protected:
   GameGlobal gameGlobal;
   const std::string logFile;
   std::unique_ptr<Logger> logger;
-
-  const EngineState defaultState;
-  EngineState currentState;
 
   std::shared_ptr<Container> rootElement;
   SDL_Surface* windowSurface = nullptr;

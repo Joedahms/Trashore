@@ -7,22 +7,30 @@
 #include "Logger.h"
 
 #include "states/Gameplay.h"
-#include "states/MainMenu.h"
+#include "states/main_menu/MainMenu.h"
 
 #include "EngineState.h"
 #include "GameGlobal.h"
+#include "RmlUi_Platform_SDL.h"
+#include "RmlUi_Renderer_SDL.h"
 
 class GameEngine {
 public:
   GameEngine(const char* windowTitle, int screenWidth, int screenHeight, bool fullscreen);
   void start();
 
+  static void setCurrentState(EngineState newEngineState);
+
+  static inline bool gameIsRunning = false;
+
 private:
   Logger logger;
   GameGlobal gameGlobal{};
-  State* engineState       = nullptr;
-  EngineState currentState = EngineState::MAIN_MENU;
-  bool gameIsRunning       = false;
+  State* engineState = nullptr;
+  static EngineState currentState;
+
+  std::unique_ptr<SystemInterface_SDL> systemInterface;
+  std::unique_ptr<RenderInterface_SDL> renderInterface;
 
   std::unique_ptr<MainMenu> mainMenu;
   std::unique_ptr<Gameplay> gameplay;
