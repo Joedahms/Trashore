@@ -1,10 +1,10 @@
 #ifndef GAMEPLAY_H
 #define GAMEPLAY_H
 
-#include "../camera/Camera.h"
-#include "../character/CharacterFactory.h"
-#include "../tile/TileMap.h"
-#include "State.h"
+#include "../../camera/Camera.h"
+#include "../../character/CharacterFactory.h"
+#include "../../tile/TileMap.h"
+#include "../State.h"
 
 class Gameplay : public State {
 public:

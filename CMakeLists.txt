@@ -63,7 +63,7 @@ add_executable(sdlGameEngine
 
         src/states/State.cpp
         src/states/main_menu/MainMenu.cpp
-        src/states/Gameplay.cpp
+        src/states/gameplay/Gameplay.cpp
 
         src/camera/Camera.cpp
 

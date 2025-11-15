@@ -19,10 +19,7 @@ GameEngine::GameEngine(const char* windowTitle,
     : logger("game_engine.txt") {
   this->logger.log("Constructing game engine");
 
-  this->gameGlobal.window =
-      setupWindow(windowTitle, screenWidth, screenHeight, fullscreen);
-
-  initializeEngine(this->gameGlobal.window);
+  initializeEngine(windowTitle, screenWidth, screenHeight, fullscreen);
 
   this->mainMenu = std::make_unique<MainMenu>(this->gameGlobal);
   this->gameplay = std::make_unique<Gameplay>(this->gameGlobal);
@@ -57,38 +54,28 @@ void GameEngine::setCurrentState(const EngineState newEngineState) {
   currentState = newEngineState;
 }
 
-SDL_Window* GameEngine::setupWindow(const char* windowTitle,
-                                    const int screenWidth,
-                                    const int screenHeight,
-                                    const bool fullscreen) const {
-  this->logger.log("Creating SDL game window");
-
-  int flags = 0;
+void GameEngine::initializeEngine(const char* windowTitle,
+                                  const int screenWidth,
+                                  const int screenHeight,
+                                  const bool fullscreen) {
+  this->logger.log("Initializing engine");
+  int windowFlags = 0;
   if (fullscreen) {
-    flags = SDL_WINDOW_FULLSCREEN;
+    windowFlags = SDL_WINDOW_FULLSCREEN;
   }
 
   try {
-    SDL_Window* window = SDL_CreateWindow(windowTitle, screenWidth, screenHeight, flags);
-    this->logger.log("SDL game window created");
-    return window;
+    SDL_CreateWindowAndRenderer(windowTitle, screenWidth, screenHeight, windowFlags,
+                                &this->gameGlobal.window, &this->gameGlobal.renderer);
+    this->logger.log("SDL game window and renderer created");
   } catch (...) {
-    std::cerr << "Error setting up SDL game window";
+    std::cerr << "Error setting up SDL game window and renderer";
     exit(1);
   }
-}
 
-void GameEngine::initializeEngine(SDL_Window* window) {
-  this->logger.log("Initializing engine");
   if (const bool sdlInitReturn = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
       !sdlInitReturn) {
     std::cerr << "Failed to initialize engine";
-    exit(1);
-  }
-
-  this->gameGlobal.renderer = SDL_CreateRenderer(window, nullptr);
-  if (this->gameGlobal.renderer == nullptr) {
-    std::cerr << "Error creating renderer " << SDL_GetError();
     exit(1);
   }
 
@@ -105,8 +92,6 @@ void GameEngine::initializeEngine(SDL_Window* window) {
 
   Rml::SetSystemInterface(this->systemInterface.get());
   Rml::SetRenderInterface(this->renderInterface.get());
-
-  // Now we can initialize RmlUi.
   Rml::Initialise();
 
   if (!Rml::LoadFontFace("../fonts/16020_FUTURAM.ttf")) {
@@ -115,7 +100,7 @@ void GameEngine::initializeEngine(SDL_Window* window) {
 
   int windowWidth;
   int windowHeight;
-  SDL_GetWindowSize(window, &windowWidth, &windowHeight);
+  SDL_GetWindowSize(this->gameGlobal.window, &windowWidth, &windowHeight);
 
   this->gameGlobal.rmlContext =
       Rml::CreateContext("default", Rml::Vector2i(windowWidth, windowHeight));

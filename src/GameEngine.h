@@ -6,7 +6,7 @@
 
 #include "Logger.h"
 
-#include "states/Gameplay.h"
+#include "states/gameplay/Gameplay.h"
 #include "states/main_menu/MainMenu.h"
 
 #include "EngineState.h"
@@ -35,11 +35,10 @@ private:
   std::unique_ptr<MainMenu> mainMenu;
   std::unique_ptr<Gameplay> gameplay;
 
-  SDL_Window* setupWindow(const char* windowTitle,
-                          int screenWidth,
-                          int screenHeight,
-                          bool fullscreen) const;
-  void initializeEngine(SDL_Window* window);
+  void initializeEngine(const char* windowTitle,
+                        int screenWidth,
+                        int screenHeight,
+                        bool fullscreen);
 
   void handleStateChange();
   void handleEvents();

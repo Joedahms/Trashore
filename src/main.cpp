@@ -3,7 +3,10 @@
 #include "GameEngine.h"
 #include "Logger.h"
 
-int main(int argc, const char* argv[]) {
+/**
+ * WINDOW_WIDTH and WINDOW_HEIGHT are ignored if FULLSCREEN is set to true
+ */
+int main() {
   constexpr int WINDOW_WIDTH  = 1024;
   constexpr int WINDOW_HEIGHT = 640;
   constexpr bool FULLSCREEN   = true;
