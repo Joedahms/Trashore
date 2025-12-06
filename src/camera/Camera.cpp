@@ -8,19 +8,14 @@ Camera::Camera(const GameGlobal& gameGlobal,
                const int initialTileSize)
     : gameGlobal(gameGlobal),
       mapSizePixels{mapSizeTiles.x * initialTileSize, mapSizeTiles.y * initialTileSize} {
-  SDL_Surface const* windowSurface = SDL_GetWindowSurface(this->gameGlobal.window);
-  this->screenSizePixels.x         = windowSurface->w;
-  this->screenSizePixels.y         = windowSurface->h;
+  SDL_GetWindowSize(this->gameGlobal.window, &this->screenSizePixels.x,
+                    &this->screenSizePixels.y);
 
-  this->initialVisibleTiles.x = this->screenSizePixels.x / initialTileSize;
-  this->initialVisibleTiles.y = this->screenSizePixels.y / initialTileSize;
+  this->destination = SDL_FRect{0, 0, static_cast<float>(this->screenSizePixels.x),
+                                static_cast<float>(this->screenSizePixels.y)};
 }
 
 void Camera::checkBoundaries() {
-  // Need to factor in the destination rectangle
-  // Currently this only works if the destination rectangle is unmodified
-  // If the destination rectangle x = -2 then left bound is camera x - 2
-  // If the destination rectangle x = -4 then left bound is camera x - 4
   checkLeftBoundary();
   checkRightBoundary();
   checkTopBoundary();
@@ -30,15 +25,7 @@ void Camera::checkBoundaries() {
 void Camera::checkLeftBoundary() {
   if (this->position.x < destination.x) {
     this->position.x += 1;
-    //    std::cout << "postion x: " << this->position.x << std::endl;
-    //   std::cout << "destination x: " << this->destination.x << std::endl;
   }
-
-  /*
-  if (this->position.x < 0) {
-    this->position.x += 1;
-  }
-  */
 }
 
 void Camera::checkRightBoundary() {

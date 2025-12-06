@@ -22,15 +22,14 @@ public:
   void setXVelocity(int xVelocity);
 
   [[nodiscard]] SDL_FPoint getPosition() const;
-  SDL_FPoint position   = {0, 0};
-  SDL_FRect destination = {0, 0, 1024, 640};
+  SDL_FPoint position = {0, 0};
+  SDL_FRect destination;
 
 private:
   GameGlobal gameGlobal;
 
-  SDL_Point screenSizePixels    = {0, 0};
-  SDL_Point mapSizePixels       = {0, 0};
-  SDL_Point initialVisibleTiles = {0, 0};
+  SDL_Point screenSizePixels = {0, 0};
+  SDL_Point mapSizePixels    = {0, 0};
 
   SDL_Point velocity = {0, 0};
 

@@ -7,37 +7,31 @@
 #include <SDL3_image/SDL_image.h>
 
 Gameplay::Gameplay(const GameGlobal& gameGlobal) : State(gameGlobal, LogFiles::GAMEPLAY) {
-  this->logger->log("Initializing tile map...");
   this->tileMap = std::make_unique<TileMap>(gameGlobal, this->MAP_SIZE_TILES,
                                             this->INITIAL_TILE_SIZE);
-  this->logger->log("Tile map initialized");
 
-  this->logger->log("Initializing camera");
   this->camera =
       std::make_unique<Camera>(gameGlobal, this->MAP_SIZE_TILES, this->INITIAL_TILE_SIZE);
-  this->logger->log("Camera initialized");
 
   this->characterFactory = std::make_unique<CharacterFactory>(this->gameGlobal);
 
-  this->logger->log("Initializing NPC...");
-  std::unique_ptr<Character> npc = this->characterFactory->create(characterId::NPC);
+  std::unique_ptr<Character> npc = this->characterFactory->create(NPC);
   this->npcVector.emplace_back(std::move(npc));
   this->npcVector[0]->setXVelocity(0);
   this->npcVector[0]->setYVelocity(0);
-  this->logger->log("NPC initialized");
 
-  this->logger->log("Initializing textures...");
   SDL_Surface* tmp_surface = IMG_Load("sprites/selected.png");
   selectedTexture = SDL_CreateTextureFromSurface(this->gameGlobal.renderer, tmp_surface);
   SDL_DestroySurface(tmp_surface);
-  this->logger->log("Textures initialized");
 
-  this->texture = SDL_CreateTexture(
+  SDL_Point screenSizePixels;
+  SDL_GetWindowSize(this->gameGlobal.window, &screenSizePixels.x, &screenSizePixels.y);
 
-      this->gameGlobal.renderer,
-      SDL_PIXELFORMAT_RGBA8888, // Pixel format
-      SDL_TEXTUREACCESS_TARGET, // This makes it a render target
-      1024, 640);
+  this->texture =
+      SDL_CreateTexture(this->gameGlobal.renderer,
+                        SDL_PIXELFORMAT_RGBA8888, // Pixel format
+                        SDL_TEXTUREACCESS_TARGET, // This makes it a render target
+                        screenSizePixels.x, screenSizePixels.y);
 }
 
 void Gameplay::handleEvents(bool& gameIsRunning) {
@@ -110,8 +104,6 @@ void Gameplay::update() {
   this->npcVector[0]->updatePosition();
 }
 
-// vertical lines
-// Tiles are being misshaped when zooming in
 void Gameplay::render() const {
   SDL_SetRenderTarget(this->gameGlobal.renderer, this->texture);
   SDL_RenderClear(this->gameGlobal.renderer);
@@ -129,11 +121,11 @@ void Gameplay::render() const {
 
       // TODO: Check if within camera viewport
       SDL_RenderTexture(this->gameGlobal.renderer, this->tileMap->getTileTexture(x, y),
-                        NULL, &tileRectangle);
+                        nullptr, &tileRectangle);
     }
   }
-  SDL_SetRenderTarget(this->gameGlobal.renderer, NULL);
-  SDL_RenderTexture(this->gameGlobal.renderer, this->texture, NULL,
+  SDL_SetRenderTarget(this->gameGlobal.renderer, nullptr);
+  SDL_RenderTexture(this->gameGlobal.renderer, this->texture, nullptr,
                     &this->camera->destination);
 
   this->npcVector[0]->render();

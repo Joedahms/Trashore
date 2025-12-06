@@ -59,6 +59,12 @@ void GameEngine::initializeEngine(const char* windowTitle,
                                   const int screenHeight,
                                   const bool fullscreen) {
   this->logger.log("Initializing engine");
+  if (const bool sdlInitReturn = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
+      !sdlInitReturn) {
+    std::cerr << "Failed to initialize engine";
+    exit(1);
+  }
+
   int windowFlags = 0;
   if (fullscreen) {
     windowFlags = SDL_WINDOW_FULLSCREEN;
@@ -73,10 +79,8 @@ void GameEngine::initializeEngine(const char* windowTitle,
     exit(1);
   }
 
-  if (const bool sdlInitReturn = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
-      !sdlInitReturn) {
-    std::cerr << "Failed to initialize engine";
-    exit(1);
+  if (fullscreen) {
+    SDL_SyncWindow(this->gameGlobal.window);
   }
 
   SDL_SetRenderDrawColor(this->gameGlobal.renderer, 255, 255, 255, 255);
