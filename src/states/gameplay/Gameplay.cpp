@@ -46,20 +46,20 @@ void Gameplay::handleEvents(bool& gameIsRunning) {
       if (event.wheel.y > 0) { // Scroll up -> zoom in
         this->camera->destination.x *= 1.01;
         this->camera->destination.y *= 1.01;
-        this->camera->destination.x -= 512 * 0.01;
-        this->camera->destination.y -= 320 * 0.01;
+        this->camera->destination.x -= 1920 / 2 * 0.01;
+        this->camera->destination.y -= 1080 / 2 * 0.01;
         this->camera->destination.w *= 1.01;
         this->camera->destination.h *= 1.01;
       }
       else if (event.wheel.y < 0) { // Scroll down -> zoom out
         this->camera->destination.x *= 0.9;
         this->camera->destination.y *= 0.9;
-        this->camera->destination.x += 512 * 0.1;
-        this->camera->destination.y += 320 * 0.1;
-
+        this->camera->destination.x += 1920 / 2 * 0.1;
+        this->camera->destination.y += 1080 / 2 * 0.1;
         this->camera->destination.w *= 0.9;
         this->camera->destination.h *= 0.9;
       }
+      break;
 
     default:
       break;

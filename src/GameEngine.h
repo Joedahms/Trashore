@@ -41,7 +41,7 @@ private:
                         bool fullscreen);
 
   void handleStateChange();
-  void handleEvents();
+  void handleEvents() const;
   void update() const;
   void renderState() const;
   void clean() const;

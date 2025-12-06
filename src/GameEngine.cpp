@@ -131,18 +131,19 @@ void GameEngine::handleStateChange() {
   }
 }
 
-void GameEngine::handleEvents() {
+void GameEngine::handleEvents() const {
   SDL_Event event;
   while (SDL_PollEvent(&event)) {
     if (event.type == SDL_EVENT_QUIT) {
       gameIsRunning = false;
     }
 
+    engineState->handleEvents(gameIsRunning);
+
     // Pass events to RmlUi
     RmlSDL::InputEventHandler(this->gameGlobal.rmlContext, this->gameGlobal.window,
                               event);
   }
-  engineState->handleEvents(gameIsRunning);
 }
 
 void GameEngine::update() const {
